@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuppBridge | Expert Supplement Sourcing & Formulation</title>
+    <meta name="description" content="Jun Lee & SuppBridge help Amazon sellers launch compliant supplements. 18 years experience in China/USA supply chains.">
+    
+    <!-- Tailwind CSS (样式库) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#005578',   // Logo 中的深蓝色
+                            green: '#4CAF50',  // Logo 中的绿色叶子
+                            light: '#F0F9F4',  // 极浅的绿色背景
+                            gray: '#F8FAFC',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 85, 120, 0.9), rgba(0, 60, 90, 0.8)), url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-4.0.3&auto=format&fit=crop&w=2069&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased selection:bg-brand-green selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="logo.png" alt="SuppBridge Logo" class="h-12 w-auto"> 
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-brand-dark font-medium transition py-2">Home</a>
+                    <a href="#about" class="text-gray-600 hover:text-brand-dark font-medium transition py-2">About Us</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-brand-dark font-medium transition py-2">Process</a>
+                    <a href="#services" class="text-gray-600 hover:text-brand-dark font-medium transition py-2">Services</a>
+                    <a href="#insights" class="text-gray-600 hover:text-brand-dark font-medium transition py-2">Insights</a>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="hidden md:flex">
+                    <a href="#contact" class="bg-brand-green hover:bg-emerald-600 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg transform hover:-translate-y-0.5">
+                        Free Consultation
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-brand-dark p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#home" class="block px-3 py-3 text-base font-medium text-gray-700 border-b border-gray-100">Home</a>
+                <a href="#about" class="block px-3 py-3 text-base font-medium text-gray-700 border-b border-gray-100">About Us</a>
+                <a href="#services" class="block px-3 py-3 text-base font-medium text-gray-700 border-b border-gray-100">Services</a>
+                <a href="#insights" class="block px-3 py-3 text-base font-medium text-gray-700 border-b border-gray-100">Insights</a>
+                <a href="#contact" class="block mt-4 text-center px-3 py-3 text-base font-bold bg-brand-green text-white rounded-lg">Book Consultation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. Hero Section -->
+    <section id="home" class="hero-bg h-screen min-h-[650px] flex items-center relative text-white pt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left">
+            <div class="md:w-3/4">
+                <div class="inline-block px-4 py-1 mb-6 border border-brand-green/50 bg-brand-green/20 rounded-full text-brand-green font-semibold text-sm backdrop-blur-sm">
+                    🚀 Sourcing Expert for Amazon Sellers & DTC Brands
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 tracking-tight">
+                    Stop Wasting Time on <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-teal-200">Unreliable Factories/Middleman</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-100 mb-8 font-light leading-relaxed max-w-2xl">
+                    Get your product made right — on time, on budget, fully compliant. <br>
+                    <span class="text-gray-300 text-lg mt-2 block">I handle the hard parts of the supply chain for you.</span>
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#contact" class="bg-brand-green hover:bg-emerald-500 text-white text-lg px-8 py-4 rounded-lg font-bold transition shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center justify-center">
+                        Book Strategy Call <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </a>
+                    <a href="#how-it-works" class="bg-white/10 backdrop-blur border border-white/30 hover:bg-white hover:text-brand-dark text-white text-lg px-8 py-4 rounded-lg font-bold transition flex items-center justify-center">
+                        See Process
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Stats Strip -->
+    <div class="bg-white border-b border-gray-100 shadow-sm relative z-10 -mt-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
+                <div>
+                    <div class="text-3xl font-bold text-brand-dark">80<span class="text-lg text-brand-green">+</span></div>
+                    <div class="text-sm text-gray-500 mt-1 uppercase tracking-wide">Vetted Factories</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-brand-dark">18<span class="text-lg text-brand-green">+</span></div>
+                    <div class="text-sm text-gray-500 mt-1 uppercase tracking-wide">Years Exp.</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-brand-dark">45 <span class="text-sm text-gray-400 font-normal">days</span></div>
+                    <div class="text-sm text-gray-500 mt-1 uppercase tracking-wide">Avg. Timeline</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-brand-dark">40<span class="text-lg text-brand-green">+</span></div>
+                    <div class="text-sm text-gray-500 mt-1 uppercase tracking-wide">Successful Launches</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. About Us Section -->
+    <section id="about" class="py-24 bg-brand-light relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-green/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                
+                <!-- Photo Area -->
+                <div class="lg:w-5/12 w-full">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-brand-dark/10 rounded-2xl transform rotate-3"></div>
+                        <div class="relative rounded-xl overflow-hidden shadow-2xl border-4 border-white aspect-[3/4] group">
+                            <img src="profile.jpg" alt="Jun Lee - Founder" class="object-cover w-full h-full transform group-hover:scale-105 transition duration-700">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-brand-dark/90 to-transparent pt-20 pb-6 px-6 text-white">
+                                <h4 class="text-2xl font-bold">Jun Lee</h4>
+                                <p class="text-brand-green font-medium tracking-wide">Founder & Sourcing Expert</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Area -->
+                <div class="lg:w-7/12 w-full">
+                    <span class="text-brand-dark font-bold uppercase tracking-wider text-xs bg-white px-3 py-1 rounded-full border border-brand-dark/10">The Team Behind The Brand</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-6 mb-6">
+                        18 Years of Full-Chain Experience
+                    </h2>
+                    
+                    <div class="prose prose-lg text-gray-600 mb-8 leading-relaxed">
+                        <p>
+                            I’m Jun, a China-based supplement industry veteran. My career spans <strong>18 years</strong> covering everything from market research and scientific formulation to manufacturing and global logistics.
+                        </p>
+                        <p>
+                            I was a founding team member of a leading infant nutrition brand in China, where I led <strong>global supply chain operations and marketing</strong>. Later, I founded my own adult supplement e-commerce brand, gaining deep insight into what it takes to succeed on digital platforms.
+                        </p>
+                        <p>
+                            In 2024, I transitioned into independent consulting, working with supplement e-commerce companies across <strong>China, the U.S., and Europe</strong>. I help them solve complex supply chain challenges—from product development and ingredient sourcing to manufacturing and go-to-market strategy—so they can launch high-quality, compliant products faster and more efficiently.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-flask text-brand-green text-xl mr-3 bg-brand-green/10 p-2 rounded-lg"></i>
+                                <span class="font-bold text-gray-800">R&D Specialists</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Expertise in <strong>Human Nutrition</strong> (clinical evidence) & <strong>Pet Nutrition</strong>.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-file-contract text-brand-green text-xl mr-3 bg-brand-green/10 p-2 rounded-lg"></i>
+                                <span class="font-bold text-gray-800">Legal & Ops</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Handling export docs, IP protection, and contracts for full compliance.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-l-4 border-brand-green pl-6 py-2 italic text-gray-600 bg-white/50 rounded-r-lg">
+                        "We don’t just connect you with factories. We become your strategic extension."
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Process Section -->
+    <section id="how-it-works" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-brand-green font-bold uppercase tracking-wider text-sm">Workflow</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">Your Path to Market</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="p-6 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 group">
+                    <div class="text-4xl font-bold text-gray-200 mb-4 group-hover:text-brand-green transition">01</div>
+                    <h3 class="font-bold text-lg text-brand-dark mb-2">Discovery</h3>
+                    <p class="text-sm text-gray-600">Clarify formula, budget & timeline.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 group">
+                    <div class="text-4xl font-bold text-gray-200 mb-4 group-hover:text-brand-green transition">02</div>
+                    <h3 class="font-bold text-lg text-brand-dark mb-2">Matching</h3>
+                    <p class="text-sm text-gray-600">I present 2-3 vetted factory options.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 group">
+                    <div class="text-4xl font-bold text-gray-200 mb-4 group-hover:text-brand-green transition">03</div>
+                    <h3 class="font-bold text-lg text-brand-dark mb-2">Sampling</h3>
+                    <p class="text-sm text-gray-600">Samples + Lab reports for approval.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition border border-gray-100 group">
+                    <div class="text-4xl font-bold text-gray-200 mb-4 group-hover:text-brand-green transition">04</div>
+                    <h3 class="font-bold text-lg text-brand-dark mb-2">Production</h3>
+                    <p class="text-sm text-gray-600">QC checks, GMP docs, production oversight.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-brand-dark text-white shadow-xl transform scale-105">
+                    <div class="text-4xl font-bold text-brand-green mb-4">05</div>
+                    <h3 class="font-bold text-lg mb-2">Delivery</h3>
+                    <p class="text-sm text-gray-300">Shipment to FBA. Post-launch support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Services & Pricing -->
+    <section id="services" class="py-24 bg-brand-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-brand-green font-bold uppercase tracking-wider text-sm">Services & Pricing</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">What I Help You With</h2>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 mb-12">
+                <!-- Services List -->
+                <div class="flex-[2] bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-2xl font-bold mb-6 text-brand-dark flex items-center">
+                        <i class="fas fa-check-circle text-brand-green mr-3"></i> Core Capabilities
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-1">Private Label & Custom</h4>
+                            <p class="text-sm text-gray-600">Capsules, tablets, soft-gels, gummies, powders. <br><span class="text-brand-green text-xs font-bold">Specialty: Oral Dissolving Tablet & Duo-caps & Pet Supplements.</span></p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-1">Raw Material Sourcing</h4>
+                            <p class="text-sm text-gray-600">Botanical extracts, Fermentation ingredients, Complex premixes.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-1">Compliance & Testing</h4>
+                            <p class="text-sm text-gray-600">Label review, 3rd-party lab coordination.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-1">Logistics</h4>
+                            <p class="text-sm text-gray-600">FBA prep, Global shipping, Import docs, Dropshipping.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning Box -->
+                <div class="flex-[1] bg-red-50 p-8 rounded-2xl border border-red-100 flex flex-col justify-center">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl mr-3"></i>
+                        <h3 class="font-bold text-red-800 text-lg">Watch Out For Scams</h3>
+                    </div>
+                    <p class="text-sm text-red-700 leading-relaxed mb-4">
+                        Beware of suppliers offering low MOQ "ready-stock" with custom labels. These are often "generic capsules" with fake ingredients.
+                    </p>
+                    <div class="mt-auto pt-4 border-t border-red-200">
+                        <p class="text-xs font-bold text-brand-dark">"I only partner with clients who value quality & transparency."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Hourly -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-2">Hourly Consultation</div>
+                    <div class="text-3xl font-bold text-brand-dark mb-4">$75 - $300<span class="text-base font-normal text-gray-400">/hr</span></div>
+                    <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                        <li>• Sourcing & Matching: $75-150</li>
+                        <li>• Formulation Expert: $150-300</li>
+                    </ul>
+                </div>
+                <!-- Project -->
+                <div class="bg-brand-dark text-white p-8 rounded-xl shadow-xl transform md:-translate-y-2 border-4 border-brand-green relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-brand-green text-xs font-bold px-3 py-1 rounded-bl-lg">POPULAR</div>
+                    <div class="text-brand-green text-xs font-bold uppercase mb-2">Per Project</div>
+                    <div class="text-3xl font-bold mb-4">$500+<span class="text-base font-normal text-gray-400">/project</span></div>
+                    <p class="text-sm text-gray-300 mb-6">Fixed quote based on complexity. Standard products typically $1,000 - $1,500.</p>
+                    <a href="#contact" class="block text-center w-full bg-white text-brand-dark font-bold py-2 rounded-lg hover:bg-gray-100 transition">Get a Quote</a>
+                </div>
+                <!-- Monthly -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-2">Monthly Retainer</div>
+                    <div class="text-3xl font-bold text-brand-dark mb-4">$1500+<span class="text-base font-normal text-gray-400">/mo</span></div>
+                    <ul class="text-sm text-gray-600 space-y-2 mb-6">
+                        <li>• Long-term partnership</li>
+                        <li>• Continuous production oversight</li>
+                        <li>• Supply chain management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Insights / Blog -->
+    <section id="insights" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <span class="text-brand-green font-bold uppercase tracking-wider text-sm">Industry Insights</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">Latest from the Supply Chain</h2>
+                </div>
+            </div>
+
+            <!-- Blog Container -->
+            <div id="blog-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Javascript will load posts here -->
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-2">Need a quote audit?</p>
+                <a href="mailto:Jun@suppbridge.com" class="text-brand-dark font-bold underline hover:text-brand-green">Email me — it’s free.</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Contact Section -->
+    <section id="contact" class="py-24 bg-brand-dark text-white relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Let’s Talk About Your Product</h2>
+                <p class="text-gray-300 text-lg">Whether you have a full spec sheet or just an idea, I’d love to help.</p>
+            </div>
+
+            <div class="bg-white text-gray-800 rounded-2xl shadow-2xl overflow-hidden md:flex">
+                <div class="md:w-1/3 bg-gray-50 p-8 flex flex-col justify-between border-r border-gray-100">
+                    <div>
+                        <h4 class="font-bold text-brand-dark text-lg mb-6">Contact Jun</h4>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-envelope text-brand-green mt-1 mr-3"></i>
+                                <div>
+                                    <span class="block text-xs font-bold text-gray-500 uppercase">Email</span>
+                                    <a href="mailto:Jun@suppbridge.com" class="text-brand-dark font-medium hover:underline">Jun@suppbridge.com</a>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-calendar-alt text-brand-green mt-1 mr-3"></i>
+                                <div>
+                                    <span class="block text-xs font-bold text-gray-500 uppercase">Availability</span>
+                                    <span class="text-brand-dark font-medium">Mon - Fri (China Time)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-12 text-xs text-gray-500 leading-relaxed">
+                        All inquiries receive a response within 24 business hours. Confidentiality guaranteed.
+                    </div>
+                </div>
+
+                <div class="md:w-2/3 p-8">
+                    <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Name</label>
+                                <input type="text" name="name" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:bg-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Company</label>
+                                <input type="text" name="company" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:bg-white transition">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:bg-white transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Service Needed</label>
+                                <select name="service" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:bg-white transition">
+                                    <option>Private Label</option>
+                                    <option>Custom Formula</option>
+                                    <option>Raw Ingredients</option>
+                                    <option>Consulting Only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Project Details</label>
+                            <textarea name="message" rows="4" placeholder="Tell me about your product idea..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:bg-white transition"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-green text-white font-bold py-4 rounded-lg hover:bg-emerald-600 transition shadow-lg transform hover:-translate-y-1">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                    <img src="logo.png" alt="Logo" class="h-8 opacity-80 grayscale hover:grayscale-0 transition">
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Reliable Supplement Sourcing Partner.</p>
+            </div>
+            <div class="text-sm text-gray-600">
+                &copy; 2026 SuppBridge. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- 🟢 博客文章编辑区 -->
+    <script>
+        const blogPosts = [
+            {
+                title: "How to Choose a Manufacturer (Without Getting Scammed)",
+                summary: "Revealing industry traps and the 5 must-ask questions before you send a deposit to any factory.",
+                link: "#", 
+                date: "Feb 2026",
+                category: "Sourcing"
+            },
+            {
+                title: "Gummies vs. Capsules in 2026",
+                summary: "A breakdown of costs, delivery times, and return rates based on real client data from the past year.",
+                link: "#",
+                date: "Jan 2026",
+                category: "Trends"
+            },
+            {
+                title: "Real Cost of Private Label (COGS)",
+                summary: "Full breakdown for a $30 product: ingredients, production, packaging, and testing costs explained.",
+                link: "#",
+                date: "Dec 2025",
+                category: "Pricing"
+            }
+        ];
+
+        const blogContainer = document.getElementById('blog-container');
+        blogPosts.forEach(post => {
+            const card = `
+                <article class="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:shadow-lg hover:border-brand-green/30 transition group cursor-pointer h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded uppercase tracking-wider">${post.category}</span>
+                        <span class="text-xs text-gray-400">${post.date}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-3 group-hover:text-brand-green transition">${post.title}</h3>
+                    <p class="text-gray-600 text-sm mb-6 flex-grow leading-relaxed">
+                        ${post.summary}
+                    </p>
+                    <a href="${post.link}" class="inline-flex items-center text-brand-dark font-bold text-sm group-hover:underline">
+                        Read Article <i class="fas fa-arrow-right ml-2 text-xs transform group-hover:translate-x-1 transition"></i>
+                    </a>
+                </article>
+            `;
+            blogContainer.innerHTML += card;
+        });
+    </script>
+</body>
+</html>
