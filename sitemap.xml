@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://www.suppbridge.com/</loc>
+      <lastmod>2026-02-01</lastmod>
+      <priority>1.00</priority>
+   </url>
+   <!-- 每有一篇新文章，就加一段下面的代码 -->
+   <url>
+      <loc>https://www.suppbridge.com/article-cost.html</loc>
+      <lastmod>2026-02-01</lastmod>
+      <priority>0.80</priority>
+   </url>
+</urlset>
