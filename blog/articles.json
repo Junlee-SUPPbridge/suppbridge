@@ -1,0 +1,122 @@
+[
+  {
+    "slug": "oral-films-wellness-frontier",
+    "title": "Oral Films — The Next Wellness Frontier",
+    "date": "2026-06-05",
+    "description": "Why sublingual and buccal delivery formats are gaining traction with DTC wellness brands globally — faster absorption, better bioavailability, and a premium consumer experience.",
+    "tags": [
+      "delivery-systems",
+      "oral-films",
+      "innovation",
+      "sublingual"
+    ],
+    "primary_tag": "delivery-systems",
+    "tag_cls": "tag-delivery",
+    "tag_lbl": "Delivery Systems"
+  },
+  {
+    "slug": "functional-beverage-startups",
+    "title": "The Rise of Functional Beverage Startups",
+    "date": "2026-06-02",
+    "description": "How independent brands are entering the functional beverage space with format-first product strategies — and what you can learn from their playbook.",
+    "tags": [
+      "market-trends",
+      "functional-beverage",
+      "dtc",
+      "startup"
+    ],
+    "primary_tag": "market-trends",
+    "tag_cls": "tag-market",
+    "tag_lbl": "Industry Trends"
+  },
+  {
+    "slug": "dtc-wellness-evolution-2026",
+    "title": "DTC Wellness Evolution: What's Next for 2026–2027",
+    "date": "2026-06-01",
+    "description": "From TikTok virality to sustainable brand building — a data-driven look at how founder-led wellness brands are maturing and what's coming next.",
+    "tags": [
+      "market-trends",
+      "dtc",
+      "brand-strategy",
+      "industry-outlook"
+    ],
+    "primary_tag": "market-trends",
+    "tag_cls": "tag-market",
+    "tag_lbl": "Industry Trends"
+  },
+  {
+    "slug": "melatonin-regulations-eu",
+    "title": "Melatonin Regulations Across EU Markets: A Guide for Supplement Brands",
+    "date": "2026-05-28",
+    "description": "Navigating novel food classification and dosage limits that vary significantly between EU member states — what wellness brands need to know before launching.",
+    "tags": [
+      "regulatory",
+      "eu",
+      "melatonin",
+      "sleep-health"
+    ],
+    "primary_tag": "regulatory",
+    "tag_cls": "tag-regulatory",
+    "tag_lbl": "Regulatory"
+  },
+  {
+    "slug": "card-liquid-wellness-trends",
+    "title": "Why Card Liquids Are Growing in Wellness",
+    "date": "2026-05-15",
+    "description": "Snap-open liquid formats offer unprecedented convenience, precise single-dose accuracy, and a premium unboxing experience that modern consumers expect.",
+    "tags": [
+      "delivery-systems",
+      "functional-beverage",
+      "product-innovation"
+    ],
+    "primary_tag": "delivery-systems",
+    "tag_cls": "tag-delivery",
+    "tag_lbl": "Delivery Systems"
+  },
+  {
+    "slug": "pet-wellness-supplements-growth",
+    "title": "Growth Trends in Pet Wellness Supplements",
+    "date": "2026-05-10",
+    "description": "The companion animal supplement market is outpacing human wellness — here's what's driving the growth and which categories offer the most opportunity for brands.",
+    "tags": [
+      "pet-wellness",
+      "market-trends",
+      "companion-animal",
+      "supplements"
+    ],
+    "primary_tag": "pet-wellness",
+    "tag_cls": "tag-pet",
+    "tag_lbl": "Pet Wellness"
+  },
+  {
+    "slug": "flavor-masking-functional-powders",
+    "title": "Flavor Masking Challenges in Functional Powders",
+    "date": "2026-04-22",
+    "description": "Technical approaches to making bitter botanicals palatable without sacrificing label cleanliness — a practical guide for wellness product developers.",
+    "tags": [
+      "formulation",
+      "flavor",
+      "functional-powders",
+      "product-development"
+    ],
+    "primary_tag": "formulation",
+    "tag_cls": "tag-formulation",
+    "tag_lbl": "Formulation"
+  },
+  {
+    "slug": "fda-vs-efsa-supplement-regulations",
+    "title": "FDA vs EFSA: Key Differences for Supplement Brands",
+    "date": "2026-04-08",
+    "description": "Understanding the structural differences between FDA and EFSA supplement regulations — structural vs. function claims, permitted ingredients, and registration pathways.",
+    "tags": [
+      "regulatory",
+      "fda",
+      "efsa",
+      "compliance",
+      "market-entry"
+    ],
+    "primary_tag": "regulatory",
+    "tag_cls": "tag-regulatory",
+    "tag_lbl": "Regulatory"
+  }
+]

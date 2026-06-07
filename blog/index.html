@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SuppBridge Journal — Wellness Product Innovation Insights — SuppBridge Journal</title>
+<meta name="description" content="Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.">
+<link rel="canonical" href="https://suppbridge.com/blog/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0E1922; --teal:#0C6259; --teal-deep:#0A4A43; --mint:#4DB89E; --mint-soft:#EDF8F4; --muted:#5C7688; --line:#DDE4EA; --bg:#F6F9FB; --white:#fff; --navy:#1B3A4B; --radius:12px; --radius-sm:8px; --radius-lg:20px; --shadow:0 4px 24px rgba(0,0,0,.06); --shadow-sm:0 2px 8px rgba(0,0,0,.04); }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none}
+a:hover{color:var(--teal-deep)}
+img{max-width:100%;height:auto}
+.container{max-width:820px;margin:0 auto;padding:0 24px}
+
+/* Nav */
+.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-brand img{height:26px;width:auto}
+.nav-brand span{font-size:.76rem;font-weight:600;color:var(--muted);letter-spacing:.03em}
+.nav-links{display:flex;align-items:center;gap:20px;list-style:none}
+.nav-links a{font-size:.82rem;font-weight:500;color:var(--ink);transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+
+/* Article Page */
+.article-hero{padding:56px 0 28px;background:var(--white);border-bottom:1px solid var(--line)}
+.article-hero .tag{display:inline-block;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.03em;margin-bottom:14px}
+.tag-delivery{background:#EAF7F4;color:var(--teal)}
+.tag-regulatory{background:#FDF2E9;color:#B86B20}
+.tag-formulation{background:#EDE7F6;color:#5B3E96}
+.tag-market{background:#E8F0FE;color:#1A5FB4}
+.tag-pet{background:#FDE8E8;color:#B91C1C}
+.article-hero h1{font-size:2.2rem;font-weight:800;line-height:1.25;letter-spacing:-.02em;margin-bottom:12px}
+.article-hero .meta{font-size:.82rem;color:var(--muted);margin-bottom:8px}
+.article-hero .excerpt{font-size:1.05rem;color:var(--muted);line-height:1.6;max-width:680px}
+
+.article-body{padding:40px 0 64px;background:var(--white)}
+.article-body .container{max-width:740px}
+.article-body h2{font-size:1.45rem;font-weight:700;margin:36px 0 14px;color:var(--ink);letter-spacing:-.01em}
+.article-body h3{font-size:1.15rem;font-weight:650;margin:28px 0 10px;color:var(--ink)}
+.article-body p{margin-bottom:16px;font-size:.97rem;line-height:1.78;color:rgba(14,25,34,.82)}
+.article-body ul,.article-body ol{padding-left:22px;margin-bottom:18px}
+.article-body li{margin-bottom:8px;font-size:.95rem;line-height:1.7;color:rgba(14,25,34,.82)}
+.article-body table{width:100%;border-collapse:collapse;margin:20px 0 28px;font-size:.88rem}
+.article-body th{background:var(--bg);text-align:left;padding:10px 14px;font-weight:650;color:var(--ink);border-bottom:2px solid var(--line)}
+.article-body td{padding:9px 14px;border-bottom:1px solid var(--line);color:rgba(14,25,34,.82)}
+.article-body tr:nth-child(even) td{background:var(--mint-soft)}
+.article-body blockquote{border-left:3px solid var(--mint);padding:12px 18px;margin:20px 0;background:var(--mint-soft);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:.92rem;color:var(--muted)}
+.article-body code{background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.85em}
+.article-body strong{color:var(--ink);font-weight:650}
+.article-body hr{border:none;border-top:1px solid var(--line);margin:36px 0}
+.article-body em{color:var(--muted)}
+
+.article-cta{margin-top:40px;padding:28px 0;border-top:1px solid var(--line)}
+.article-cta a{display:inline-block;padding:12px 28px;background:var(--teal);color:#fff;border-radius:100px;font-weight:600;font-size:.9rem;transition:all .2s;text-decoration:none}
+.article-cta a:hover{background:var(--teal-deep);transform:translateY(-1px);box-shadow:0 6px 20px rgba(12,98,89,.25)}
+
+/* Blog Index */
+.blog-hero{padding:64px 0 36px;text-align:center;background:var(--white);border-bottom:1px solid var(--line)}
+.blog-hero h1{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
+.blog-hero p{color:var(--muted);font-size:1.05rem;max-width:560px;margin:0 auto}
+.blog-list{padding:40px 0 64px;max-width:820px;margin:0 auto}
+.blog-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:28px 32px;margin-bottom:18px;transition:all .25s}
+.blog-card:hover{border-color:var(--teal);transform:translateX(4px);box-shadow:var(--shadow)}
+.blog-card .tag{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:600;letter-spacing:.03em;margin-bottom:10px}
+.blog-card h2{font-size:1.2rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.blog-card h2 a{color:var(--ink);text-decoration:none}
+.blog-card h2 a:hover{color:var(--teal)}
+.blog-card .desc{color:var(--muted);font-size:.9rem;line-height:1.55}
+.blog-card .meta{font-size:.78rem;color:var(--muted);margin-top:10px}
+
+/* Footer */
+.blog-footer{background:var(--ink);color:rgba(255,255,255,.65);padding:24px 0;text-align:center;font-size:.82rem}
+.blog-footer a{color:var(--mint)}
+@media (max-width:700px) {
+  .article-hero h1,.blog-hero h1{font-size:1.6rem}
+  .nav-links{display:none}
+  .blog-card{padding:20px 18px}
+}
+</style>
+<meta property="og:title" content="SuppBridge Journal">
+<meta property="og:description" content="Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.">
+<meta property="og:url" content="https://suppbridge.com/blog/">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "SuppBridge Journal",
+  "description": "Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.",
+  "url": "https://suppbridge.com/blog/",
+  "author": { "@type": "Person", "name": "Jun Lee" },
+  "publisher": { "@type": "Organization", "name": "SuppBridge" }
+}
+</script>
+</head>
+<body>
+<nav class="nav">
+<div class="nav-inner">
+<a href="/" class="nav-brand">
+<img src="/images/logo.png" alt="SuppBridge">
+<span>Innovation Partner</span>
+</a>
+<ul class="nav-links">
+<li><a href="/#formats">Delivery Formats</a></li>
+<li><a href="/#insights">Insights</a></li>
+<li><a href="/#about">About</a></li>
+<li><a href="/#contact">Contact</a></li>
+</ul>
+</div>
+</nav>
+<header class="blog-hero">
+<div class="container">
+<h1>SuppBridge Journal</h1>
+<p>Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.</p>
+</div>
+</header>
+<div class="blog-list">
+<div class="container">
+<article class="blog-card">
+<span class="tag tag-delivery">Delivery Systems</span>
+<h2><a href="/blog/oral-films-wellness-frontier.html">Oral Films — The Next Wellness Frontier</a></h2>
+<p class="desc">Why sublingual and buccal delivery formats are gaining traction with DTC wellness brands globally — faster absorption, better bioavailability, and a premium consumer experience.</p>
+<p class="meta">2026-06-05</p>
+</article><article class="blog-card">
+<span class="tag tag-market">Industry Trends</span>
+<h2><a href="/blog/functional-beverage-startups.html">The Rise of Functional Beverage Startups</a></h2>
+<p class="desc">How independent brands are entering the functional beverage space with format-first product strategies — and what you can learn from their playbook.</p>
+<p class="meta">2026-06-02</p>
+</article><article class="blog-card">
+<span class="tag tag-market">Industry Trends</span>
+<h2><a href="/blog/dtc-wellness-evolution-2026.html">DTC Wellness Evolution: What's Next for 2026–2027</a></h2>
+<p class="desc">From TikTok virality to sustainable brand building — a data-driven look at how founder-led wellness brands are maturing and what's coming next.</p>
+<p class="meta">2026-06-01</p>
+</article><article class="blog-card">
+<span class="tag tag-regulatory">Regulatory</span>
+<h2><a href="/blog/melatonin-regulations-eu.html">Melatonin Regulations Across EU Markets: A Guide for Supplement Brands</a></h2>
+<p class="desc">Navigating novel food classification and dosage limits that vary significantly between EU member states — what wellness brands need to know before launching.</p>
+<p class="meta">2026-05-28</p>
+</article><article class="blog-card">
+<span class="tag tag-delivery">Delivery Systems</span>
+<h2><a href="/blog/card-liquid-wellness-trends.html">Why Card Liquids Are Growing in Wellness</a></h2>
+<p class="desc">Snap-open liquid formats offer unprecedented convenience, precise single-dose accuracy, and a premium unboxing experience that modern consumers expect.</p>
+<p class="meta">2026-05-15</p>
+</article><article class="blog-card">
+<span class="tag tag-pet">Pet Wellness</span>
+<h2><a href="/blog/pet-wellness-supplements-growth.html">Growth Trends in Pet Wellness Supplements</a></h2>
+<p class="desc">The companion animal supplement market is outpacing human wellness — here's what's driving the growth and which categories offer the most opportunity for brands.</p>
+<p class="meta">2026-05-10</p>
+</article><article class="blog-card">
+<span class="tag tag-formulation">Formulation</span>
+<h2><a href="/blog/flavor-masking-functional-powders.html">Flavor Masking Challenges in Functional Powders</a></h2>
+<p class="desc">Technical approaches to making bitter botanicals palatable without sacrificing label cleanliness — a practical guide for wellness product developers.</p>
+<p class="meta">2026-04-22</p>
+</article><article class="blog-card">
+<span class="tag tag-regulatory">Regulatory</span>
+<h2><a href="/blog/fda-vs-efsa-supplement-regulations.html">FDA vs EFSA: Key Differences for Supplement Brands</a></h2>
+<p class="desc">Understanding the structural differences between FDA and EFSA supplement regulations — structural vs. function claims, permitted ingredients, and registration pathways.</p>
+<p class="meta">2026-04-08</p>
+</article>
+</div>
+</div>
+<footer class="blog-footer">
+<div class="container">
+<p>&copy; 2026 SuppBridge. Advanced Wellness Product Innovation &amp; Compliance Partner.</p>
+<p><a href="/">Home</a> · <a href="/blog/">All Articles</a> · <a href="/#contact">Contact</a></p>
+</div>
+</footer>
+</body>
+</html>

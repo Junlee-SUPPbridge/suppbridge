@@ -1,0 +1,21 @@
+# WorkBuddy project data
+.workbuddy/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/

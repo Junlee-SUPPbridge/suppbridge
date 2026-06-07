@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuppBridge — Advanced Wellness Product Innovation & Compliance Partner</title>
+    <meta name="description" content="SuppBridge is an advanced wellness product innovation and compliance partner. We help founder-led brands develop differentiated supplements through advanced delivery systems, formulation expertise, and trusted manufacturing networks — with regulatory intelligence across FDA, EFSA, FSANZ, TGA, and Health Canada.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "SuppBridge",
+      "description": "Advanced wellness product innovation & compliance partner. Formulation, advanced delivery systems, and trusted manufacturing for founder-led wellness brands.",
+      "url": "https://suppbridge.com",
+      "founder": { "@type": "Person", "name": "Jun Lee" },
+      "areaServed": ["US", "EU", "AU", "CA", "UK", "Global"],
+      "knowsAbout": ["Wellness Product Development", "Advanced Delivery Systems", "Regulatory Compliance", "Supplement Manufacturing", "Pet Wellness", "Functional Beverage Innovation"]
+    }
+    </script>
+
+    <style>
+        /* ════════════════ DESIGN TOKENS ════════════════ */
+        :root {
+            --ink: #0E1922;
+            --slate: #3A4552;
+            --muted: #7B8A9B;
+            --line: #E6EBF0;
+            --line-light: #F0F3F6;
+            --bg: #F7F9FB;
+            --bg-warm: #FAF8F5;
+            --white: #FFFFFF;
+            --teal: #0C6259;
+            --teal-deep: #094A43;
+            --mint: #4DB89E;
+            --mint-soft: #E8F5F1;
+            --sage: #DCE9E4;
+            --gold: #B8860B;
+            --gold-soft: #FDF6E8;
+            --navy: #1B3A4B;
+            --navy-soft: #E9EFF3;
+            --plum: #6B4C7A;
+            --plum-soft: #F4EFF7;
+            --amber: #C2790A;
+            --amber-soft: #FEF8EE;
+            --radius-xs: 6px;
+            --radius-sm: 10px;
+            --radius: 16px;
+            --radius-lg: 24px;
+            --shadow-xs: 0 1px 2px rgba(14,25,34,0.03);
+            --shadow-sm: 0 1px 3px rgba(14,25,34,0.06), 0 4px 12px rgba(14,25,34,0.03);
+            --shadow: 0 4px 20px rgba(14,25,34,0.07), 0 1px 3px rgba(14,25,34,0.04);
+            --shadow-lg: 0 8px 40px rgba(14,25,34,0.10), 0 1px 4px rgba(14,25,34,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+            color: var(--slate); background: var(--white);
+            line-height: 1.65; -webkit-font-smoothing: antialiased; font-size: 16px;
+        }
+
+        /* ── Typography ── */
+        h1, h2, h3, h4 { color: var(--ink); letter-spacing: -0.02em; }
+        h1 { font-size: clamp(2.4rem, 5.5vw, 3.8rem); font-weight: 800; line-height: 1.1; }
+        h2 { font-size: clamp(1.8rem, 3.8vw, 2.6rem); font-weight: 700; line-height: 1.18; }
+        h3 { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.76rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--teal);
+            margin-bottom: 12px;
+        }
+        .eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--mint); border-radius: 1px; flex-shrink: 0; }
+
+        /* ── Layout ── */
+        .container { max-width: 1180px; margin: 0 auto; padding: 0 36px; }
+        .section { padding: 100px 0; }
+        .section--soft { background: var(--bg); }
+        .section--warm { background: var(--bg-warm); }
+        .section--dark { background: var(--ink); }
+        .section--dark, .section--dark h2, .section--dark h3 { color: var(--white); }
+        .section--dark .eyebrow { color: var(--mint); }
+        .section--dark .eyebrow::before { background: var(--mint); }
+        .section--dark p { color: rgba(255,255,255,0.65); }
+        .section--navy { background: var(--navy); }
+        .section--navy, .section--navy h2, .section--navy h3 { color: var(--white); }
+        .section--navy p { color: rgba(255,255,255,0.65); }
+
+        .section-header { text-align: center; margin-bottom: 48px; }
+        .section-header p { color: var(--muted); font-size: 1rem; max-width: 520px; margin: 6px auto 0; }
+        .section--dark .section-header p, .section--navy .section-header p { color: rgba(255,255,255,0.55); }
+
+        /* ── Navigation ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(255,255,255,0.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent; transition: all 0.3s;
+        }
+        .nav.scrolled { border-bottom-color: var(--line); background: rgba(255,255,255,0.95); }
+        .nav-wrap {
+            max-width: 1180px; margin: 0 auto; padding: 0 36px;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 70px;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-brand img { height: 28px; }
+        .nav-brand span {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--mint);
+        }
+        .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--slate); font-size: 0.85rem;
+            font-weight: 500; transition: color 0.2s; white-space: nowrap;
+        }
+        .nav-links a:hover { color: var(--teal); }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.3rem; color: var(--ink); cursor: pointer; }
+        .mobile-menu { display: none; }
+
+        @media (max-width: 960px) {
+            .nav-links, .nav-cta-desktop { display: none; }
+            .nav-toggle { display: block; }
+            .mobile-menu.active { display: flex; flex-direction: column; background: #fff; border-top: 1px solid var(--line); padding: 8px 36px 20px; gap: 4px; }
+            .mobile-menu a { color: var(--slate); text-decoration: none; font-weight: 500; font-size: 0.92rem; padding: 10px 0; border-bottom: 1px solid var(--line-light); }
+            .mobile-menu a:last-child { border-bottom: none; }
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px;
+            border-radius: 100px; font-weight: 600; font-size: 0.88rem; text-decoration: none;
+            transition: all 0.3s; border: none; cursor: pointer; white-space: nowrap; font-family: inherit;
+        }
+        .btn--primary { background: var(--teal); color: #fff; position: relative; overflow: hidden; }
+        .btn--primary::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            transform: translateX(-100%); transition: transform 0.6s;
+        }
+        .btn--primary:hover::after { transform: translateX(100%); }
+        .btn--primary:hover { background: var(--teal-deep); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(12,98,89,0.25); }
+        .btn--outline { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
+        .btn--outline:hover { border-color: var(--ink); background: var(--bg); }
+        .btn--light { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); color: #fff; }
+        .btn--light:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.35); }
+        .btn--lg { padding: 16px 36px; font-size: 0.98rem; }
+        .btn--nav { padding: 9px 20px; font-size: 0.8rem; }
+
+        @media (max-width: 600px) { .btn--lg { width: 100%; justify-content: center; } }
+
+        /* ── Animations ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; padding-top: 90px;
+            position: relative; overflow: hidden;
+            background: linear-gradient(170deg, #F4F8F6 0%, #E9F1ED 35%, #DCE9E4 100%);
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent);
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 680px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 5px 16px; border-radius: 100px;
+            background: rgba(77,184,158,0.1); border: 1px solid rgba(77,184,158,0.25);
+            color: var(--teal); font-size: 0.82rem; font-weight: 600; margin-bottom: 28px;
+        }
+        .hero-badge .dot { width: 7px; height: 7px; background: var(--mint); border-radius: 50%; }
+        .hero h1 { margin-bottom: 20px; }
+        .hero h1 em { font-style: normal; color: var(--teal); }
+        .hero p { font-size: 1.08rem; line-height: 1.75; color: var(--muted); margin-bottom: 36px; max-width: 520px; }
+        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+        .hero-tags {
+            position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-wrap: wrap; gap: 8px; width: 460px; pointer-events: none;
+            opacity: 0.6;
+        }
+        .hero-tags .chip {
+            padding: 8px 16px; border-radius: 100px; font-size: 0.76rem;
+            font-weight: 600; letter-spacing: 0.02em;
+            background: rgba(255,255,255,0.75); backdrop-filter: blur(10px);
+            border: 1px solid var(--line); color: var(--ink);
+            animation: float 3.5s ease-in-out infinite;
+        }
+        .hero-tags .chip:nth-child(2n) { animation-delay: 0.4s; animation-duration: 4s; }
+        .hero-tags .chip:nth-child(3n) { animation-delay: 0.8s; }
+        .hero-tags .chip:nth-child(4n) { animation-delay: 1.2s; animation-duration: 3.8s; }
+        @media (max-width: 960px) { .hero-tags { display: none; } .hero { min-height: auto; padding: 140px 0 80px; } }
+
+        /* ── Partners / Trust Logos ── */
+        .trust-strip {
+            background: #fff; border-bottom: 1px solid var(--line);
+            padding: 28px 0; text-align: center;
+        }
+        .trust-strip .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; margin-bottom: 16px; }
+        .trust-items { display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap; }
+        .trust-items span { font-weight: 700; font-size: 0.9rem; color: var(--muted); letter-spacing: 0.02em; }
+
+        /* ── Differentiators Grid ── */
+        .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .diff-card {
+            background: var(--white); border-radius: var(--radius); padding: 32px 28px;
+            border: 1px solid var(--line); transition: all 0.3s;
+        }
+        .diff-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: transparent; }
+        .diff-card:hover .icon-sq { transform: scale(1.1); }
+        .diff-card .icon-sq {
+            width: 48px; height: 48px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 18px;
+            transition: transform 0.3s ease;
+        }
+        .diff-card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+        .diff-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+        @media (max-width: 900px) { .diff-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 560px) { .diff-grid { grid-template-columns: 1fr; } }
+
+        /* ── Delivery Formats ── */
+        .format-category { margin-bottom: 40px; }
+        .format-category h4 {
+            font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--muted); margin-bottom: 16px;
+        }
+        .format-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .format-card {
+            background: var(--white); border-radius: var(--radius); padding: 24px 16px;
+            border: 1px solid var(--line); text-align: center; transition: all 0.25s;
+        }
+        .format-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--teal); }
+        .format-card .fmt-icon { margin-bottom: 12px; display: block; overflow: hidden; border-radius: 8px; }
+        .format-card .fmt-icon img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; display: block; transition: transform 0.5s ease; }
+        .format-card:hover .fmt-icon img { transform: scale(1.06); }
+        .format-card .fmt-icon i { font-size: 1.6rem; color: var(--mint); }
+        .format-card strong { display: block; font-size: 0.88rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+        .format-card span { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+        @media (max-width: 800px) { .format-cards { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .format-cards { grid-template-columns: 1fr 1fr; } }
+
+        /* ── Advanced Systems ── */
+        .advanced-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .advanced-card {
+            background: var(--bg); border-radius: var(--radius); padding: 28px 20px;
+            border: 1px solid var(--line); text-align: center; transition: all 0.3s;
+        }
+        .advanced-card:hover { background: var(--white); transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--navy); }
+        .advanced-card:hover .adv-icon { transform: scale(1.08); }
+        .advanced-card .adv-icon {
+            width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 14px;
+            transition: transform 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; background: var(--white);
+        }
+        .advanced-card h4 { font-size: 0.92rem; margin-bottom: 6px; }
+        .advanced-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+        @media (max-width: 900px) { .advanced-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .advanced-grid { grid-template-columns: 1fr; } }
+
+        /* ── Pet Wellness ── */
+        .pet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .pet-card {
+            background: var(--white); border-radius: var(--radius); padding: 28px 22px;
+            border: 1px solid var(--line); text-align: center; transition: all 0.25s;
+        }
+        .pet-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--amber); }
+        .pet-card i { font-size: 1.5rem; color: var(--amber); margin-bottom: 10px; }
+        .pet-card h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .pet-card p { font-size: 0.8rem; color: var(--muted); }
+
+        @media (max-width: 700px) { .pet-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 450px) { .pet-grid { grid-template-columns: 1fr; } }
+
+        /* ── Regulatory ── */
+        .reg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .reg-card {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius); padding: 28px 16px; text-align: center;
+            transition: all 0.25s; backdrop-filter: blur(8px);
+        }
+        .reg-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); }
+        .reg-card strong { display: block; font-size: 1rem; color: #fff; margin-bottom: 4px; }
+        .reg-card span { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 800px) { .reg-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 500px) { .reg-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* ── Industries ── */
+        .industry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .industry-tile {
+            padding: 24px 20px; border-radius: var(--radius); text-align: center;
+            font-weight: 700; font-size: 0.95rem; color: var(--ink);
+            background: var(--bg); border: 1px solid transparent; transition: all 0.2s;
+        }
+        .industry-tile:hover { border-color: var(--teal); background: #fff; }
+        .industry-tile i { display: block; font-size: 1.4rem; margin-bottom: 10px; color: var(--mint); }
+        @media (max-width: 600px) { .industry-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* ── Process ── */
+        .process-flow { display: flex; gap: 0; margin-top: 40px; }
+        .process-step {
+            flex: 1; text-align: center; position: relative; padding: 0 10px 36px; min-width: 90px;
+        }
+        .process-step::after {
+            content: ''; position: absolute; top: 18px; left: 58%;
+            width: 84%; height: 1px; background: var(--line);
+        }
+        .process-step:last-child::after { display: none; }
+        .process-step .num {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; font-weight: 700; font-size: 0.8rem;
+            position: relative; z-index: 1;
+            background: var(--bg); color: var(--muted); border: 1.5px solid var(--line);
+        }
+        .process-step:last-child .num { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .process-step h4 { font-size: 0.9rem; margin-bottom: 2px; }
+        .process-step p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+
+        @media (max-width: 860px) {
+            .process-flow { flex-wrap: wrap; }
+            .process-step { flex: 1 1 40%; margin-bottom: 24px; }
+            .process-step::after { display: none; }
+        }
+
+        /* ── Insights ── */
+        .insights-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+        .insight-card {
+            background: var(--white); border-radius: var(--radius); border: 1px solid var(--line);
+            padding: 24px 20px 18px; transition: all 0.3s; display: flex; flex-direction: column;
+        }
+        .insight-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--teal); }
+        .insight-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .insight-card .tag {
+            display: inline-block; align-self: flex-start;
+            padding: 3px 10px; border-radius: 100px;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; margin-bottom: 12px;
+        }
+        .tag--reg { background: #F0E6F6; color: #7C3AED; }
+        .tag--delivery { background: var(--mint-soft); color: var(--teal); }
+        .tag--market { background: var(--gold-soft); color: var(--gold); }
+        .tag--formulation { background: #E9EFF4; color: #3B5993; }
+        .tag--pet { background: var(--amber-soft); color: var(--amber); }
+        .insight-card h3 { font-size: 0.95rem; margin-bottom: 4px; line-height: 1.4; }
+        .insight-card p { font-size: 0.82rem; color: var(--muted); flex: 1; margin-bottom: 10px; }
+        .insight-card .read-more { font-size: 0.78rem; font-weight: 600; color: var(--teal); text-decoration: none; }
+
+        @media (max-width: 960px) { .insights-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 560px) { .insights-grid { grid-template-columns: 1fr; } }
+
+        /* ── FAQ ── */
+        .faq-list { max-width: 760px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--line); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q {
+            width: 100%; padding: 20px 0; text-align: left; background: none; border: none;
+            font-size: 1rem; font-weight: 600; color: var(--ink); cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; font-family: inherit;
+        }
+        .faq-q i { font-size: 0.8rem; color: var(--muted); transition: transform 0.3s; }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; font-size: 0.92rem; color: var(--muted); line-height: 1.7; }
+        .faq-item.open .faq-a { max-height: 300px; padding-bottom: 20px; }
+        .faq-item.open .faq-q i { transform: rotate(45deg); }
+
+        /* ── About ── */
+        .about-split { display: grid; grid-template-columns: 1fr 1.4fr; gap: 56px; align-items: center; }
+        .about-photo { position: relative; }
+        .about-photo img { width: 100%; border-radius: var(--radius-lg); display: block; }
+        .photo-caption {
+            text-align: center; margin-top: 12px; font-size: 0.82rem;
+            font-weight: 600; color: var(--muted); letter-spacing: 0.02em;
+        }
+        .about-photo::before {
+            content: ''; position: absolute; inset: -10px; border-radius: 28px;
+            border: 1.5px dashed var(--line); z-index: -1; pointer-events: none;
+        }
+        .about-experience { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+        .exp-chip {
+            padding: 14px 16px; border-radius: var(--radius-sm);
+            background: var(--bg); border: 1px solid var(--line);
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.86rem; font-weight: 600; color: var(--ink);
+        }
+        .exp-chip i { color: var(--mint); font-size: 0.9rem; }
+
+        @media (max-width: 860px) {
+            .about-split { grid-template-columns: 1fr; gap: 32px; }
+            .about-experience { grid-template-columns: 1fr; }
+        }
+
+        /* ── Contact ── */
+        .contact-box {
+            display: grid; grid-template-columns: 1fr 1.7fr; gap: 0;
+            background: var(--white); border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        .contact-intro {
+            padding: 44px 36px; background: var(--bg);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .contact-intro h3 { font-size: 1.3rem; margin-bottom: 12px; }
+        .contact-intro p { color: var(--muted); font-size: 0.92rem; line-height: 1.7; margin-bottom: 24px; }
+        .contact-meta { display: flex; flex-direction: column; gap: 14px; }
+        .contact-meta .row { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; color: var(--slate); }
+        .contact-meta .row i { color: var(--mint); width: 18px; text-align: center; }
+        .contact-form { padding: 44px 36px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field.full { grid-column: 1 / -1; }
+        .field label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+        .field input, .field select, .field textarea {
+            padding: 13px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+            font-size: 0.93rem; font-family: inherit; background: var(--bg);
+            transition: all 0.2s; color: var(--ink);
+        }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            outline: none; border-color: var(--mint); background: #fff;
+            box-shadow: 0 0 0 3px rgba(77,184,158,0.1);
+        }
+        .field textarea { resize: vertical; min-height: 90px; }
+
+        @media (max-width: 800px) {
+            .contact-box { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .field.full { grid-column: 1; }
+        }
+
+        /* ── Partner Links ── */
+        .links-section { background: var(--bg); padding: 72px 0; border-top: 1px solid var(--line); }
+        .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+        .links-col h4 {
+            font-size: 0.82rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--muted); margin-bottom: 18px;
+        }
+        .links-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+        .links-list li a {
+            display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+            background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm);
+            text-decoration: none; color: var(--ink); font-size: 0.88rem; font-weight: 500;
+            transition: all 0.25s;
+        }
+        .links-list li a:hover {
+            border-color: var(--teal); background: var(--mint-soft);
+            transform: translateX(4px); box-shadow: var(--shadow-sm);
+        }
+        .links-list li a .link-icon {
+            width: 32px; height: 32px; border-radius: 6px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700;
+            flex-shrink: 0; color: #fff;
+        }
+        .link-fda { background: #003D6B; } .link-efsa { background: #005A9C; }
+        .link-fsanz { background: #1A5276; } .link-tga { background: #0C6259; }
+        .link-hc { background: #C00; } .link-nsf { background: #2B6C4E; }
+        .link-crn { background: #5C2D91; } .link-usp { background: #1B4F72; }
+        .link-goed { background: #1A5276; } .link-ipa { background: #0E6251; }
+        .link-ahpa { background: #7D6608; } .link-ibsa { background: #145A32; }
+        .links-list li a .link-desc { font-size: 0.74rem; color: var(--muted); font-weight: 400; margin-left: auto; }
+        @media (max-width: 700px) {
+            .links-grid { grid-template-columns: 1fr; gap: 32px; }
+            .links-list li a .link-desc { display: none; }
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            background: var(--ink); color: rgba(255,255,255,0.42);
+            padding: 36px 0; font-size: 0.84rem;
+        }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; }
+        .footer-brand { display: flex; align-items: center; gap: 10px; }
+        .footer-brand img { height: 22px; opacity: 0.55; }
+
+        /* ── Animations ── */
+        .reveal {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 600px) {
+            .container { padding: 0 20px; }
+            .section { padding: 70px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="nav" id="nav">
+    <div class="nav-wrap">
+        <a href="#home" class="nav-brand">
+            <img src="images/logo.png" alt="SuppBridge" style="height:28px;width:auto;">
+            <span>Innovation Partner</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#different">Why Us</a></li>
+            <li><a href="#formats">Delivery Formats</a></li>
+            <li><a href="#advanced">Advanced Systems</a></li>
+            <li><a href="#pet">Pet Wellness</a></li>
+            <li><a href="#industries">Industries</a></li>
+            <li><a href="#insights">Insights</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+        <a href="#contact" class="btn btn--primary btn--nav nav-cta-desktop">Start a Project</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#different">Why Us</a>
+        <a href="#formats">Delivery Formats</a>
+        <a href="#advanced">Advanced Systems</a>
+        <a href="#pet">Pet Wellness</a>
+        <a href="#industries">Industries</a>
+        <a href="#insights">Insights</a>
+        <a href="#about">About</a>
+        <a href="#contact" style="color:var(--teal);font-weight:700;">Start a Project →</a>
+    </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="home">
+    <div class="container" style="position:relative;z-index:2;">
+        <div class="hero-content">
+            <div class="hero-badge"><span class="dot"></span> Trusted by Founder-Led Wellness Brands</div>
+            <h1>Innovative Wellness Product Development<br><em>From Concept to Compliant Delivery</em></h1>
+            <p>SuppBridge helps wellness brands develop differentiated supplement and functional food systems through formulation, advanced delivery innovation, and trusted manufacturing partnerships.</p>
+            <div class="hero-actions">
+                <a href="#contact" class="btn btn--primary btn--lg">Discuss Your Next Product <i class="fas fa-arrow-right"></i></a>
+                <a href="#formats" class="btn btn--outline btn--lg">Explore Delivery Formats</a>
+            </div>
+        </div>
+    </div>
+    <div class="hero-tags">
+        <span class="chip">Card Liquid</span><span class="chip">Oral Films</span>
+        <span class="chip">Dual Chamber Capsules</span><span class="chip">Functional Shots</span>
+        <span class="chip">Sustained Release Pellets</span><span class="chip">Pet Chews</span>
+        <span class="chip">Gummies</span><span class="chip">Jelly Systems</span>
+        <span class="chip">Multi-Phase Delivery</span><span class="chip">Oral Films</span>
+        <span class="chip">Sachets</span><span class="chip">Liquid+Solid Systems</span>
+    </div>
+</section>
+
+<!-- ══════════ TRUST STRIP ══════════ -->
+<div class="trust-strip">
+    <div class="container">
+        <div class="label">Regulatory Standards We Work Within</div>
+        <div class="trust-items">
+            <span>FDA</span> · <span>EFSA</span> · <span>FSANZ</span> · <span>TGA</span> · <span>Health Canada</span> · <span>GMP Certified Network</span>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ WHAT MAKES US DIFFERENT ══════════ -->
+<section class="section section--soft" id="different">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">What Makes Us Different</span>
+            <h2>Not an OEM. An innovation partner.</h2>
+            <p>Six capabilities that turn your product idea into a market-ready, compliant reality.</p>
+        </div>
+        <div class="diff-grid">
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:#E8F0ED;color:var(--teal);"><i class="fas fa-lightbulb"></i></div>
+                <h3>Product Innovation</h3>
+                <p>Novel formats and differentiated positioning — not just another me-too capsule on a shelf.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:var(--navy-soft);color:var(--navy);"><i class="fas fa-microchip"></i></div>
+                <h3>Advanced Delivery</h3>
+                <p>Sustained release, dual chamber, multi-phase — systems that deliver real functional advantages.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:#F0E6F6;color:var(--plum);"><i class="fas fa-shield-haltered"></i></div>
+                <h3>Compliance</h3>
+                <p>FDA, EFSA, FSANZ, TGA, Health Canada — we navigate global regulatory landscapes.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:#E9EFF4;color:#3B5993;"><i class="fas fa-flask"></i></div>
+                <h3>Formulation</h3>
+                <p>Scientifically-grounded formulations with clinical rationale, stability data, and sensory optimization.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:var(--gold-soft);color:var(--gold);"><i class="fas fa-industry"></i></div>
+                <h3>Manufacturing</h3>
+                <p>80+ pre-vetted GMP, FDA-registered, HACCP-certified facilities matched to your specific format.</p>
+            </div>
+            <div class="diff-card reveal">
+                <div class="icon-sq" style="background:var(--mint-soft);color:var(--mint);"><i class="fas fa-truck-fast"></i></div>
+                <h3>Supply Chain</h3>
+                <p>One point of contact from concept to warehouse. FBA prep, global shipping, import docs — handled.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ DELIVERY FORMATS ══════════ -->
+<section class="section" id="formats">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Core Expertise</span>
+            <h2>Modern wellness delivery systems</h2>
+        </div>
+
+        <!-- Standard -->
+        <div class="format-category reveal">
+            <h4>Standard Formats</h4>
+            <div class="format-cards">
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/gummies.png" alt="Gummies"></span><strong>Gummies</strong><span>The format consumers love — with real actives.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/capsules.png" alt="Capsules"></span><strong>Capsules</strong><span>High-potency, clean-label vegetable capsules.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/powders.png" alt="Powders"></span><strong>Powders</strong><span>Versatile base systems for shakes and blends.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/sachets.png" alt="Sachets"></span><strong>Sachets</strong><span>Single-serve precision for on-the-go routines.</span></div>
+            </div>
+        </div>
+
+        <!-- Advanced -->
+        <div class="format-category reveal">
+            <h4>Advanced Systems</h4>
+            <div class="format-cards">
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/sustained-release-pellets.png" alt="Sustained Release Pellets"></span><strong>Sustained Release Pellets</strong><span>Controlled, extended release for all-day efficacy.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/dual-chamber-capsules.png" alt="Dual Chamber Capsules"></span><strong>Dual Chamber Capsules</strong><span>Separate incompatible actives in one dose.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/liquid-solid-systems.png" alt="Liquid + Solid Systems"></span><strong>Liquid + Solid Systems</strong><span>Oil-based + powder actives, co-delivered.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/multi-phase-systems.png" alt="Multi-Phase Systems"></span><strong>Multi-Phase Systems</strong><span>Staged release for complex ingredient combinations.</span></div>
+            </div>
+        </div>
+
+        <!-- Functional Food -->
+        <div class="format-category reveal">
+            <h4>Functional Food Systems</h4>
+            <div class="format-cards">
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/functional-shots.png" alt="Wellness Shots"></span><strong>Wellness Shots</strong><span>High-impact functional positioning for modern brands.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/oral-films.png" alt="Oral Films"></span><strong>Oral Films</strong><span>Sublingual absorption for faster bioavailability.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/jelly-systems.png" alt="Jelly Systems"></span><strong>Jelly Systems</strong><span>Texture-driven formats for beauty &amp; functional nutrition.</span></div>
+                <div class="format-card"><span class="fmt-icon"><img src="images/formats/stick-packs.png" alt="Card Liquid"></span><strong>Card Liquid</strong><span>Snap, pour, and enjoy — liquid convenience redefined.</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ ADVANCED SYSTEMS ══════════ -->
+<section class="section section--navy" id="advanced">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Core Differentiator</span>
+            <h2>Advanced delivery systems</h2>
+            <p>For brands that want to lead, not follow. These technologies deliver real functional advantages.</p>
+        </div>
+        <div class="advanced-grid">
+            <div class="advanced-card reveal">
+                <div class="adv-icon" style="color:var(--mint);"><i class="fas fa-clock"></i></div>
+                <h4>Sustained Release Pellets</h4>
+                <p>Extended ingredient release over 8–12 hours. Superior bioavailability and consumer compliance.</p>
+            </div>
+            <div class="advanced-card reveal">
+                <div class="adv-icon" style="color:#7C9BC0;"><i class="fas fa-divide"></i></div>
+                <h4>Dual Chamber Capsules</h4>
+                <p>Separate incompatible actives within a single dose. Protects stability until point of absorption.</p>
+            </div>
+            <div class="advanced-card reveal">
+                <div class="adv-icon" style="color:#C48F3C;"><i class="fas fa-droplet"></i></div>
+                <h4>Liquid + Solid Systems</h4>
+                <p>Oil-soluble and water-soluble ingredients in one delivery. Enhanced bioavailability for lipid-based actives.</p>
+            </div>
+            <div class="advanced-card reveal">
+                <div class="adv-icon" style="color:#8B6BAE;"><i class="fas fa-layer-group"></i></div>
+                <h4>Multi-Phase Delivery</h4>
+                <p>Staged dissolution profiles for complex multi-ingredient formulations. Precision timing, maximized synergy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ PET WELLNESS ══════════ -->
+<section class="section section--warm" id="pet">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Growing Vertical</span>
+            <h2>Pet wellness &amp; companion animal nutrition</h2>
+            <p>Pet supplement development with the same scientific rigor we bring to human wellness — tailored for companion animal physiology.</p>
+        </div>
+        <div class="pet-grid">
+            <div class="pet-card reveal">
+                <i class="fas fa-bone"></i>
+                <h4>Soft Chews</h4>
+                <p>Palatable, functional delivery for daily supplementation.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-jar"></i>
+                <h4>Functional Powders</h4>
+                <p>Mix-in formats for easy integration into feeding routines.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-droplet"></i>
+                <h4>Liquid Systems</h4>
+                <p>Precision-dosed liquid supplements for cats, dogs, and small animals.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-candy-cane"></i>
+                <h4>Pet Gummies</h4>
+                <p>Novel functional formats for the premium pet wellness market.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-heart-pulse"></i>
+                <h4>Gut Health</h4>
+                <p>Probiotic and prebiotic systems formulated for companion animal microbiomes.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-paw"></i>
+                <h4>Joint &amp; Mobility</h4>
+                <p>Glucosamine, chondroitin, and novel joint support combinations.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-leaf"></i>
+                <h4>Calming Systems</h4>
+                <p>Stress and anxiety support with clinically-studied calming ingredients.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-shield"></i>
+                <h4>Immune Support</h4>
+                <p>Multi-functional immune formulations for overall pet wellness.</p>
+            </div>
+            <div class="pet-card reveal">
+                <i class="fas fa-star"></i>
+                <h4>Skin &amp; Coat</h4>
+                <p>Omega-rich systems targeting coat quality and skin health.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ REGULATORY ══════════ -->
+<section class="section section--dark" id="regulatory">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Built-In Expertise</span>
+            <h2>Global regulatory awareness</h2>
+            <p>We help you navigate the regulatory landscape before development begins — saving months of rework.</p>
+        </div>
+        <div class="reg-grid reveal">
+            <div class="reg-card"><strong>FDA</strong><span>United States</span></div>
+            <div class="reg-card"><strong>EFSA</strong><span>European Union</span></div>
+            <div class="reg-card"><strong>FSANZ</strong><span>Australia &amp; NZ</span></div>
+            <div class="reg-card"><strong>TGA</strong><span>Australia Therapeutics</span></div>
+            <div class="reg-card"><strong>Health Canada</strong><span>Canada NHP</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;text-align:center;">
+            <div class="reveal" style="padding:20px;background:rgba(255,255,255,0.04);border-radius:var(--radius);">
+                <i class="fas fa-file-shield" style="color:var(--mint);font-size:1.3rem;margin-bottom:10px;display:block;"></i>
+                <h4 style="color:#fff;font-size:0.95rem;">EU Novel Food Awareness</h4>
+                <p style="font-size:0.82rem;margin-top:4px;">Understanding classification, authorization pathways, and risk assessment under EFSA.</p>
+            </div>
+            <div class="reveal" style="padding:20px;background:rgba(255,255,255,0.04);border-radius:var(--radius);">
+                <i class="fas fa-tags" style="color:var(--mint);font-size:1.3rem;margin-bottom:10px;display:block;"></i>
+                <h4 style="color:#fff;font-size:0.95rem;">Labeling Considerations</h4>
+                <p style="font-size:0.82rem;margin-top:4px;">Claim substantiation, supplement facts panels, and market-specific label requirements.</p>
+            </div>
+            <div class="reveal" style="padding:20px;background:rgba(255,255,255,0.04);border-radius:var(--radius);">
+                <i class="fas fa-globe-americas" style="color:var(--mint);font-size:1.3rem;margin-bottom:10px;display:block;"></i>
+                <h4 style="color:#fff;font-size:0.95rem;">Cross-Market Strategy</h4>
+                <p style="font-size:0.82rem;margin-top:4px;">Design formulations that can register across multiple jurisdictions from day one.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ INDUSTRIES ══════════ -->
+<section class="section section--soft" id="industries">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Who We Work With</span>
+            <h2>Industries we support</h2>
+        </div>
+        <div class="industry-grid">
+            <div class="industry-tile reveal"><i class="fas fa-heart-pulse"></i> Wellness</div>
+            <div class="industry-tile reveal"><i class="fas fa-wine-bottle"></i> Functional Beverage</div>
+            <div class="industry-tile reveal"><i class="fas fa-spa"></i> Beauty Wellness</div>
+            <div class="industry-tile reveal"><i class="fas fa-dumbbell"></i> Sports Nutrition</div>
+            <div class="industry-tile reveal"><i class="fas fa-venus"></i> Women's Wellness</div>
+            <div class="industry-tile reveal"><i class="fas fa-paw"></i> Pet Wellness</div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ PROCESS ══════════ -->
+<section class="section" id="process">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">How We Work</span>
+            <h2>From concept to compliant delivery</h2>
+        </div>
+        <div class="process-flow">
+            <div class="process-step reveal"><div class="num">1</div><h4>Discovery</h4><p>Understand your brand, market, and product vision.</p></div>
+            <div class="process-step reveal"><div class="num">2</div><h4>Concept</h4><p>Translate ideas into technically feasible product concepts.</p></div>
+            <div class="process-step reveal"><div class="num">3</div><h4>Formulation</h4><p>Design science-backed formulations for your target audience.</p></div>
+            <div class="process-step reveal"><div class="num">4</div><h4>Compliance</h4><p>Validate against target market regulations upfront.</p></div>
+            <div class="process-step reveal"><div class="num">5</div><h4>Matching</h4><p>Select from 80+ vetted facilities by format, volume, and certs.</p></div>
+            <div class="process-step reveal"><div class="num">6</div><h4>Production</h4><p>On-the-ground quality management throughout manufacturing.</p></div>
+            <div class="process-step reveal"><div class="num">7</div><h4>QC</h4><p>Third-party lab testing and full batch documentation.</p></div>
+            <div class="process-step reveal"><div class="num">8</div><h4>Delivery</h4><p>Logistics, clearance, and post-launch support.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ INSIGHTS ══════════ -->
+<section class="section section--soft" id="insights">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Journal</span>
+            <h2>Insights from the supply side</h2>
+        </div>
+        <div class="insights-grid">
+            <article class="insight-card reveal">
+                <span class="tag tag--delivery">Delivery Systems</span>
+                <h3>Why Card Liquids Are Growing in Wellness</h3>
+                <p>Snap-open liquid formats offer unprecedented convenience, precise single-dose accuracy, and a premium unboxing experience that modern consumers expect.</p>
+                <a href="blog/card-liquid-wellness-trends.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--reg">Regulatory</span>
+                <h3>Melatonin Regulations Across EU Markets</h3>
+                <p>Navigating novel food classification and dosage limits that vary significantly between member states.</p>
+                <a href="blog/melatonin-regulations-eu.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--formulation">Formulation</span>
+                <h3>Flavor Masking Challenges in Functional Powders</h3>
+                <p>Technical approaches to making bitter botanicals palatable without sacrificing label cleanliness.</p>
+                <a href="blog/flavor-masking-functional-powders.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--market">Industry Trends</span>
+                <h3>The Rise of Functional Beverage Startups</h3>
+                <p>How independent brands are entering the functional beverage space with format-first product strategies.</p>
+                <a href="blog/functional-beverage-startups.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--pet">Pet Wellness</span>
+                <h3>Growth Trends in Pet Wellness Supplements</h3>
+                <p>The companion animal supplement market is outpacing human wellness — here's what's driving it.</p>
+                <a href="blog/pet-wellness-supplements-growth.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--delivery">Delivery Systems</span>
+                <h3>Oral Films — The Next Wellness Frontier</h3>
+                <p>Why sublingual and buccal delivery formats are gaining traction with DTC wellness brands globally.</p>
+                <a href="blog/oral-films-wellness-frontier.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--reg">Regulatory</span>
+                <h3>FDA vs EFSA — Key Differences for Supplement Brands</h3>
+                <p>Understanding structural vs. function claims, permitted ingredients, and registration pathways.</p>
+                <a href="blog/fda-vs-efsa-supplement-regulations.html" class="read-more">Read →</a>
+            </article>
+            <article class="insight-card reveal">
+                <span class="tag tag--market">Industry Trends</span>
+                <h3>DTC Wellness Evolution — What's Next for 2026</h3>
+                <p>From TikTok virality to sustainable brand building — how founder-led brands are maturing.</p>
+                <a href="blog/dtc-wellness-evolution-2026.html" class="read-more">Read →</a>
+            </article>
+        </div>
+        <div style="text-align:center;margin-top:32px" class="reveal">
+            <a href="blog/" class="btn btn--secondary" style="display:inline-flex;align-items:center;gap:8px">View All Insights <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <span class="eyebrow">Common Questions</span>
+            <h2>Frequently asked</h2>
+        </div>
+        <div class="faq-list reveal">
+            <div class="faq-item">
+                <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">What makes SuppBridge different from a traditional OEM factory? <i class="fas fa-plus"></i></button>
+                <div class="faq-a">We are not a manufacturer — we are your product innovation partner. Unlike traditional OEMs that simply fill your formula into a capsule, we work with you from concept through formulation strategy, delivery format selection, regulatory review, and manufacturer matching. We think about your product from a brand and consumer perspective, not just a production perspective.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">What delivery formats do you specialize in? <i class="fas fa-plus"></i></button>
+                <div class="faq-a">We have deep expertise across the full spectrum — from standard formats (gummies, capsules, powders, sachets) to advanced systems (sustained release pellets, dual chamber capsules, liquid+solid systems, multi-phase delivery) and functional food formats (wellness shots, oral films, jelly systems, card liquid). We also have specialized pet wellness format capabilities.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Which regulatory markets do you support? <i class="fas fa-plus"></i></button>
+                <div class="faq-a">We have working knowledge of FDA (United States), EFSA / European Commission (EU), FSANZ (Australia &amp; New Zealand), TGA (Australia), and Health Canada (Canada) regulatory frameworks. We help our clients design formulations that are compliant in their target markets from day one — not retrofit compliance after development.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do you work with pet wellness brands? <i class="fas fa-plus"></i></button>
+                <div class="faq-a">Yes. Pet wellness is a growing focus area for us. We develop companion animal supplements — soft chews, functional powders, liquid systems, and pet-specific gummies — across categories including gut health, joint support, calming, skin &amp; coat, and immune support. Our in-house pet nutrition scientist ensures formulations are tailored for companion animal physiology.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the typical timeline from concept to delivery? <i class="fas fa-plus"></i></button>
+                <div class="faq-a">For standard formats with existing formulations, we typically deliver within 45–60 days. For advanced delivery systems or novel formulations requiring stability testing and regulatory review, timelines range from 90–120 days. Every project starts with a discovery call where we map out a realistic timeline based on your specific requirements.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section class="section section--warm" id="about">
+    <div class="container">
+        <div class="about-split">
+            <div class="about-photo reveal">
+                <img src="images/founder.jpg" alt="Jun Lee — Founder, SuppBridge">
+                <div class="photo-caption">Jun Lee · Founder</div>
+            </div>
+            <div class="reveal">
+                <span class="eyebrow">About SuppBridge</span>
+                <h2>Why we built this</h2>
+                <p style="color:var(--muted);margin-bottom:14px;line-height:1.75;">
+                    After 18 years in supplement R&amp;D, manufacturing, and brand-building — including founding team roles at a leading infant nutrition brand and running our own DTC supplement label — we saw the same pattern: great brands struggling to find development partners who understood <em>product</em>, not just production.
+                </p>
+                <p style="color:var(--muted);margin-bottom:14px;line-height:1.75;">
+                    SuppBridge exists to give wellness brands what they actually need: a partner that thinks about formulation science, advanced delivery innovation, and regulatory strategy — from the very first conversation.
+                </p>
+                <div class="about-experience">
+                    <div class="exp-chip reveal"><i class="fas fa-flask"></i> Formulation-first thinking</div>
+                    <div class="exp-chip reveal"><i class="fas fa-microchip"></i> Advanced delivery expertise</div>
+                    <div class="exp-chip reveal"><i class="fas fa-shield"></i> Regulatory intelligence</div>
+                    <div class="exp-chip reveal"><i class="fas fa-check-double"></i> Quality-driven manufacturing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="section section--dark" id="contact">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:48px;">
+            <h2 style="color:#fff;">Let's build your next wellness product</h2>
+            <p style="color:rgba(255,255,255,0.6);font-size:1.05rem;margin-top:10px;">Tell us about your brand and vision — we'll take it from there.</p>
+        </div>
+        <div class="contact-box">
+            <div class="contact-intro">
+                <h3>Start the conversation</h3>
+                <p>Whether you have a detailed spec or just an idea, we're here to help shape it into something real. All inquiries are confidential.</p>
+                <div class="contact-meta">
+                    <div class="row"><i class="fas fa-envelope"></i> Jun@suppbridge.com</div>
+                    <div class="row"><i class="fas fa-clock"></i> Response within 24 hours</div>
+                    <div class="row"><i class="fas fa-globe"></i> Time-zone friendly: US &amp; EU mornings — based in Changsha 🇨🇳, available 9:00–24:00 CST (covers US mornings PST/EST &amp; EU afternoons CET)</div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <form action="https://formspree.io/f/mgozvejr" method="POST">
+                    <div class="form-grid">
+                        <div class="field"><label>Brand Name</label><input type="text" name="brand" required placeholder="Your brand"></div>
+                        <div class="field"><label>Website</label><input type="url" name="website" placeholder="yourbrand.com"></div>
+                        <div class="field"><label>Product Category</label>
+                            <select name="category">
+                                <option value="">Select…</option>
+                                <option>Wellness / Supplement</option>
+                                <option>Functional Beverage</option>
+                                <option>Beauty Wellness</option>
+                                <option>Sports Nutrition</option>
+                                <option>Women's Wellness</option>
+                                <option>Pet Wellness</option>
+                                <option>Functional Food</option>
+                                <option>Exploring / New Concept</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Delivery Format</label>
+                            <select name="format">
+                                <option value="">Select…</option>
+                                <option>Gummies</option>
+                                <option>Capsules</option>
+                                <option>Powders / Card Liquid</option>
+                                <option>Sachets</option>
+                                <option>Oral Films</option>
+                                <option>Functional Shots</option>
+                                <option>Jelly Systems</option>
+                                <option>Sustained Release Pellets</option>
+                                <option>Dual Chamber Capsules</option>
+                                <option>Liquid + Solid Systems</option>
+                                <option>Multi-Phase Delivery</option>
+                                <option>Pet-specific Formats</option>
+                                <option>Not Sure / Exploring</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Target Market</label>
+                            <select name="market">
+                                <option value="">Select…</option>
+                                <option>United States (FDA)</option>
+                                <option>European Union (EFSA)</option>
+                                <option>Australia / NZ (FSANZ / TGA)</option>
+                                <option>Canada (Health Canada)</option>
+                                <option>United Kingdom</option>
+                                <option>Southeast Asia</option>
+                                <option>Middle East</option>
+                                <option>Multiple / Global</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Timeline</label>
+                            <select name="timeline">
+                                <option value="">Select…</option>
+                                <option>ASAP — within 30 days</option>
+                                <option>1–3 months</option>
+                                <option>3–6 months</option>
+                                <option>6–12 months</option>
+                                <option>Exploring / No rush</option>
+                            </select>
+                        </div>
+                        <div class="field full"><label>Tell us about your project</label>
+                            <textarea name="details" rows="3" placeholder="What's your product concept? What's your biggest challenge right now?"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;margin-top:20px;">
+                        Send Inquiry <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ PARTNER LINKS ══════════ -->
+<section class="links-section" id="links">
+    <div class="container">
+        <div class="section-header reveal">
+            <span class="eyebrow">Resources</span>
+            <h2>Regulatory & Industry Partners</h2>
+            <p>Trusted authorities and professional associations that shape the global wellness industry.</p>
+        </div>
+        <div class="links-grid reveal">
+            <div class="links-col">
+                <h4>Regulatory Authorities</h4>
+                <ul class="links-list">
+                    <li><a href="https://www.fda.gov/food/dietary-supplements" target="_blank" rel="noopener">
+                        <span class="link-icon link-fda">FDA</span>
+                        <span>U.S. Food & Drug Administration</span>
+                        <span class="link-desc">Dietary Supplements</span>
+                    </a></li>
+                    <li><a href="https://www.efsa.europa.eu/" target="_blank" rel="noopener">
+                        <span class="link-icon link-efsa">EFSA</span>
+                        <span>European Food Safety Authority</span>
+                        <span class="link-desc">Novel Foods & Claims</span>
+                    </a></li>
+                    <li><a href="https://www.foodstandards.gov.au/" target="_blank" rel="noopener">
+                        <span class="link-icon link-fsanz">FSANZ</span>
+                        <span>Food Standards Australia New Zealand</span>
+                        <span class="link-desc">Food Standards Code</span>
+                    </a></li>
+                    <li><a href="https://www.tga.gov.au/" target="_blank" rel="noopener">
+                        <span class="link-icon link-tga">TGA</span>
+                        <span>Therapeutic Goods Administration</span>
+                        <span class="link-desc">Australia</span>
+                    </a></li>
+                    <li><a href="https://www.canada.ca/en/health-canada.html" target="_blank" rel="noopener">
+                        <span class="link-icon link-hc">HC</span>
+                        <span>Health Canada</span>
+                        <span class="link-desc">Natural Health Products</span>
+                    </a></li>
+                    <li><a href="https://www.nsf.org/testing/dietary-supplements/gmp-registration" target="_blank" rel="noopener">
+                        <span class="link-icon link-nsf">GMP</span>
+                        <span>NSF GMP Registration Program</span>
+                        <span class="link-desc">Good Manufacturing Practice</span>
+                    </a></li>
+                </ul>
+            </div>
+            <div class="links-col">
+                <h4>Industry Associations</h4>
+                <ul class="links-list">
+                    <li><a href="https://www.crnusa.org/" target="_blank" rel="noopener">
+                        <span class="link-icon link-crn">CRN</span>
+                        <span>Council for Responsible Nutrition</span>
+                        <span class="link-desc">U.S. Supplement Industry</span>
+                    </a></li>
+                    <li><a href="https://www.usp.org/" target="_blank" rel="noopener">
+                        <span class="link-icon link-usp">USP</span>
+                        <span>United States Pharmacopeia</span>
+                        <span class="link-desc">Quality Standards</span>
+                    </a></li>
+                    <li><a href="https://www.nsf.org/" target="_blank" rel="noopener">
+                        <span class="link-icon link-nsf">NSF</span>
+                        <span>NSF International</span>
+                        <span class="link-desc">Testing & Certification</span>
+                    </a></li>
+                    <li><a href="https://goedomega3.com/" target="_blank" rel="noopener">
+                        <span class="link-icon link-goed">GOED</span>
+                        <span>Global Organization for EPA &amp; DHA Omega-3s</span>
+                        <span class="link-desc">Omega-3 Industry</span>
+                    </a></li>
+                    <li><a href="https://internationalprobiotics.org/" target="_blank" rel="noopener">
+                        <span class="link-icon link-ipa">IPA</span>
+                        <span>International Probiotics Association</span>
+                        <span class="link-desc">Probiotic Standards</span>
+                    </a></li>
+                    <li><a href="https://www.ahpa.org/" target="_blank" rel="noopener">
+                        <span class="link-icon link-ahpa">AHPA</span>
+                        <span>American Herbal Products Association</span>
+                        <span class="link-desc">Herbal &amp; Botanical</span>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="logo.png" alt="SuppBridge">
+                <span>Advanced Wellness Product Innovation &amp; Compliance Partner</span>
+            </div>
+            <div>&copy; 2026 SuppBridge. All rights reserved.</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 24));
+
+    document.getElementById('navToggle').addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.toggle('active');
+    });
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06, rootMargin: '0px 0px -28px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+            const t = document.querySelector(this.getAttribute('href'));
+            if (t) { e.preventDefault(); window.scrollTo({ top: t.offsetTop - 74, behavior: 'smooth' }); document.getElementById('mobileMenu')?.classList.remove('active'); }
+        });
+    });
+</script>
+</body>
+</html>
