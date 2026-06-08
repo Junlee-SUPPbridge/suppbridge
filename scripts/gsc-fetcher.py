@@ -19,7 +19,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
 KEY_PATH = os.path.join(SCRIPT_DIR, "gsc-service-account.json")
 CACHE_DIR = os.path.join(PROJECT_DIR, ".workbuddy", "gsc-cache")
-SITE_URL = "sc-domain:suppbridge.com"  # Domain property uses sc-domain: prefix
+SITE_URL = "https://www.suppbridge.com/"  # URL prefix property (domain property doesn't support SA)
 
 # ============================================================
 # Auth

@@ -22,3 +22,7 @@ node_modules/
 
 # GSC API credentials (contains private key)
 scripts/gsc-service-account.json
+
+# Python venv
+scripts/.venv/
+.workbuddy/gsc-cache/
