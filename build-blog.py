@@ -363,7 +363,7 @@ def build():
 
         body_html = md_to_html(body)
         canonical = f"{SITE_URL}/blog/{slug}.html"
-        og_image = f"{SITE_URL}/images/logo.png"
+        og_image = fm.get('og_image', f"{SITE_URL}/images/blog-og.png")
 
         html = f"""{page_head(title, description, canonical)}
 <meta property="og:title" content="{title}">
@@ -424,6 +424,7 @@ def build():
     index_html = f"""{page_head("SuppBridge Journal — Wellness Product Innovation Insights", "Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.", f"{SITE_URL}/blog/")}
 <meta property="og:title" content="SuppBridge Journal">
 <meta property="og:description" content="Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.">
+<meta property="og:image" content="{SITE_URL}/images/blog-og.png">
 <meta property="og:url" content="{SITE_URL}/blog/">
 <meta property="og:type" content="website">
 <script type="application/ld+json">

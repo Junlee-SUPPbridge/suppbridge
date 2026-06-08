@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /cdn-cgi/
+
+Sitemap: https://suppbridge.com/blog/sitemap.xml
+Sitemap: https://suppbridge.com/sitemap.xml
+
+# Crawl settings
+Crawl-delay: 5
