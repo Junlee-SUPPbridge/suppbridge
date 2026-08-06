@@ -1,0 +1,2 @@
+# Redirect www to non-www
+https://www.suppbridge.com/*  https://suppbridge.com/:splat 301

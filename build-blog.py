@@ -82,10 +82,19 @@ img{max-width:100%;height:auto}
 /* Footer */
 .blog-footer{background:var(--ink);color:rgba(255,255,255,.65);padding:24px 0;text-align:center;font-size:.82rem}
 .blog-footer a{color:var(--mint)}
+
+/* Related Reading */
+.related-reading{margin-top:40px;padding:28px 0;border-top:1px solid var(--line)}
+.related-reading h3{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:14px;letter-spacing:-.01em}
+.related-reading ul{list-style:none;padding:0;margin:0}
+.related-reading li{margin-bottom:8px}
+.related-reading li a{color:var(--teal);font-size:.92rem;text-decoration:none}
+.related-reading li a:hover{color:var(--teal-deep);text-decoration:underline}
 @media (max-width:700px) {
   .article-hero h1,.blog-hero h1{font-size:1.6rem}
   .nav-links{display:none}
   .blog-card{padding:20px 18px}
+  .related-reading h3{font-size:.92rem}
 }
 </style>"""
 
@@ -295,7 +304,8 @@ def page_head(title, description, canonical_url):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet">
-{SITE_CSS}"""
+<link rel="stylesheet" href="styles/main.css">
+<link rel="preload" href="styles/main.css" as="style">"""
 
 
 def nav_html():
@@ -329,7 +339,7 @@ def article_schema(title, date, description, slug, tags):
     return f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": "BlogPosting",
   "headline": "{title}",
   "datePublished": "{date}",
   "dateModified": "{date}",
@@ -365,6 +375,20 @@ def build():
         canonical = f"{SITE_URL}/blog/{slug}.html"
         og_image = fm.get('og_image', f"{SITE_URL}/images/blog-og.png")
 
+        # Build related articles (same tags, different article)
+        related_links = []
+        for other in articles:
+            if other['slug'] != slug:
+                common = set(tags) & set(other['tags'])
+                if common:
+                    related_links.append((other['slug'], other['title'], len(common)))
+        related_links.sort(key=lambda x: -x[2])
+        related_links = related_links[:3]
+        related_articles = '\n'.join(
+            f'<li><a href="/blog/{s}.html">{t}</a></li>'
+            for s, t, _ in related_links
+        ) or '<li><a href="/blog/">Browse all articles</a></li>'
+
         html = f"""{page_head(title, description, canonical)}
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
@@ -390,6 +414,12 @@ def build():
 <div class="article-cta">
 <p style="margin-bottom:14px;color:var(--muted);font-size:.92rem;">Ready to turn insights into action?</p>
 <a href="/#contact">Start a Conversation →</a>
+</div>
+<div class="related-reading">
+<h3>Related Reading</h3>
+<ul>
+{related_articles}
+</ul>
 </div>
 </div>
 </div>
