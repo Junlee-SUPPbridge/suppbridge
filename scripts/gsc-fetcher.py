@@ -39,7 +39,7 @@ import json
 import os
 import sys
 from datetime import date, datetime, timedelta
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.dirname(SCRIPT_DIR)
@@ -69,6 +69,19 @@ OWN_DOMAINS = {"suppbridge.com", "www.suppbridge.com"}
 DEFAULT_DAYS = 7
 DEFAULT_ROW_LIMIT = 25000
 
+# REST endpoint for the Search Analytics query. Used directly instead of the
+# discovery client; see build_service().
+SEARCHANALYTICS_URL = ("https://searchconsole.googleapis.com/webmasters/v3"
+                       "/sites/{site}/searchAnalytics/query")
+
+# Generous but finite. Without it a blocked egress path turns a 30-second
+# sync into a job that hangs until the timer's next fire.
+HTTP_TIMEOUT = 60
+
+
+class GscApiError(RuntimeError):
+    """A non-200 from Search Console, with the status kept intact."""
+
 
 def resolve_property(explicit=None):
     return explicit or os.environ.get("GSC_PROPERTY") or DEFAULT_PROPERTY
@@ -92,36 +105,62 @@ def resolve_credentials(explicit=None):
 def build_service(cred_path):
     """Build an authenticated Search Console client.
 
+    Deliberately NOT googleapiclient.discovery: discovery is built on
+    httplib2, and httplib2 ignores HTTP_PROXY / HTTPS_PROXY. On a host that
+    can only reach Google through a local proxy that difference is fatal --
+    discovery hangs until it times out while requests succeeds immediately.
+    google.auth's AuthorizedSession is a requests.Session, so it honours the
+    standard proxy environment variables.
+
     Imports are lazy so `--help` and `--dry-run` work on a machine without
     the Google client libraries installed.
     """
     try:
         from google.oauth2 import service_account
-        from googleapiclient.discovery import build
+        from google.auth.transport.requests import AuthorizedSession
     except ImportError:
         sys.exit("[ERROR] Missing packages. Run:\n"
-                 "  pip install google-auth google-api-python-client google-auth-httplib2")
+                 "  pip install google-auth")
 
     with open(cred_path, encoding="utf-8") as f:
         info = json.load(f)
     if "private_key" not in info or "client_email" not in info:
         sys.exit(f"[ERROR] {cred_path} is not a service-account key file.")
     creds = service_account.Credentials.from_service_account_info(info, scopes=[SCOPE])
-    return build("searchconsole", "v1", credentials=creds, cache_discovery=False)
+    return AuthorizedSession(creds)
+
+
+def proxy_hint():
+    """One line explaining how this process will reach Google.
+
+    Printed on failure, because 'timed out' on a proxied host sends people
+    looking at credentials when the real problem is egress.
+    """
+    proxy = (os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+             or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy"))
+    if proxy:
+        return f"HTTPS_PROXY={proxy} (requests honours it)"
+    return ("no proxy configured; if this host needs one to reach Google, set "
+            "HTTPS_PROXY in the unit's Environment= and re-run")
 
 
 # ── Fetch ────────────────────────────────────────────────────────────────
 
-def fetch_rows(service, prop, start, end, row_limit):
+def fetch_rows(session, prop, start, end, row_limit):
     """Pull date/query/page rows, paging until the API stops returning data.
 
     Paging matters: a single request caps at row_limit, and silently
     truncating a month of data would look exactly like a quiet month.
+
+    Calls the REST endpoint directly (see build_service for why discovery is
+    not used). The siteUrl is percent-encoded: 'sc-domain:suppbridge.com'
+    contains a colon that must not survive as a path separator.
     """
+    url = SEARCHANALYTICS_URL.format(site=quote(prop, safe=""))
     rows = []
     start_row = 0
     while True:
-        request = {
+        body = {
             "startDate": start.isoformat(),
             "endDate": end.isoformat(),
             "dimensions": ["date", "query", "page"],
@@ -131,8 +170,12 @@ def fetch_rows(service, prop, start, end, row_limit):
             # reason to store numbers that will still move.
             "dataState": "final",
         }
-        response = service.searchanalytics().query(siteUrl=prop, body=request).execute()
-        batch = response.get("rows", [])
+        response = session.post(url, json=body, timeout=HTTP_TIMEOUT)
+        if response.status_code != 200:
+            raise GscApiError(
+                f"HTTP {response.status_code} from Search Console: "
+                f"{response.text[:400]}")
+        batch = response.json().get("rows", [])
         rows.extend(batch)
         if len(batch) < row_limit:
             break
@@ -304,7 +347,7 @@ def main():
         print("       Move it to /etc/suppbridge/seo-intel/ so a stray `git add` cannot leak it.")
         print()
 
-    service = build_service(cred_path)
+    session = build_service(cred_path)
 
     conn = None
     run_id = None
@@ -314,11 +357,14 @@ def main():
         run_id = store.start_run(conn, "gsc")
 
     try:
-        raw_rows = fetch_rows(service, prop, start, end, args.row_limit)
+        raw_rows = fetch_rows(session, prop, start, end, args.row_limit)
     except Exception as exc:  # noqa: BLE001 - the message is the product here
         message = f"{type(exc).__name__}: {exc}"
         print("GSC connection: FAILED")
         print(message)
+        # A timeout here is almost always egress, not credentials, and the
+        # two look identical otherwise. Say which one it is.
+        print(f"Egress: {proxy_hint()}")
         if conn:
             store.finish_run(conn, run_id, store.STATUS_FAILED,
                              error_message=message[:2000])
