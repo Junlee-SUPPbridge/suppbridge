@@ -2,7 +2,17 @@
 """Build static blog HTML pages from Markdown files.
 
 Usage: python3 build-blog.py
-Reads blog/*.md → generates blog/*.html + blog/index.html + sitemap.xml
+Reads blog/*.md -> generates blog/*.html + blog/index.html + blog/sitemap.xml
+                 + blog/articles.json
+
+Notes
+-----
+* Blog pages use the SAME stylesheet as the rest of the site (/styles/main.css).
+  Blog-specific rules inside that file are scoped under `body.page-blog`, so
+  they can never leak into the homepage layout again.
+* Blog pages carry `class="page-blog"` on <body> for exactly that reason.
+* Every article ends with a commercial CTA (supplier review), not a generic
+  "contact us" link, so SEO traffic has a real conversion path.
 """
 
 import os, re, glob, json
@@ -11,94 +21,14 @@ from datetime import datetime
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BLOG_DIR = os.path.join(BASE_DIR, "blog")
 SITE_URL = "https://suppbridge.com"
+CSS_URL = "/styles/main.css"
 
-# Site-wide CSS (matching index.html palette)
-SITE_CSS = """<style>
-:root { --ink:#0E1922; --teal:#0C6259; --teal-deep:#0A4A43; --mint:#4DB89E; --mint-soft:#EDF8F4; --muted:#5C7688; --line:#DDE4EA; --bg:#F6F9FB; --white:#fff; --navy:#1B3A4B; --radius:12px; --radius-sm:8px; --radius-lg:20px; --shadow:0 4px 24px rgba(0,0,0,.06); --shadow-sm:0 2px 8px rgba(0,0,0,.04); }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased}
-a{color:var(--teal);text-decoration:none}
-a:hover{color:var(--teal-deep)}
-img{max-width:100%;height:auto}
-.container{max-width:820px;margin:0 auto;padding:0 24px}
+# Contact / conversion destinations
+CONTACT = "/#start-project"
+REVIEW = "/china-supplement-sourcing.html#review"
 
-/* Nav */
-.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
-.nav-inner{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
-.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-brand img{height:26px;width:auto}
-.nav-brand span{font-size:.76rem;font-weight:600;color:var(--muted);letter-spacing:.03em}
-.nav-links{display:flex;align-items:center;gap:20px;list-style:none}
-.nav-links a{font-size:.82rem;font-weight:500;color:var(--ink);transition:color .2s}
-.nav-links a:hover{color:var(--teal)}
 
-/* Article Page */
-.article-hero{padding:56px 0 28px;background:var(--white);border-bottom:1px solid var(--line)}
-.article-hero .tag{display:inline-block;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.03em;margin-bottom:14px}
-.tag-delivery{background:#EAF7F4;color:var(--teal)}
-.tag-regulatory{background:#FDF2E9;color:#B86B20}
-.tag-formulation{background:#EDE7F6;color:#5B3E96}
-.tag-market{background:#E8F0FE;color:#1A5FB4}
-.tag-pet{background:#FDE8E8;color:#B91C1C}
-.article-hero h1{font-size:2.2rem;font-weight:800;line-height:1.25;letter-spacing:-.02em;margin-bottom:12px}
-.article-hero .meta{font-size:.82rem;color:var(--muted);margin-bottom:8px}
-.article-hero .excerpt{font-size:1.05rem;color:var(--muted);line-height:1.6;max-width:680px}
-
-.article-body{padding:40px 0 64px;background:var(--white)}
-.article-body .container{max-width:740px}
-.article-body h2{font-size:1.45rem;font-weight:700;margin:36px 0 14px;color:var(--ink);letter-spacing:-.01em}
-.article-body h3{font-size:1.15rem;font-weight:650;margin:28px 0 10px;color:var(--ink)}
-.article-body p{margin-bottom:16px;font-size:.97rem;line-height:1.78;color:rgba(14,25,34,.82)}
-.article-body ul,.article-body ol{padding-left:22px;margin-bottom:18px}
-.article-body li{margin-bottom:8px;font-size:.95rem;line-height:1.7;color:rgba(14,25,34,.82)}
-.article-body table{width:100%;border-collapse:collapse;margin:20px 0 28px;font-size:.88rem}
-.article-body th{background:var(--bg);text-align:left;padding:10px 14px;font-weight:650;color:var(--ink);border-bottom:2px solid var(--line)}
-.article-body td{padding:9px 14px;border-bottom:1px solid var(--line);color:rgba(14,25,34,.82)}
-.article-body tr:nth-child(even) td{background:var(--mint-soft)}
-.article-body blockquote{border-left:3px solid var(--mint);padding:12px 18px;margin:20px 0;background:var(--mint-soft);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:.92rem;color:var(--muted)}
-.article-body code{background:var(--bg);padding:2px 6px;border-radius:4px;font-size:.85em}
-.article-body strong{color:var(--ink);font-weight:650}
-.article-body hr{border:none;border-top:1px solid var(--line);margin:36px 0}
-.article-body em{color:var(--muted)}
-
-.article-cta{margin-top:40px;padding:28px 0;border-top:1px solid var(--line)}
-.article-cta a{display:inline-block;padding:12px 28px;background:var(--teal);color:#fff;border-radius:100px;font-weight:600;font-size:.9rem;transition:all .2s;text-decoration:none}
-.article-cta a:hover{background:var(--teal-deep);transform:translateY(-1px);box-shadow:0 6px 20px rgba(12,98,89,.25)}
-
-/* Blog Index */
-.blog-hero{padding:64px 0 36px;text-align:center;background:var(--white);border-bottom:1px solid var(--line)}
-.blog-hero h1{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
-.blog-hero p{color:var(--muted);font-size:1.05rem;max-width:560px;margin:0 auto}
-.blog-list{padding:40px 0 64px;max-width:820px;margin:0 auto}
-.blog-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:28px 32px;margin-bottom:18px;transition:all .25s}
-.blog-card:hover{border-color:var(--teal);transform:translateX(4px);box-shadow:var(--shadow)}
-.blog-card .tag{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:600;letter-spacing:.03em;margin-bottom:10px}
-.blog-card h2{font-size:1.2rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
-.blog-card h2 a{color:var(--ink);text-decoration:none}
-.blog-card h2 a:hover{color:var(--teal)}
-.blog-card .desc{color:var(--muted);font-size:.9rem;line-height:1.55}
-.blog-card .meta{font-size:.78rem;color:var(--muted);margin-top:10px}
-
-/* Footer */
-.blog-footer{background:var(--ink);color:rgba(255,255,255,.65);padding:24px 0;text-align:center;font-size:.82rem}
-.blog-footer a{color:var(--mint)}
-
-/* Related Reading */
-.related-reading{margin-top:40px;padding:28px 0;border-top:1px solid var(--line)}
-.related-reading h3{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:14px;letter-spacing:-.01em}
-.related-reading ul{list-style:none;padding:0;margin:0}
-.related-reading li{margin-bottom:8px}
-.related-reading li a{color:var(--teal);font-size:.92rem;text-decoration:none}
-.related-reading li a:hover{color:var(--teal-deep);text-decoration:underline}
-@media (max-width:700px) {
-  .article-hero h1,.blog-hero h1{font-size:1.6rem}
-  .nav-links{display:none}
-  .blog-card{padding:20px 18px}
-  .related-reading h3{font-size:.92rem}
-}
-</style>"""
-
-# ── Markdown → HTML Converter (no external deps) ──
+# ── Markdown -> HTML converter (no external deps) ──
 
 def md_to_html(md_text):
     """Convert basic Markdown to HTML fragments."""
@@ -177,7 +107,7 @@ def md_to_html(md_text):
             result.append('<ol>' + ''.join(f'<li>{process_inline(it)}</li>' for it in items) + '</ol>')
             continue
 
-        # Blank line → close paragraph
+        # Blank line
         if line.strip() == '':
             i += 1
             continue
@@ -197,15 +127,10 @@ def md_to_html(md_text):
 
 def process_inline(text):
     """Process inline Markdown formatting."""
-    # Bold (**text**)
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-    # Italic (*text*)
     text = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
-    # Inline code (`text`)
     text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
-    # Links [text](url)
     text = re.sub(r'\[(.+?)\]\((.+?)\)', r'<a href="\2">\1</a>', text)
-    # Strikethrough (~~text~~) — less common
     text = re.sub(r'~~(.+?)~~', r'<del>\1</del>', text)
     return text
 
@@ -228,69 +153,71 @@ def parse_frontmatter(md_text):
     return fm, parts[2].strip()
 
 
+# Tag slug -> CSS class / human label.
+# Buyer-problem tags (sourcing, verification, ...) are the growth area; the
+# legacy topic tags are kept so existing articles keep rendering correctly.
+TAG_CLASS = {
+    'delivery-systems': 'delivery', 'regulatory': 'regulatory',
+    'formulation': 'formulation', 'market-trends': 'market',
+    'pet-wellness': 'pet', 'dtc': 'market', 'brand-strategy': 'market',
+    'fda': 'regulatory', 'efsa': 'regulatory', 'eu': 'regulatory',
+    'compliance': 'regulatory', 'functional-beverage': 'delivery',
+    'product-innovation': 'delivery', 'sleep-health': 'formulation',
+    'functional-powders': 'formulation', 'product-development': 'formulation',
+    'flavor': 'formulation', 'companion-animal': 'pet', 'supplements': 'pet',
+    'innovation': 'delivery', 'oral-films': 'delivery', 'sublingual': 'delivery',
+    'market-entry': 'regulatory', 'industry-outlook': 'market',
+    # ── buyer-problem / sourcing cluster ──
+    'sourcing': 'sourcing', 'china-sourcing': 'sourcing', 'alibaba': 'sourcing',
+    'factory': 'sourcing', 'trading-company': 'sourcing',
+    'supplier-verification': 'verification', 'manufacturer-verification': 'verification',
+    'coa': 'verification', 'due-diligence': 'verification',
+    'quality': 'verification', 'procurement': 'sourcing',
+}
+
+TAG_LABEL = {
+    'delivery-systems': 'Delivery Systems', 'regulatory': 'Regulatory',
+    'formulation': 'Formulation', 'market-trends': 'Industry Trends',
+    'pet-wellness': 'Pet Wellness', 'dtc': 'DTC Strategy',
+    'brand-strategy': 'Brand Strategy', 'fda': 'FDA', 'efsa': 'EFSA',
+    'eu': 'EU Regulatory', 'compliance': 'Compliance',
+    'functional-beverage': 'Functional Beverage',
+    'product-innovation': 'Product Innovation', 'sleep-health': 'Sleep Health',
+    'functional-powders': 'Functional Powders',
+    'product-development': 'Product Dev', 'flavor': 'Flavor Science',
+    'companion-animal': 'Pet Health', 'supplements': 'Supplements',
+    'innovation': 'Innovation', 'oral-films': 'Oral Films',
+    'sublingual': 'Sublingual', 'market-entry': 'Market Entry',
+    'industry-outlook': 'Industry Outlook',
+    # ── buyer-problem / sourcing cluster ──
+    'sourcing': 'Sourcing', 'china-sourcing': 'China Sourcing',
+    'alibaba': 'Alibaba Sourcing', 'factory': 'Factory Checks',
+    'trading-company': 'Trading Companies',
+    'supplier-verification': 'Supplier Verification',
+    'manufacturer-verification': 'Manufacturer Verification',
+    'coa': 'COA & Documents', 'due-diligence': 'Due Diligence',
+    'quality': 'Quality', 'procurement': 'Procurement',
+}
+
+
 def tag_class(tag_slug):
-    """Map tag slug to CSS class."""
-    mapping = {
-        'delivery-systems': 'delivery',
-        'regulatory': 'regulatory',
-        'formulation': 'formulation',
-        'market-trends': 'market',
-        'pet-wellness': 'pet',
-        'dtc': 'market',
-        'brand-strategy': 'market',
-        'fda': 'regulatory',
-        'efsa': 'regulatory',
-        'eu': 'regulatory',
-        'compliance': 'regulatory',
-        'functional-beverage': 'delivery',
-        'product-innovation': 'delivery',
-        'sleep-health': 'formulation',
-        'functional-powders': 'formulation',
-        'product-development': 'formulation',
-        'flavor': 'formulation',
-        'companion-animal': 'pet',
-        'supplements': 'pet',
-        'innovation': 'delivery',
-        'oral-films': 'delivery',
-        'sublingual': 'delivery',
-        'market-entry': 'regulatory',
-        'industry-outlook': 'market',
-    }
-    return f"tag-{mapping.get(tag_slug, 'delivery')}"
+    return f"tag-{TAG_CLASS.get(tag_slug, 'sourcing')}"
 
 
 def tag_label(tag_slug):
-    """Human-readable tag label."""
-    mapping = {
-        'delivery-systems': 'Delivery Systems',
-        'regulatory': 'Regulatory',
-        'formulation': 'Formulation',
-        'market-trends': 'Industry Trends',
-        'pet-wellness': 'Pet Wellness',
-        'dtc': 'DTC Strategy',
-        'brand-strategy': 'Brand Strategy',
-        'fda': 'FDA',
-        'efsa': 'EFSA',
-        'eu': 'EU Regulatory',
-        'compliance': 'Compliance',
-        'functional-beverage': 'Functional Beverage',
-        'product-innovation': 'Product Innovation',
-        'sleep-health': 'Sleep Health',
-        'functional-powders': 'Functional Powders',
-        'product-development': 'Product Dev',
-        'flavor': 'Flavor Science',
-        'companion-animal': 'Pet Health',
-        'supplements': 'Supplements',
-        'innovation': 'Innovation',
-        'oral-films': 'Oral Films',
-        'sublingual': 'Sublingual',
-        'market-entry': 'Market Entry',
-        'industry-outlook': 'Industry Outlook',
-    }
-    return mapping.get(tag_slug, tag_slug.replace('-', ' ').title())
+    return TAG_LABEL.get(tag_slug, tag_slug.replace('-', ' ').title())
 
 
-# ── Page Wrappers ──
+# ── Shared page chrome ──
+
+SITE_NAV_LINKS = [
+    ("How We Help", "/#services"),
+    ("Supplier Verification", "/china-supplement-sourcing.html"),
+    ("Projects", "/#projects"),
+    ("About Jun", "/#founder"),
+    ("Insights", "/blog/"),
+]
+
 
 def page_head(title, description, canonical_url):
     return f"""<!DOCTYPE html>
@@ -298,58 +225,143 @@ def page_head(title, description, canonical_url):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{title} — SuppBridge Journal</title>
+<title>{title}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{canonical_url}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css">
-<link rel="preload" href="styles/main.css" as="style">"""
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{CSS_URL}">
+<link rel="preload" href="{CSS_URL}" as="style">"""
 
 
-def nav_html():
-    return """<nav class="nav">
-<div class="nav-inner">
+def nav_html(current="blog"):
+    items = "".join(
+        f'<li><a href="{url}"{" aria-current=\"page\"" if label == current else ""}>{label}</a></li>'
+        for label, url in SITE_NAV_LINKS
+    )
+    mobile = "".join(f'<a href="{url}">{label}</a>' for label, url in SITE_NAV_LINKS)
+    return f"""<nav class="nav" id="nav">
+<div class="nav-wrap">
 <a href="/" class="nav-brand">
-<img src="/images/logo.png" alt="SuppBridge">
-<span>Innovation Partner</span>
+<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<span class="nav-brand-text"><span>China Product &amp; Supply Partner</span></span>
 </a>
-<ul class="nav-links">
-<li><a href="/#formats">Delivery Formats</a></li>
-<li><a href="/#insights">Insights</a></li>
-<li><a href="/#about">About</a></li>
-<li><a href="/#contact">Contact</a></li>
-</ul>
+<ul class="nav-links">{items}</ul>
+<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Start Your Project</a>
+<button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+</div>
+<div class="mobile-menu" id="mobileMenu">
+{mobile}
+<a href="{CONTACT}" style="color:var(--teal);font-weight:700;">Start Your Project →</a>
 </div>
 </nav>"""
 
 
+FOOTER_NAV = [
+    ("How We Help", "/#services"),
+    ("Supplier Verification", "/china-supplement-sourcing.html"),
+    ("Alibaba Supplier Review", "/china-supplement-sourcing.html#alibaba-review"),
+    ("Projects", "/#projects"),
+    ("About Jun", "/#founder"),
+    ("Insights", "/blog/"),
+    ("FAQ", "/#faq"),
+    ("Start Your Project", CONTACT),
+]
+
+
 def footer_html():
+    links = " · ".join(f'<a href="{url}">{label}</a>' for label, url in FOOTER_NAV)
+    year = datetime.now().year
     return f"""<footer class="blog-footer">
 <div class="container">
-<p>&copy; {datetime.now().year} SuppBridge. Advanced Wellness Product Innovation &amp; Compliance Partner.</p>
-<p><a href="/">Home</a> · <a href="/blog/">All Articles</a> · <a href="/#contact">Contact</a></p>
+<p>&copy; {year} SuppBridge. China Supplement Product &amp; Supply Partner.</p>
+<p>{links}</p>
 </div>
 </footer>"""
 
 
-def article_schema(title, date, description, slug, tags):
+NAV_SCRIPT = """<script>
+(function(){
+  var nav=document.getElementById('nav');
+  var toggle=document.getElementById('navToggle');
+  var menu=document.getElementById('mobileMenu');
+  function onScroll(){ if(nav) nav.classList.toggle('scrolled', window.scrollY>24); }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  if(toggle&&menu){
+    toggle.addEventListener('click',function(){
+      var open=menu.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', open?'true':'false');
+      toggle.setAttribute('aria-label', open?'Close menu':'Open menu');
+    });
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=this.getAttribute('href');
+      if(id==='#'||id.length<2) return;
+      var t=document.querySelector(id);
+      if(!t) return;
+      e.preventDefault();
+      window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-78, behavior:'smooth'});
+      if(menu) menu.classList.remove('active');
+    });
+  });
+})();
+</script>"""
+
+
+def breadcrumb_schema(title, canonical):
+    return f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {{ "@type": "ListItem", "position": 1, "name": "Home", "item": "{SITE_URL}/" }},
+    {{ "@type": "ListItem", "position": 2, "name": "Insights", "item": "{SITE_URL}/blog/" }},
+    {{ "@type": "ListItem", "position": 3, "name": "{json_esc(title)}", "item": "{canonical}" }}
+  ]
+}}
+</script>"""
+
+
+def article_schema(title, date, description, slug, tags, og_image):
     tag_names = [tag_label(t) for t in tags]
     return f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "{title}",
+  "headline": "{json_esc(title)}",
   "datePublished": "{date}",
   "dateModified": "{date}",
-  "description": "{description}",
+  "description": "{json_esc(description)}",
   "url": "{SITE_URL}/blog/{slug}.html",
-  "author": {{ "@type": "Person", "name": "Jun Lee" }},
-  "publisher": {{ "@type": "Organization", "name": "SuppBridge" }},
-  "keywords": "{', '.join(tag_names)}"
+  "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{SITE_URL}/blog/{slug}.html" }},
+  "image": "{og_image}",
+  "author": {{ "@type": "Person", "name": "Jun Lee", "jobTitle": "Supplement Product & Supply Chain Strategist", "url": "{SITE_URL}/#founder" }},
+  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }},
+  "keywords": "{json_esc(', '.join(tag_names))}"
 }}
 </script>"""
+
+
+def json_esc(text):
+    """Escape a string for safe embedding inside a JSON string literal."""
+    return (text or '').replace('\\', '\\\\').replace('"', '\\"').replace('\n', ' ').replace('\r', ' ')
+
+
+def article_cta():
+    """Commercial end-of-article CTA. Turns SEO traffic into supplier-review leads."""
+    return f"""<div class="article-cta">
+<p class="ac-kicker">Before you commit</p>
+<h3>Already have a supplier? Send us the details before you commit.</h3>
+<p>We review supplier identity, manufacturer-versus-trading-company signals, documentation consistency and project fit — then tell you what to verify next. No guarantees we can't back, and no obligation to work with us afterwards.</p>
+<div class="ac-actions">
+<a class="ac-btn" href="{REVIEW}">Request a Supplier Review →</a>
+<a class="ac-btn ac-btn--ghost" href="{CONTACT}">Start a Project</a>
+</div>
+</div>"""
 
 
 # ── Build ──
@@ -367,37 +379,47 @@ def build():
         date = fm.get('date', '2026-01-01')
         tags = fm.get('tags', [])
         description = fm.get('description', '')
-        primary_tag = tags[0] if tags else 'delivery-systems'
+        primary_tag = tags[0] if tags else 'sourcing'
         tag_cls = tag_class(primary_tag)
         tag_lbl = tag_label(primary_tag)
 
         body_html = md_to_html(body)
         canonical = f"{SITE_URL}/blog/{slug}.html"
         og_image = fm.get('og_image', f"{SITE_URL}/images/blog-og.png")
+        page_title = f"{title} — SuppBridge Insights"
 
-        # Build related articles (same tags, different article)
-        related_links = []
+        # Related articles: shared tags first, most recently published first.
+        related = []
         for other in articles:
-            if other['slug'] != slug:
-                common = set(tags) & set(other['tags'])
-                if common:
-                    related_links.append((other['slug'], other['title'], len(common)))
-        related_links.sort(key=lambda x: -x[2])
-        related_links = related_links[:3]
+            common = set(tags) & set(other['tags'])
+            if other['slug'] != slug and common:
+                related.append((other['slug'], other['title'], len(common)))
+        related.sort(key=lambda x: -x[2])
+        related_links = related[:3]
+        # Always give the reader a commercial next step alongside related reading.
+        related_links.append(('/china-supplement-sourcing.html#alibaba-review',
+                              'China Supplement Sourcing & Manufacturer Verification', 0))
         related_articles = '\n'.join(
-            f'<li><a href="/blog/{s}.html">{t}</a></li>'
+            f'<li><a href="/blog/{s}.html">{t}</a></li>' if not s.startswith('/')
+            else f'<li><a href="{s}">{t}</a></li>'
             for s, t, _ in related_links
-        ) or '<li><a href="/blog/">Browse all articles</a></li>'
+        )
 
-        html = f"""{page_head(title, description, canonical)}
-<meta property="og:title" content="{title}">
-<meta property="og:description" content="{description}">
+        html = f"""{page_head(page_title, description, canonical)}
+<meta property="og:title" content="{json_esc(title)}">
+<meta property="og:description" content="{json_esc(description)}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{og_image}">
 <meta property="og:type" content="article">
-{article_schema(title, date, description, slug, tags)}
+<meta property="og:site_name" content="SuppBridge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{json_esc(title)}">
+<meta name="twitter:description" content="{json_esc(description)}">
+<meta name="twitter:image" content="{og_image}">
+{article_schema(title, date, description, slug, tags, og_image)}
+{breadcrumb_schema(title, canonical)}
 </head>
-<body>
+<body class="page-blog">
 {nav_html()}
 <article>
 <header class="article-hero">
@@ -411,10 +433,7 @@ def build():
 <div class="article-body">
 <div class="container">
 {body_html}
-<div class="article-cta">
-<p style="margin-bottom:14px;color:var(--muted);font-size:.92rem;">Ready to turn insights into action?</p>
-<a href="/#contact">Start a Conversation →</a>
-</div>
+{article_cta()}
 <div class="related-reading">
 <h3>Related Reading</h3>
 <ul>
@@ -425,35 +444,34 @@ def build():
 </div>
 </article>
 {footer_html()}
+{NAV_SCRIPT}
 </body>
 </html>"""
 
-        out_path = os.path.join(BLOG_DIR, f"{slug}.html")
-        with open(out_path, 'w', encoding='utf-8') as f:
+        with open(os.path.join(BLOG_DIR, f"{slug}.html"), 'w', encoding='utf-8') as f:
             f.write(html)
-        print(f"  ✓ {slug}.html")
+        print(f"  + {slug}.html")
 
         articles.append({
             'slug': slug, 'title': title, 'date': date, 'description': description,
             'tags': tags, 'primary_tag': primary_tag, 'tag_cls': tag_cls, 'tag_lbl': tag_lbl
         })
 
-    # Sort by date descending
     articles.sort(key=lambda a: a['date'], reverse=True)
 
-    # ── Blog Index ──
-    cards = []
-    for a in articles:
-        cards.append(f"""<article class="blog-card">
+    # ── Blog index ──
+    cards = '\n'.join(f"""<article class="blog-card">
 <span class="tag {a['tag_cls']}">{a['tag_lbl']}</span>
 <h2><a href="/blog/{a['slug']}.html">{a['title']}</a></h2>
 <p class="desc">{a['description']}</p>
 <p class="meta">{a['date']}</p>
-</article>""")
+</article>""" for a in articles)
 
-    index_html = f"""{page_head("SuppBridge Journal — Wellness Product Innovation Insights", "Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.", f"{SITE_URL}/blog/")}
-<meta property="og:title" content="SuppBridge Journal">
-<meta property="og:description" content="Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.">
+    index_description = ("Practical guides for brands buying supplements in China — supplier verification, "
+                         "manufacturer due diligence, ingredient sourcing and regulatory questions, written from the buyer's side.")
+    index_html = f"""{page_head("SuppBridge Insights — Buying Supplements in China", index_description, f"{SITE_URL}/blog/")}
+<meta property="og:title" content="SuppBridge Insights — Buying Supplements in China">
+<meta property="og:description" content="{json_esc(index_description)}">
 <meta property="og:image" content="{SITE_URL}/images/blog-og.png">
 <meta property="og:url" content="{SITE_URL}/blog/">
 <meta property="og:type" content="website">
@@ -461,55 +479,58 @@ def build():
 {{
   "@context": "https://schema.org",
   "@type": "Blog",
-  "name": "SuppBridge Journal",
-  "description": "Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.",
+  "name": "SuppBridge Insights",
+  "description": "{json_esc(index_description)}",
   "url": "{SITE_URL}/blog/",
-  "author": {{ "@type": "Person", "name": "Jun Lee" }},
-  "publisher": {{ "@type": "Organization", "name": "SuppBridge" }}
+  "author": {{ "@type": "Person", "name": "Jun Lee", "url": "{SITE_URL}/#founder" }},
+  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }}
 }}
 </script>
 </head>
-<body>
+<body class="page-blog">
 {nav_html()}
 <header class="blog-hero">
 <div class="container">
-<h1>SuppBridge Journal</h1>
-<p>Expert insights on supplement delivery systems, regulatory compliance, formulation science, and DTC wellness brand strategy.</p>
+<h1>Buying Supplements in China — Without the Guesswork</h1>
+<p>Practical guides for the buyer's side of the table: how to verify a supplier, read a COA, compare quotations and avoid the mistakes that stall Chinese supplement projects.</p>
+<div class="blog-hero-cta"><a href="{REVIEW}" class="btn btn--primary">Request a Supplier Review →</a></div>
 </div>
 </header>
 <div class="blog-list">
 <div class="container">
-{''.join(cards)}
+<div class="blog-cta-band">
+<h2>Already found a supplier?</h2>
+<p>Before you send the deposit, send us the supplier. We'll tell you what to check.</p>
+<a href="{REVIEW}" class="btn btn--onlight">Request a Supplier Review →</a>
+</div>
+{cards}
 </div>
 </div>
 {footer_html()}
+{NAV_SCRIPT}
 </body>
 </html>"""
 
     with open(os.path.join(BLOG_DIR, "index.html"), 'w', encoding='utf-8') as f:
         f.write(index_html)
-    print(f"  ✓ index.html ({len(articles)} articles)")
+    print(f"  + index.html ({len(articles)} articles)")
 
     # ── Sitemap ──
-    urls = [f"{SITE_URL}/blog/"]
-    for a in articles:
-        urls.append(f"{SITE_URL}/blog/{a['slug']}.html")
-
-    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    urls = [f"{SITE_URL}/blog/"] + [f"{SITE_URL}/blog/{a['slug']}.html" for a in articles]
+    sitemap = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
     for url in urls:
-        sitemap += f"  <url><loc>{url}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n"
+        sitemap += f"  <url><loc>{url}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n"
     sitemap += '</urlset>'
-
     with open(os.path.join(BLOG_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
         f.write(sitemap)
-    print(f"  ✓ sitemap.xml")
+    print("  + sitemap.xml")
 
-    # Save articles.json for index.html integration
     with open(os.path.join(BLOG_DIR, "articles.json"), 'w', encoding='utf-8') as f:
         json.dump(articles, f, ensure_ascii=False, indent=2)
-    print(f"  ✓ articles.json")
+    print("  + articles.json")
 
-    print(f"\n✅ Blog built: {len(articles)} articles in {BLOG_DIR}/\n   Deploy to suppbridge.com/blog/")
+    print(f"\nDone: {len(articles)} articles in blog/  ->  deploy to suppbridge.com/blog/")
 
 
 if __name__ == '__main__':

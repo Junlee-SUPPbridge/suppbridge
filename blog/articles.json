@@ -1,5 +1,65 @@
 [
   {
+    "slug": "verify-china-supplement-manufacturer",
+    "title": "How to Verify a China Supplement Manufacturer Before Paying",
+    "date": "2026-09-16",
+    "description": "A practical due-diligence sequence for supplement brands — what to check about the legal entity, the production site, licences, documentation and capability before any deposit leaves your account.",
+    "tags": [
+      "manufacturer-verification",
+      "supplier-verification",
+      "sourcing",
+      "due-diligence"
+    ],
+    "primary_tag": "manufacturer-verification",
+    "tag_cls": "tag-verification",
+    "tag_lbl": "Manufacturer Verification"
+  },
+  {
+    "slug": "chinese-supplier-factory-or-trading-company",
+    "title": "How to Tell If a Chinese Supplier Is Actually a Factory (and Why It Sometimes Doesn't Matter)",
+    "date": "2026-09-11",
+    "description": "The signals worth checking when you want to know whether a Chinese supplement supplier is a manufacturer or a trading company — and when the answer genuinely changes what you should do.",
+    "tags": [
+      "factory",
+      "trading-company",
+      "sourcing",
+      "supplier-verification"
+    ],
+    "primary_tag": "factory",
+    "tag_cls": "tag-sourcing",
+    "tag_lbl": "Factory Checks"
+  },
+  {
+    "slug": "verify-coa-chinese-supplement-supplier",
+    "title": "How to Verify a COA From a Chinese Supplement Supplier",
+    "date": "2026-09-05",
+    "description": "Batch correspondence, test method, issuing laboratory and specification limits — the four things a certificate of analysis must tell you, and what to do when it doesn't.",
+    "tags": [
+      "coa",
+      "supplier-verification",
+      "quality",
+      "due-diligence"
+    ],
+    "primary_tag": "coa",
+    "tag_cls": "tag-verification",
+    "tag_lbl": "COA & Documents"
+  },
+  {
+    "slug": "alibaba-supplement-sourcing-what-to-verify",
+    "title": "Alibaba Supplement Sourcing: What Buyers Should Verify Before Paying",
+    "date": "2026-08-28",
+    "description": "A practical buyer's checklist for sourcing supplements through Alibaba — what a supplier profile actually establishes, the checks worth running, and the payment-stage decisions that are hard to reverse.",
+    "tags": [
+      "alibaba",
+      "sourcing",
+      "supplier-verification",
+      "china-sourcing"
+    ],
+    "primary_tag": "alibaba",
+    "tag_cls": "tag-sourcing",
+    "tag_lbl": "Alibaba Sourcing"
+  },
+  {
     "slug": "bitter-orange-extract-eu-compliance",
     "title": "Bitter Orange Extract (Citrus aurantium) — What the Research Actually Says, and How to Stay Compliant in the EU",
     "date": "2026-06-10",

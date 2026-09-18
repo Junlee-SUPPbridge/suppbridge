@@ -1,2 +1,10 @@
 # Redirect www to non-www
-https://www.suppbridge.com/*  https://suppbridge.com/:splat 301
+https://www.suppbridge.com/*  https://suppbridge.com/:splat  301
+
+# Friendly aliases for the supplier verification landing page.
+# The canonical URL is /china-supplement-sourcing.html — these exist so that
+# /supplier-verification (used in navigation copy and outreach) also resolves.
+/supplier-verification   /china-supplement-sourcing.html                301
+/supplier-verification/  /china-supplement-sourcing.html                301
+/china-supplement-sourcing  /china-supplement-sourcing.html             301
+/alibaba-supplier-review    /china-supplement-sourcing.html#alibaba-review  301
