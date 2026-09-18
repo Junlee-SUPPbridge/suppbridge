@@ -1,98 +1,120 @@
-# GSC API 实时数据接入 — 设置指南
+# GSC API 接入 — 设置指南（V2.3 P2.0 版）
 
-> 按以下 5 步操作后，我就能直接拉取你的 Search Console 数据，替代手动截图。
+> 按下面 5 步做完，`seo-intel` 的每日同步就能开始落库。
+> 全部做完之前，fetcher 会以 `status='skipped'` 记录并正常退出 —— 不会伪造数据，也不会每天晚上报错。
+
+---
+
+## 关键变化（对比上一版）
+
+| | 旧版 | 现在 |
+|---|---|---|
+| GSC 属性 | URL 前缀 `https://www.suppbridge.com/` | **域属性 `sc-domain:suppbridge.com`**（一次覆盖 `suppbridge.com` 与 `www.suppbridge.com`） |
+| 密钥位置 | `scripts/gsc-service-account.json`（仓库内） | **`/etc/suppbridge/seo-intel/gsc-service-account.json`**（仓库外，600） |
+| 产出 | 打印到终端 + 缓存 JSON | **校验后写入 `seo_intel` 库**，每次运行留 `seo_runs` 审计行 |
+
+仓库里**不再放任何密钥**。旧路径仅作为兼容回退保留，一旦被使用脚本会打印警告。
 
 ---
 
 ## Step 1：创建 Google Cloud 项目
 
-1. 打开 [https://console.cloud.google.com](https://console.cloud.google.com)
-2. 顶部点 **Select a project** → **New Project**
-3. 项目名：`suppbridge-seo`（任意名称都可以）
-4. 记下 **Project ID**（之后会用到）
-
----
+1. 打开 <https://console.cloud.google.com>
+2. 顶部 **Select a project** → **New Project**
+3. 名称建议 `suppbridge-seo`，记下 Project ID
 
 ## Step 2：启用 Search Console API
 
-1. 在 Cloud Console 左侧菜单 → **APIs & Services** → **Library**
-2. 搜索 `Google Search Console API`
-3. 点击 → **Enable**
-
----
+1. **APIs & Services** → **Library**
+2. 搜索 `Google Search Console API` → **Enable**
 
 ## Step 3：创建 Service Account
 
-1. 左侧菜单 → **APIs & Services** → **Credentials**
-2. 顶部点 **+ Create Credentials** → **Service Account**
-3. Service account name: `gsc-reader`
-4. Service account ID: 自动生成即可
-5. 点 **Done**（不需要添加角色）
+1. **APIs & Services** → **Credentials** → **+ Create Credentials** → **Service Account**
+2. 名称 `gsc-reader` → **Done**（无需分配 GCP 角色）
 
----
+## Step 4：生成 JSON 密钥并放到服务器（仓库外）
 
-## Step 4：生成 JSON 密钥
+1. 进入该 Service Account 详情 → **Keys** → **Add Key** → **Create New Key** → **JSON**
+2. 浏览器会下载一个 `.json`。**把它直接放到服务器上**，不要放进仓库：
 
-1. 在 Credentials 页面，找到刚创建的 Service Account
-2. 点它的邮箱地址进入详情页
-3. 点 **Keys** 标签 → **Add Key** → **Create New Key**
-4. 选 **JSON** → **Create**
-5. 会自动下载一个 `.json` 文件
-
-**把下载的 JSON 文件发给我**（或放到项目里），路径为：
-```
-scripts/gsc-service-account.json
+```bash
+sudo install -d -m 700 -o jun -g jun /etc/suppbridge/seo-intel
+sudo install -m 600 -o jun -g jun ~/Downloads/<下载的文件>.json \
+  /etc/suppbridge/seo-intel/gsc-service-account.json
+sudo rm ~/Downloads/<下载的文件>.json        # 别留在下载目录
 ```
 
-⚠️ 这个文件包含密钥信息，已加入 `.gitignore`，不会被推送到 GitHub。
+校验：
 
----
+```bash
+sudo ls -l /etc/suppbridge/seo-intel/gsc-service-account.json   # 应为 -rw------- jun jun
+```
 
-## Step 5：在 GSC 中授权 Service Account
+## Step 5：在 GSC 中授权该 Service Account（域属性）
 
-1. 打开 [https://search.google.com/search-console](https://search.google.com/search-console)
-2. 选择 `suppbridge.com` 属性
-3. 左侧菜单 → **Settings**（设置）
-4. 点 **Users and permissions**（用户和权限）
-5. 点 **Add user**
-6. 粘贴 Service Account 的邮箱（类似 `gsc-reader@suppbridge-seo.iam.gserviceaccount.com`）
-7. 权限选择 **Full**（完整）— 需要这样才能查看搜索分析数据
-8. 点 **Add**
+1. 打开 <https://search.google.com/search-console>
+2. 选择 **`suppbridge.com`** 属性 —— 确认类型是 **Domain property**（不是 URL 前缀）
+3. 左侧 **Settings** → **Users and permissions** → **Add user**
+4. 粘贴 Service Account 邮箱（形如 `gsc-reader@suppbridge-seo.iam.gserviceaccount.com`）
+5. 权限选 **Full**（只读权限看不到完整的 Search Analytics）
+6. **Add**
+
+> 域属性同样支持 Service Account。旧版脚本注释里"域属性不支持 SA"的说法是错的，
+> 当时的问题在于属性本身没验证，而不在于属性类型。
 
 ---
 
 ## 验证
 
-设置完成后告诉我，我运行以下命令验证：
+```bash
+cd ~/Harness/seo-intel/backend
+
+# 1) 建表（幂等，可重复执行）
+venv/bin/python gsc-fetcher.py --init-db
+
+# 2) 先干跑：只抓取与校验，不写库
+venv/bin/python gsc-fetcher.py --dry-run
+
+# 3) 正式首次同步：过去 7 天
+venv/bin/python gsc-fetcher.py
+```
+
+成功时输出 GSC connection / 属性 / 日期区间 / 行数 / 页面数 / 查询数 / clicks / impressions，
+以及前 20 条明细。
+
+凭据缺失时输出：
+
+```
+GSC connection: BLOCKED
+No service-account credentials found.
+```
+
+并写入一行 `seo_runs(status='skipped')`。想让它硬失败（例如放进 CI）就加 `--strict`。
+
+---
+
+## 落库后的检查
 
 ```bash
-cd scripts
-pip install google-auth google-api-python-client
-python3 gsc-fetcher.py --full
-```
+docker exec slh-postgres psql -U slh -d seo_intel -c \
+  "SELECT status, rows_fetched, rows_written, rows_rejected, started_at
+     FROM seo_runs ORDER BY started_at DESC LIMIT 5;"
 
-成功后会输出类似：
-```
-INDEX STATUS REPORT
-  Homepage .......... Submitted and indexed
-
-SEARCH PERFORMANCE (last 28 days)
-  Total Clicks .... 12
-  Total Impressions. 340
-  Avg CTR ......... 3.5%
-  Avg Position .... 18.2
-
-SITEMAP STATUS
-  https://suppbridge.com/sitemap.xml
-    Submitted: 2026-06-08
-    Indexed: 2
+docker exec slh-postgres psql -U slh -d seo_intel -c \
+  "SELECT count(*) FROM seo_gsc_daily;"
 ```
 
 ---
 
-## 后续自动化
+## 自动化
 
-一旦接入成功，我会：
-1. **每日 SEO 监控** 改用真实 GSC 数据，不再只做 HTTP 检查
-2. **每周博文** 基于真实搜索查询来选题（而非"推测"）
-3. **月度趋势图** 展示 impressions/clicks/CTR 增长曲线
+已装 `seo-intel-gsc-sync.timer`（systemd 用户单元），每天同步一次。
+
+```bash
+systemctl --user list-timers seo-intel-gsc-sync.timer
+systemctl --user start seo-intel-gsc-sync.service   # 手动跑一次
+tail -n 40 ~/Harness/seo-intel/data/logs/gsc-sync.log
+```
+
+刻意**没有**建：crawler、opportunity engine、AI advisor、week/month 报表 —— 那些属于 P2.1+。

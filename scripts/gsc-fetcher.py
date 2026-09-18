@@ -1,247 +1,367 @@
 #!/usr/bin/env python3
-"""
-SuppBridge GSC Data Fetcher
-============================
-Uses Google Search Console API with service account authentication.
-Pull real SEO data: indexed pages, search queries, click data, ranking positions.
+"""SuppBridge — Google Search Console fetcher and seo_intel loader.
 
-Setup: See GSC-API-SETUP.md for service account configuration.
+Replaces the print-only version of this script. That one reported numbers to
+a terminal and cached JSON under .workbuddy/; nothing it produced could be
+queried, compared or trusted later. This one validates every row the API
+returns and lands it in the dedicated `seo_intel` database, so P2.1 and P2.2
+have a real foundation to build on.
+
+Setup: see GSC-API-SETUP.md for the Google-side steps (project, API, service
+account, GSC user). Credentials live OUTSIDE this repository — see
+CREDENTIAL_PATHS below. A key in scripts/ is a leak waiting to happen and is
+only tolerated as a documented legacy fallback.
+
+Usage
+-----
+    python3 scripts/gsc-fetcher.py --init-db          # create tables
+    python3 scripts/gsc-fetcher.py --dry-run          # fetch + validate, no writes
+    python3 scripts/gsc-fetcher.py                    # first sync: last 7 days
+    python3 scripts/gsc-fetcher.py --days 28
+
+Design notes
+------------
+* **The API response is not trusted.** Every row is checked (counts
+  non-negative, ctr inside 0–1, position > 0, page on our own domain, date
+  parseable) before it can reach the database. Rejected rows are counted in
+  seo_runs, never silently dropped.
+* **Missing credentials are a skip, not a crash.** The daily timer must not
+  report a failure every night for a configuration that has not been made
+  yet; it records status='skipped' with the reason. `--strict` turns that
+  into a non-zero exit for anyone who wants it.
+* **Runs are auditable.** Each execution writes one seo_runs row, so "did
+  yesterday's sync actually happen, and did it store what it fetched" is a
+  query rather than a guess.
 """
 
+import argparse
 import json
 import os
 import sys
-import time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from urllib.parse import urlparse
 
-# Paths
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(SCRIPT_DIR)
-KEY_PATH = os.path.join(SCRIPT_DIR, "gsc-service-account.json")
-CACHE_DIR = os.path.join(PROJECT_DIR, ".workbuddy", "gsc-cache")
-SITE_URL = "https://www.suppbridge.com/"  # URL prefix property (domain property doesn't support SA)
+REPO_DIR = os.path.dirname(SCRIPT_DIR)
+sys.path.insert(0, SCRIPT_DIR)
 
-# ============================================================
-# Auth
-# ============================================================
+import seo_intel_store as store  # noqa: E402
 
-def get_service():
-    """Build authenticated Search Console service object."""
+# ── Configuration ────────────────────────────────────────────────────────
+# Domain property, per V2.3 §5: it covers suppbridge.com AND
+# www.suppbridge.com in one place, which is why the canonical tag does not
+# need to change for Search Console's benefit.
+DEFAULT_PROPERTY = "sc-domain:suppbridge.com"
+
+# Credential lookup order. The server path comes first on purpose: the
+# repository must never be the place a key lives.
+CREDENTIAL_PATHS = (
+    "/etc/suppbridge/seo-intel/gsc-service-account.json",
+)
+
+# Legacy location, kept only so an existing local setup keeps working. Using
+# it prints a warning.
+LEGACY_CREDENTIAL_PATH = os.path.join(SCRIPT_DIR, "gsc-service-account.json")
+
+SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
+
+OWN_DOMAINS = {"suppbridge.com", "www.suppbridge.com"}
+DEFAULT_DAYS = 7
+DEFAULT_ROW_LIMIT = 25000
+
+
+def resolve_property(explicit=None):
+    return explicit or os.environ.get("GSC_PROPERTY") or DEFAULT_PROPERTY
+
+
+def resolve_credentials(explicit=None):
+    """Return (path, is_legacy) or (None, False)."""
+    if explicit:
+        return (explicit if os.path.exists(explicit) else None), False
+    env = os.environ.get("GSC_SERVICE_ACCOUNT_JSON")
+    if env and os.path.exists(env):
+        return env, False
+    for path in CREDENTIAL_PATHS:
+        if os.path.exists(path):
+            return path, False
+    if os.path.exists(LEGACY_CREDENTIAL_PATH):
+        return LEGACY_CREDENTIAL_PATH, True
+    return None, False
+
+
+def build_service(cred_path):
+    """Build an authenticated Search Console client.
+
+    Imports are lazy so `--help` and `--dry-run` work on a machine without
+    the Google client libraries installed.
+    """
     try:
         from google.oauth2 import service_account
         from googleapiclient.discovery import build
     except ImportError:
-        print("[ERROR] Missing packages. Run:")
-        print("  pip install google-auth google-api-python-client google-auth-httplib2")
-        sys.exit(1)
+        sys.exit("[ERROR] Missing packages. Run:\n"
+                 "  pip install google-auth google-api-python-client google-auth-httplib2")
 
-    if not os.path.exists(KEY_PATH):
-        print(f"[ERROR] Service account key not found: {KEY_PATH}")
-        print("See GSC-API-SETUP.md for instructions.")
-        sys.exit(1)
-
-    with open(KEY_PATH) as f:
-        key_data = json.load(f)
-
-    creds = service_account.Credentials.from_service_account_info(
-        key_data,
-        scopes=["https://www.googleapis.com/auth/webmasters.readonly"]
-    )
-    return build("searchconsole", "v1", credentials=creds)
-
-# ============================================================
-# Data Fetchers
-# ============================================================
-
-def fetch_index_status(service):
-    """Get indexed / not-indexed page counts."""
-    print("\n" + "=" * 60)
-    print("INDEX STATUS REPORT")
-    print("=" * 60)
-
-    # Indexed pages count
-    try:
-        result = service.urlInspection().index().inspect(
-            body={"inspectionUrl": "https://suppbridge.com/", "siteUrl": SITE_URL}
-        ).execute()
-        insp = result.get("inspectionResult", {}).get("indexStatusResult", {})
-        print(f"\n  Homepage .......... {insp.get('coverageState', 'unknown')}")
-    except Exception as e:
-        print(f"\n  Homepage .......... [error] {e}")
-
-    return True
+    with open(cred_path, encoding="utf-8") as f:
+        info = json.load(f)
+    if "private_key" not in info or "client_email" not in info:
+        sys.exit(f"[ERROR] {cred_path} is not a service-account key file.")
+    creds = service_account.Credentials.from_service_account_info(info, scopes=[SCOPE])
+    return build("searchconsole", "v1", credentials=creds, cache_discovery=False)
 
 
-def fetch_search_performance(service, days=28):
-    """Pull search analytics: queries, clicks, impressions, CTR, position."""
-    print("\n" + "=" * 60)
-    print(f"SEARCH PERFORMANCE (last {days} days)")
-    print("=" * 60)
+# ── Fetch ────────────────────────────────────────────────────────────────
 
-    end_date = datetime.now().date()
-    start_date = end_date - timedelta(days=days)
+def fetch_rows(service, prop, start, end, row_limit):
+    """Pull date/query/page rows, paging until the API stops returning data.
 
-    request = {
-        "startDate": start_date.isoformat(),
-        "endDate": end_date.isoformat(),
-        "dimensions": ["query"],
-        "rowLimit": 50,
-        "startRow": 0,
-    }
-
-    try:
-        response = service.searchanalytics().query(
-            siteUrl=SITE_URL, body=request
-        ).execute()
-
-        rows = response.get("rows", [])
-        if not rows:
-            print("\n  (No search data yet — site may be too new)")
-            return None
-
-        total_clicks = sum(r["clicks"] for r in rows)
-        total_impressions = sum(r["impressions"] for r in rows)
-        avg_ctr = (total_clicks / total_impressions * 100) if total_impressions else 0
-        avg_pos = sum(r["position"] * r["impressions"] for r in rows) / total_impressions if total_impressions else 0
-
-        print(f"\n  Total Clicks .... {total_clicks}")
-        print(f"  Total Impressions. {total_impressions}")
-        print(f"  Avg CTR ......... {avg_ctr:.1f}%")
-        print(f"  Avg Position .... {avg_pos:.1f}")
-        print(f"\n  {'Query':45s} {'Clicks':>7s} {'Impr':>7s} {'CTR':>6s} {'Pos':>5s}")
-        print("  " + "-" * 72)
-
-        for row in rows[:20]:
-            query = row["keys"][0][:43]
-            clicks = row["clicks"]
-            imps = row["impressions"]
-            ctr = (clicks / imps * 100) if imps else 0
-            pos = row["position"]
-            print(f"  {query:45s} {clicks:>7d} {imps:>7d} {ctr:>5.1f}% {pos:>5.1f}")
-
-        return {
-            "total_clicks": total_clicks,
-            "total_impressions": total_impressions,
-            "avg_ctr": avg_ctr,
-            "avg_position": avg_pos,
-            "top_queries": rows[:10],
+    Paging matters: a single request caps at row_limit, and silently
+    truncating a month of data would look exactly like a quiet month.
+    """
+    rows = []
+    start_row = 0
+    while True:
+        request = {
+            "startDate": start.isoformat(),
+            "endDate": end.isoformat(),
+            "dimensions": ["date", "query", "page"],
+            "rowLimit": row_limit,
+            "startRow": start_row,
+            # final: only data Google considers settled. A daily sync has no
+            # reason to store numbers that will still move.
+            "dataState": "final",
         }
-
-    except Exception as e:
-        print(f"\n  [ERROR] {e}")
-        return None
-
-
-def fetch_sitemap_status(service):
-    """Check sitemap submission status."""
-    print("\n" + "=" * 60)
-    print("SITEMAP STATUS")
-    print("=" * 60)
-
-    sitemaps = [
-        "https://suppbridge.com/sitemap.xml",
-        "https://suppbridge.com/blog/sitemap.xml",
-    ]
-
-    active_sitemaps = []
-    for sm in sitemaps:
-        try:
-            result = service.sitemaps().get(
-                siteUrl=SITE_URL, feedpath=sm
-            ).execute()
-            print(f"\n  {sm}")
-            print(f"    Submitted: {result.get('contents', [{}])[0].get('submitted', '?')}")
-            print(f"    Indexed:   {result.get('contents', [{}])[0].get('indexed', '?')}")
-            active_sitemaps.append(sm)
-        except Exception:
-            print(f"\n  {sm}")
-            print(f"    Status: NOT SUBMITTED — submit in GSC panel")
-
-    if not active_sitemaps:
-        print("\n  ⚠️  No sitemaps submitted. Google may discover pages slowly.")
-
-    return active_sitemaps
+        response = service.searchanalytics().query(siteUrl=prop, body=request).execute()
+        batch = response.get("rows", [])
+        rows.extend(batch)
+        if len(batch) < row_limit:
+            break
+        start_row += row_limit
+    return rows
 
 
-def fetch_page_queries(service, page_path, days=28):
-    """Get queries driving traffic to a specific page."""
-    end_date = datetime.now().date()
-    start_date = end_date - timedelta(days=days)
+# ── Validate ─────────────────────────────────────────────────────────────
 
-    full_url = f"https://suppbridge.com{page_path}"
-    request = {
-        "startDate": start_date.isoformat(),
-        "endDate": end_date.isoformat(),
-        "dimensions": ["query"],
-        "dimensionFilterGroups": [{
-            "filters": [{
-                "dimension": "page",
-                "operator": "equals",
-                "expression": full_url
-            }]
-        }],
-        "rowLimit": 25,
-        "startRow": 0,
-    }
+def validate_row(row):
+    """Return (clean_tuple, None) or (None, reason).
+
+    This is the boundary V2.3 §11 asks for: the API is an external system,
+    and its output does not enter the database until it has been checked.
+    """
+    keys = row.get("keys") or []
+    if len(keys) != 3:
+        return None, f"expected 3 dimension keys, got {len(keys)}"
+    raw_date, query, page = (str(k) for k in keys)
 
     try:
-        response = service.searchanalytics().query(
-            siteUrl=SITE_URL, body=request
-        ).execute()
-        return response.get("rows", [])
-    except Exception:
-        return []
+        datetime.strptime(raw_date, "%Y-%m-%d")
+    except ValueError:
+        return None, f"unparseable date {raw_date!r}"
+
+    parsed = urlparse(page)
+    if parsed.scheme != "https" or parsed.netloc not in OWN_DOMAINS:
+        return None, f"page not on suppbridge.com: {page!r}"
+    if not query.strip():
+        return None, "empty query"
+
+    clicks = row.get("clicks", 0)
+    impressions = row.get("impressions", 0)
+    ctr = row.get("ctr", 0.0)
+    position = row.get("position", 0.0)
+
+    if clicks < 0:
+        return None, f"negative clicks ({clicks})"
+    if impressions < 0:
+        return None, f"negative impressions ({impressions})"
+    if not 0.0 <= ctr <= 1.0:
+        return None, f"ctr out of range ({ctr})"
+    if position <= 0:
+        return None, f"position must be > 0 ({position})"
+    if clicks > impressions:
+        return None, f"clicks ({clicks}) exceed impressions ({impressions})"
+
+    return (raw_date, query, page, int(clicks), int(impressions),
+            float(ctr), float(position)), None
 
 
-# ============================================================
-# Report Builder
-# ============================================================
-
-def build_report(service):
-    """Generate full SEO report from GSC data."""
-    perf = fetch_search_performance(service)
-    sitemaps = fetch_sitemap_status(service)
-    fetch_index_status(service)
-
-    # Build daily monitoring data
-    report = {
-        "date": datetime.now().isoformat(),
-        "search_performance": perf,
-        "active_sitemaps": sitemaps,
-    }
-
-    # Cache for later comparison
-    os.makedirs(CACHE_DIR, exist_ok=True)
-    cache_file = os.path.join(CACHE_DIR, f"gsc-{datetime.now().strftime('%Y-%m-%d')}.json")
-    with open(cache_file, "w") as f:
-        json.dump(report, f, indent=2, default=str)
-    print(f"\n  [Report cached to {cache_file}]")
-
-    return report
+def validate_rows(raw_rows):
+    """Split raw API rows into clean rows and rejection reasons."""
+    clean, rejects = [], []
+    for row in raw_rows:
+        ok, reason = validate_row(row)
+        if ok:
+            clean.append(ok)
+        else:
+            rejects.append(reason)
+    return clean, rejects
 
 
-# ============================================================
-# CLI
-# ============================================================
+# ── Report ───────────────────────────────────────────────────────────────
+
+def print_report(prop, start, end, raw_count, clean, rejects, top=20):
+    pages = {r[2] for r in clean}
+    queries = {r[1] for r in clean}
+    clicks = sum(r[3] for r in clean)
+    impressions = sum(r[4] for r in clean)
+
+    print("GSC connection: PASS")
+    print()
+    print("Property:")
+    print(prop)
+    print()
+    print("Date range:")
+    print(f"{start.isoformat()} → {end.isoformat()}")
+    print()
+    print("Rows fetched:")
+    print(raw_count)
+    print()
+    print("Rows accepted / rejected:")
+    print(f"{len(clean)} / {len(rejects)}")
+    print()
+    print("Pages:")
+    print(len(pages))
+    print()
+    print("Queries:")
+    print(len(queries))
+    print()
+    print("Clicks:")
+    print(clicks)
+    print()
+    print("Impressions:")
+    print(impressions)
+    print()
+
+    if rejects:
+        print("Rejected rows (first 5 reasons):")
+        for reason in rejects[:5]:
+            print(f"  - {reason}")
+        print()
+
+    head = f"{'query':38s} {'page':34s} {'clicks':>7s} {'impr':>7s} {'ctr':>7s} {'pos':>6s}"
+    print(head)
+    print("-" * len(head))
+    for r in sorted(clean, key=lambda x: (-x[3], -x[4]))[:top]:
+        _, query, page, c, i, ctr, pos = r
+        path = urlparse(page).path or "/"
+        print(f"{query[:36]:38s} {path[:32]:34s} {c:>7d} {i:>7d} {ctr * 100:>6.2f}% {pos:>6.1f}")
+
+
+def print_blocked(reason):
+    print("GSC connection: BLOCKED")
+    print()
+    print(reason)
+    print()
+    print("No data was fetched and nothing was written. To unblock, follow")
+    print("scripts/GSC-API-SETUP.md and place the service-account key at:")
+    for path in CREDENTIAL_PATHS:
+        print(f"  {path}")
+    print("  (owner: the user running the sync, mode 600)")
+
+
+# ── Main ─────────────────────────────────────────────────────────────────
+
+def main():
+    parser = argparse.ArgumentParser(description="SuppBridge GSC fetcher → seo_intel")
+    parser.add_argument("--days", type=int, default=DEFAULT_DAYS,
+                        help=f"days of history to pull (default {DEFAULT_DAYS})")
+    parser.add_argument("--property", default=None,
+                        help=f"GSC property (default {DEFAULT_PROPERTY})")
+    parser.add_argument("--credentials", default=None, help="path to the service-account JSON")
+    parser.add_argument("--dsn", default=None, help="PostgreSQL DSN for seo_intel")
+    parser.add_argument("--row-limit", type=int, default=DEFAULT_ROW_LIMIT)
+    parser.add_argument("--top", type=int, default=20, help="rows to print (default 20)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="fetch and validate, but write nothing")
+    parser.add_argument("--init-db", action="store_true",
+                        help="create the seo_intel tables and exit")
+    parser.add_argument("--strict", action="store_true",
+                        help="exit non-zero when blocked instead of skipping")
+    args = parser.parse_args()
+
+    if args.init_db:
+        conn = store.connect(args.dsn or store.dsn_from_env())
+        store.apply_schema(conn)
+        with conn.cursor() as cur:
+            cur.execute("""SELECT table_name FROM information_schema.tables
+                            WHERE table_schema = 'public' ORDER BY 1""")
+            print("seo_intel schema applied. Tables: " +
+                  ", ".join(r[0] for r in cur.fetchall()))
+        conn.close()
+        return 0
+
+    prop = resolve_property(args.property)
+    start = date.today() - timedelta(days=args.days)
+    end = date.today()
+
+    cred_path, is_legacy = resolve_credentials(args.credentials)
+    if not cred_path:
+        print_blocked("No service-account credentials found.")
+        if not args.dry_run:
+            _record_skip(args.dsn)
+        return 1 if args.strict else 0
+    if is_legacy:
+        print("[WARN] Using the legacy in-repo key at scripts/gsc-service-account.json.")
+        print("       Move it to /etc/suppbridge/seo-intel/ so a stray `git add` cannot leak it.")
+        print()
+
+    service = build_service(cred_path)
+
+    conn = None
+    run_id = None
+    if not args.dry_run:
+        conn = store.connect(args.dsn or store.dsn_from_env())
+        store.apply_schema(conn)
+        run_id = store.start_run(conn, "gsc")
+
+    try:
+        raw_rows = fetch_rows(service, prop, start, end, args.row_limit)
+    except Exception as exc:  # noqa: BLE001 - the message is the product here
+        message = f"{type(exc).__name__}: {exc}"
+        print("GSC connection: FAILED")
+        print(message)
+        if conn:
+            store.finish_run(conn, run_id, store.STATUS_FAILED,
+                             error_message=message[:2000])
+            conn.close()
+        return 1
+
+    clean, rejects = validate_rows(raw_rows)
+
+    status = store.STATUS_SUCCESS if not rejects else store.STATUS_PARTIAL
+    written = 0
+    if conn:
+        try:
+            written = store.upsert_gsc_rows(conn, clean)
+            store.finish_run(
+                conn, run_id, status,
+                rows_fetched=len(raw_rows), rows_written=written,
+                rows_rejected=len(rejects),
+                notes=(f"property={prop} range={start}..{end}"
+                       + (f"; rejected: {'; '.join(sorted(set(rejects))[:5])}" if rejects else "")),
+            )
+        finally:
+            conn.close()
+
+    print_report(prop, start, end, len(raw_rows), clean, rejects, args.top)
+    print()
+    if args.dry_run:
+        print(f"DRY RUN — {len(clean)} validated rows, nothing written.")
+    else:
+        print(f"Stored: {written} rows into seo_intel.seo_gsc_daily (run id {run_id}).")
+    return 0
+
+
+def _record_skip(dsn):
+    """Log the skip so the scheduler's history is honest, and never crash."""
+    try:
+        conn = store.connect(dsn or store.dsn_from_env())
+        run_id = store.start_run(conn, "gsc")
+        store.finish_run(conn, run_id, store.STATUS_SKIPPED,
+                         notes="credentials not configured; see scripts/GSC-API-SETUP.md")
+        conn.close()
+    except Exception as exc:  # noqa: BLE001 - a skip must not become a failure
+        print(f"[WARN] Could not record the skipped run: {exc}")
+
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="SuppBridge GSC Data Fetcher")
-    parser.add_argument("--perf", action="store_true", help="Fetch search performance only")
-    parser.add_argument("--sitemaps", action="store_true", help="Check sitemap status only")
-    parser.add_argument("--index", action="store_true", help="Check index status only")
-    parser.add_argument("--full", action="store_true", help="Generate full report")
-    parser.add_argument("--days", type=int, default=28, help="Days of data (default: 28)")
-
-    args = parser.parse_args()
-    svc = get_service()
-
-    if args.perf:
-        fetch_search_performance(svc, days=args.days)
-    elif args.sitemaps:
-        fetch_sitemap_status(svc)
-    elif args.index:
-        fetch_index_status(svc)
-    else:
-        build_report(svc)
+    sys.exit(main())
