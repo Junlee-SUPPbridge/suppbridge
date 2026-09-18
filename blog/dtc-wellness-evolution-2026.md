@@ -1,8 +1,8 @@
 ---
-title: "DTC Wellness Evolution: What's Next for 2026–2027"
+title: "DTC Wellness in 2026: From Viral to Viable"
 date: 2026-06-01
 tags: [market-trends, dtc, brand-strategy, industry-outlook]
-description: "From TikTok virality to sustainable brand building — a data-driven look at how founder-led wellness brands are maturing and what's coming next."
+description: "The 2022 DTC playbook — TikTok virality, Meta ads, influencer gifting — quietly stopped working. See the three-phase shift winning brands run in 2026."
 slug: dtc-wellness-evolution-2026
 ---
 
