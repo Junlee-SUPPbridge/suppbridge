@@ -1,76 +1,198 @@
-# SuppBridge Content Plan — Buyer-Problem SEO
+# SuppBridge Content Plan — Industry Advisory Clusters
 
-**Purpose:** shift the blog from generic supplement-industry commentary to content that captures buyers who are actively sourcing in China and are worried about getting it wrong.
+**Purpose:** the blog supports the positioning *China Supplement Industry Advisor & Supply Partner*. It publishes work that demonstrates product-development, sourcing, manufacturing and supply-chain judgement — not marketplace anxiety.
 
-**Why this works commercially:** the reader arriving from these searches has a live project and a specific fear. The matching commercial offer is the **Supplier Review** — a low-commitment entry point that does not require them to book a call or abandon a supplier they have already found.
+**Cluster taxonomy** (matches the `TAG_CLASS` / `TAG_LABEL` maps in `build-blog.py`):
+
+| Cluster | HTML tag class | What it proves |
+|---|---|---|
+| Product Development | `tag--product` | We can make product decisions, not just source |
+| Ingredient Sourcing | `tag--ingredient` | We understand specifications and comparability |
+| Manufacturing | `tag--manufacturing` | We understand plants, MOQ and production reality |
+| Supply Chain | `tag--supplychain` | We can run an ongoing relationship, not a transaction |
+| Industry Consulting | `tag--consulting` | We know where foreign brands get China wrong |
 
 **Conversion path for every article:**
-`organic search → article → "Request a Supplier Review" (pre-footer CTA) → /china-supplement-sourcing.html#review → form → /thanks.html`
+
+`organic search → article → "Discuss Your Project" (generated end-of-article CTA) → /#start-project → form → /thanks.html`
+
+The CTA is emitted automatically by `article_cta()` in `build-blog.py`. A secondary ghost link to `/china-supplement-sourcing.html` (supplier due diligence) remains for readers who arrive with a live supplier question — but it is the *second* action, not the offer.
 
 ---
 
-## Status
+## Cluster 1 — Product Development
 
 | # | Topic | Status | Slug |
 |---|---|---|---|
-| 1 | How to Verify a China Supplement Manufacturer Before Paying | **Published** | `verify-china-supplement-manufacturer` |
-| 2 | How to Tell If a Chinese Supplier Is Actually a Factory | **Published** | `chinese-supplier-factory-or-trading-company` |
-| 3 | How to Verify a COA From a Chinese Supplier | **Published** | `verify-coa-chinese-supplement-supplier` |
-| 4 | Alibaba Supplement Sourcing: What Buyers Should Verify | **Published** | `alibaba-supplement-sourcing-what-to-verify` |
-| 5 | What to Check Before Buying Supplement Ingredients From China | Planned | `buying-supplement-ingredients-from-china` |
-| 6 | Why a GMP Certificate Does Not Prove Your Ingredient Is Authentic | Planned | `gmp-certificate-does-not-prove-authenticity` |
-| 7 | China Supplement Manufacturer vs Trading Company (comparison-led) | Planned — *partial coverage exists in #2; consider a comparison-table version targeting a distinct query* | `manufacturer-vs-trading-company-china` |
-| 8 | What Questions Should You Ask a Chinese Supplement Factory? | Planned | `questions-to-ask-chinese-supplement-factory` |
-| 9 | How to Source Supplement Ingredients in China Without Getting Burned | Planned | `source-supplement-ingredients-china` |
-| 10 | What to Do When Your China Supplement Sample Doesn't Match Production | Planned | `sample-doesnt-match-production` |
+| 1.1 | How to Develop a Supplement Product in China | **Published 2026-09-18** | `how-to-develop-a-supplement-product-in-china` |
+| 1.2 | How to Choose the Right Dosage Form | Planned | `how-to-choose-supplement-dosage-form` |
+| 1.3 | How to Build a Formula Around a Target Effect | Planned | `build-a-formula-around-target-effect` |
+| 1.4 | Common Problems When Developing Supplements in China | Planned | `common-problems-developing-supplements-china` |
 
-**Published dates:** #1 2026-09-16 · #2 2026-09-11 · #3 2026-09-05 · #4 2026-08-28
+### 1.2 — How to Choose the Right Dosage Form
+- **Intent:** "capsule vs powder vs gummy supplement", "best dosage form for supplement", "supplement dosage form comparison"
+- **Outline:** start from the consumer experience, not the format → the three tests (does the dose fit / does the active survive / can the market carry it) → per-format reality check table (dose ceiling, typical MOQ band, cost per dose, sensory risk, regulatory notes) → formats that are usually a bad idea for a given brief → how format locks in downstream cost → when to revisit
+- **Internal links:** 1.1, 3.3 (MOQ & cost), `/#services`
+
+### 1.3 — How to Build a Formula Around a Target Effect
+- **Intent:** "how to formulate a supplement", "supplement formula development", "build supplement formula"
+- **Outline:** effect → dose → form of active → actives that support the effect → avoiding overlap and antagonism → sensory and stability constraints → where to stop (and why more actives is usually worse) → the specification that comes out the other end
+- **Internal links:** 1.1, 2.2 (specifications), 5.2 (formula decisions and cost)
+- **Compliance note:** no efficacy claims. Frame as formulation reasoning, not health outcomes.
+
+### 1.4 — Common Problems When Developing Supplements in China
+- **Intent:** "supplement development problems", "supplement formulation mistakes", "why supplement projects fail"
+- **Outline:** ten failure patterns with the decision each traces back to → which are cheap to fix and which are not → the three that appear in almost every troubled project → how each is prevented at the specification stage
+- **Internal links:** 1.1, 2.5, 4.1
 
 ---
 
-## Briefs for the remaining six
+## Cluster 2 — Ingredient Sourcing
 
-### #5 — What to Check Before Buying Supplement Ingredients From China
-- **Target intent:** "supplement ingredient sourcing China", "buy supplement ingredients from China", "China ingredient supplier"
-- **Why it matters:** closest to the top of the funnel but still problem-aware; high volume relative to the finished-product queries.
-- **Outline:** why ingredient quotes aren't comparable → build your own specification first → extract ratio vs standardisation → assay method as cost driver → carrier and grade → documentation set (spec, COA, MSDS/SDS, allergen, origin, non-GMO) → sampling and retention → regulatory screening per market → like-for-like comparison table → when to commission independent testing
-- **Internal links:** #3 (COA), #1 (manufacturer verification), service page anchor `/#services`
-- **CTA variant:** "Send us your ingredient list and current quotes"
+| # | Topic | Status | Slug |
+|---|---|---|---|
+| 2.1 | How to Source Functional Ingredients in China | Planned | `source-functional-ingredients-china` |
+| 2.2 | How to Compare Ingredient Specifications | Planned | `compare-ingredient-specifications` |
+| 2.3 | Extract Ratio vs Standardized Extract | Planned | `extract-ratio-vs-standardized-extract` |
+| 2.4 | How to Evaluate Botanical Extract Suppliers | Planned | `evaluate-botanical-extract-suppliers` |
+| 2.5 | How to Compare Ingredient Quotes | Planned | `compare-ingredient-quotes` |
 
-### #6 — Why a GMP Certificate Does Not Prove Your Ingredient Is Authentic
-- **Target intent:** "GMP certificate supplement meaning", "does GMP guarantee quality", "is GMP the same as FDA approval"
-- **Why it matters:** high-confusion topic with strong search demand and low-quality competition; positions SuppBridge as the honest voice.
-- **Outline:** what GMP covers (systems, processes, site) → what it does not cover (identity of a given lot) → why upstream substitution defeats downstream certification → FDA does not issue GMP certificates; registration ≠ approval → certificate holder vs site vs product → what actually establishes identity (validated analytical method on a controlled sample) → how to structure testing scope → what to write into your specification
-- **Internal links:** #3 (COA), #1 (verification sequence)
-- **Compliance note:** must stay factual. No claims about suppliers generally being dishonest.
+### 2.1 — How to Source Functional Ingredients in China
+- **Intent:** "functional ingredient supplier China", "source ingredients China", "supplement ingredient sourcing"
+- **Outline:** the supplier landscape (trader / distributor / extractor / manufacturer) and who adds what → why the entity that quotes is often not the entity that produces → what to establish before the first enquiry → documentation set by ingredient type → sampling and retention → when an audit is worth paying for
+- **Internal links:** 2.2, 2.5, `/#services`
 
-### #7 — China Supplement Manufacturer vs Trading Company
-- **Target intent:** "supplement manufacturer vs trading company", "Chinese trading company supplement"
-- **Why it matters:** already partly served by #2 — build this as a **comparison-table-first** piece targeting the distinct query, and add a cost/benefit decision framework.
-- **Outline:** definitions → table (capability, price transparency, MOQ flexibility, English support, accountability, IP ownership, change control) → when each is the better choice → how price layers accumulate → questions to identify which you're dealing with → contractual protections for either case
-- **Internal links:** #2 (factory signals), #1 (verification), `/#services`
-- **Canonical note:** ensure this and #2 do not cannibalise. If they overlap heavily after drafting, merge and 301 the weaker slug.
+### 2.2 — How to Compare Ingredient Specifications
+- **Intent:** "ingredient specification comparison", "how to read a supplement ingredient spec", "spec sheet supplement"
+- **Outline:** the fields that must be fixed before quotes are comparable → identity and form → assay, method and basis → standardisation and markers → carrier, excipient and grade → particle size, flow, density → tolerances → worked example: three quotes, one specification
+- **Internal links:** 2.3, 2.5, 3.4
+- **Deliverable bonus:** a copy-ready specification template. Highest link-earning asset in this cluster.
 
-### #8 — What Questions Should You Ask a Chinese Supplement Factory?
-- **Target intent:** "questions to ask supplement manufacturer", "supplier questionnaire supplement", "manufacturer audit questions"
-- **Why it matters:** highly linkable and highly saveable — a natural resource that earns backlinks.
-- **Outline:** why questions beat documents → company & identity questions → licence & certification questions → capability questions (dosage form, batch size, yield, changeover) → documentation & QC questions → commercial questions (MOQ, lead time, payment, change control) → the five questions most likely to get a revealing answer → a copy-ready questionnaire
-- **Internal links:** #1, #2, #5
-- **Deliverable bonus:** consider publishing a downloadable questionnaire PDF and capturing email for it — the highest-intent list-building asset in this set.
+### 2.3 — Extract Ratio vs Standardized Extract
+- **Intent:** "extract ratio vs standardized", "what does 10:1 extract mean", "standardized extract supplement"
+- **Outline:** what a ratio describes and what it does not → what standardisation describes → why identical ratios can hide different material → markers and their limitations → how to write a specification that survives substitution → where each is the right choice
+- **Internal links:** 2.2, 2.4
 
-### #9 — How to Source Supplement Ingredients in China Without Getting Burned
-- **Target intent:** "supplement sourcing agent China", "how to source supplements from China", "China supplement sourcing agent"
-- **Why it matters:** the closest match to the commercial service page; should be the strongest internal-link bridge to `/china-supplement-sourcing.html`.
-- **Outline:** the three mistakes that cause most failures (no written specification; verification after payment; no QC doc requirement) → a staged process (define → identify → verify → sample → contract → production → ship) → what to do at each stage → how to choose between a platform, an agent and an independent partner → cost structure of each model
-- **Internal links:** all four published articles plus `/china-supplement-sourcing.html`
-- **Note:** avoid duplicating #5; #9 is process, #5 is specification-level detail.
+### 2.4 — How to Evaluate Botanical Extract Suppliers
+- **Intent:** "botanical extract supplier evaluation", "how to evaluate herbal extract supplier", "botanical supplier China"
+- **Outline:** source plant and origin → extraction method and solvent residue → standardisation discipline → contamination and adulteration risk areas → documentation → lot-to-lot consistency as the real test → what to ask that produces a useful answer
+- **Internal links:** 2.2, 2.3, 5.3
+- **Compliance note:** keep to comparability and evidence, never to accusations about suppliers as a category.
 
-### #10 — What to Do When Your China Supplement Sample Doesn't Match Production
-- **Target intent:** "sample doesn't match production", "supplement sample vs production batch", "supplier used different ingredients"
-- **Why it matters:** pure problem-stage intent — the reader already has a live dispute. Highest conversion rate expected in the set, lowest search volume.
-- **Outline:** why this happens (pilot vs production line, hand-made samples, substituted raw material, changed carrier, different capsule or film) → immediate steps (stop, document, photograph, retain samples, compare against the approved spec) → what to ask the supplier in writing → technical comparison options (send both to one lab on the same method) → when it's a fixable process issue vs a material breach → commercially, what to negotiate → how to prevent it next time (sample approval protocol, retained reference sample, change control)
-- **Internal links:** #3, #1, `/#services`
-- **Compliance note:** keep it factual and remedy-oriented, not accusatory.
+### 2.5 — How to Compare Ingredient Quotes
+- **Intent:** "compare supplement quotes", "ingredient price comparison China", "why are quotes different"
+- **Outline:** why quotes differ without anyone being dishonest → the seven variables hidden inside a unit price → normalising to cost per active unit → when the cheapest is genuinely cheapest and when it is not → total landed cost → the questions that make quotes comparable
+- **Internal links:** 2.2, 5.3, `/#services`
+- **Canonical note:** overlaps 5.3 (cheapest quote ≠ lowest cost). Keep 2.5 mechanical and arithmetic; keep 5.3 argumentative and strategic. If they converge, merge into 5.3 and 301.
+
+---
+
+## Cluster 3 — Manufacturing
+
+| # | Topic | Status | Slug |
+|---|---|---|---|
+| 3.1 | How to Choose a Supplement Manufacturer in China | Planned | `choose-supplement-manufacturer-china` |
+| 3.2 | OEM vs ODM for Supplement Brands | Planned | `oem-vs-odm-supplement-brands` |
+| 3.3 | MOQ, Lead Time and Development Costs | Planned | `moq-lead-time-development-costs` |
+| 3.4 | What to Prepare Before Starting Production | Planned | `prepare-before-starting-production` |
+
+### 3.1 — How to Choose a Supplement Manufacturer in China
+- **Intent:** "choose supplement manufacturer China", "supplement manufacturer selection", "how to find a good supplement factory"
+- **Outline:** fitness is relative to a specific brief → process capability vs category claims → MOQ and where it actually comes from → certification scope and whose name it is in → tolerance and the specification → finishing and packaging → how they behave when something goes wrong → the shortlist and trial-run strategy
+- **Internal links:** 3.3, 3.4, 5.2
+
+### 3.2 — OEM vs ODM for Supplement Brands
+- **Intent:** "OEM vs ODM supplement", "private label vs custom formula", "ODM supplement China"
+- **Outline:** what each model actually transfers → IP and formulation ownership → time to market → cost structure and where each is cheaper → change control and exclusivity → which model fits which stage of a brand → the hybrid arrangement most brands end up in
+- **Internal links:** 3.1, 4.1, `/#services`
+
+### 3.3 — MOQ, Lead Time and Development Costs
+- **Intent:** "supplement MOQ", "supplement manufacturing lead time", "supplement development cost"
+- **Outline:** what sets MOQ (line minimum, raw material pack size, tooling, packaging) → how to reduce it legitimately → the real timeline broken into stages, with the stages most often underestimated → where development cost goes and what drives it → the decisions that trade cost against flexibility
+- **Internal links:** 1.2, 3.1, 3.4
+
+### 3.4 — What to Prepare Before Starting Production
+- **Intent:** "before starting supplement production", "production readiness supplement", "supplement batch checklist"
+- **Outline:** locked specification → approved retained sample → raw material lots confirmed → packaging and artwork released → release criteria and who signs → retention samples and QC documents contracted → logistics and labelling checked per market → the pre-production confirmation email worth sending
+- **Internal links:** 1.1, 3.1, 4.1
+
+---
+
+## Cluster 4 — Supply Chain
+
+| # | Topic | Status | Slug |
+|---|---|---|---|
+| 4.1 | How to Build a China Supplement Supply Chain | Planned | `build-china-supplement-supply-chain` |
+| 4.2 | How to Reduce Ingredient and Manufacturing Costs | Planned | `reduce-ingredient-manufacturing-costs` |
+| 4.3 | How to Manage Chinese Suppliers Remotely | Planned | `manage-chinese-suppliers-remotely` |
+| 4.4 | When a Supplement Brand Needs a China-Side Project Manager | Planned | `when-brands-need-china-project-manager` |
+
+### 4.1 — How to Build a China Supplement Supply Chain
+- **Intent:** "supplement supply chain China", "build supplement supply chain", "China supply chain setup"
+- **Outline:** single vs dual sourcing by component → where a second source is worth the qualification cost → ingredient continuity vs finished-goods continuity → documentation as infrastructure → the point at which a supply chain becomes an asset rather than a dependency → what changes when SKU count grows
+- **Internal links:** 3.1, 4.2, 4.4, `/#long-term`
+
+### 4.2 — How to Reduce Ingredient and Manufacturing Costs
+- **Intent:** "reduce supplement manufacturing cost", "lower supplement cost", "supplement cost optimization"
+- **Outline:** cost levers ranked by effect and by risk → specification-driven savings vs substitution savings → volume, format and pack-size effects → where cost reduction breaks the product → negotiating without damaging the relationship → the recurring annual review that keeps unit cost honest
+- **Internal links:** 2.5, 5.2, 5.3, `/#services`
+
+### 4.3 — How to Manage Chinese Suppliers Remotely
+- **Intent:** "manage Chinese supplier remotely", "working with Chinese suppliers", "China supplier communication"
+- **Outline:** why distance fails (language, time zone, indirect answers, unwritten expectations) → what to put in writing and what to leave to a call → the reporting rhythm that prevents drift → site visits and third-party inspection: when each is worth it → escalation and dispute posture → what to localise and what to keep yourself
+- **Internal links:** 4.1, 4.4, `/#start-project`
+
+### 4.4 — When a Supplement Brand Needs a China-Side Project Manager
+- **Intent:** "China project manager supplement", "do I need a sourcing agent", "China-side partner supplement brand"
+- **Outline:** the trigger points (SKU count, custom formulations, multiple suppliers, regulatory complexity) → what the role actually does week to week → when a freelancer is enough and when it is not → agency vs independent partner vs in-house hire, honestly compared → how to scope and measure the engagement
+- **Internal links:** 4.1, 4.3, `/#services`, `/#long-term`
+- **Note:** the closest article in the plan to the service page — write it as the strategic bridge to 05 China Project Consulting.
+
+---
+
+## Cluster 5 — Industry Consulting
+
+| # | Topic | Status | Slug |
+|---|---|---|---|
+| 5.1 | What Foreign Supplement Brands Often Get Wrong in China | Planned | `foreign-brands-get-wrong-china` |
+| 5.2 | How Formula Decisions Affect Manufacturing Cost | Planned | `formula-decisions-manufacturing-cost` |
+| 5.3 | Why the Cheapest Ingredient Quote Is Not Always the Lowest Cost | Planned | `cheapest-ingredient-quote-not-lowest-cost` |
+| 5.4 | What to Check Before Moving a Supplement Project to China | Planned | `before-moving-supplement-project-to-china` |
+
+### 5.1 — What Foreign Supplement Brands Often Get Wrong in China
+- **Intent:** "supplement brand China mistakes", "doing business in China supplements", "China supplement market entry mistakes"
+- **Outline:** eight recurring assumptions and what each costs → treating price as the primary signal → assuming a quotation is a specification → treating a certificate as evidence of a lot → optimising for first order instead of third → expecting written answers to unwritten questions → how each assumption is corrected
+- **Internal links:** 5.4, 4.3, `/#founder`
+
+### 5.2 — How Formula Decisions Affect Manufacturing Cost
+- **Intent:** "formulation cost supplement", "supplement formula cost", "cost per serving supplement"
+- **Outline:** cost per serving vs cost per kg → how dose, format and pack size compound → excipient and processing choices that add cost invisibly → yield, scrap and rework as cost lines → where a more expensive ingredient is the cheaper decision → the formula review that should precede price negotiation
+- **Internal links:** 1.3, 3.3, 4.2
+
+### 5.3 — Why the Cheapest Ingredient Quote Is Not Always the Lowest Cost
+- **Intent:** "cheapest supplement ingredient", "why are quotes different", "supplement ingredient cost"
+- **Outline:** what a low quote can mean (different grade, down-specified assay, different carrier, smaller pack, excluded testing, hidden freight) → normalising to cost per active unit → the cost of qualifying a second source later → downstream cost of a weak specification → a worked comparison
+- **Internal links:** 2.5, 5.2, 4.2
+
+### 5.4 — What to Check Before Moving a Supplement Project to China
+- **Intent:** "move supplement production to China", "should I manufacture in China", "China supplement manufacturing checklist"
+- **Outline:** the commercial case, honestly stated → what must be true before you start (specification, target market, volume, budget, timeline) → regulatory screening by market → IP and formulation protection → what to qualify first → the pilot sequence → when China is genuinely the wrong answer
+- **Internal links:** 5.1, 4.1, 3.1, `/#start-project`
+
+---
+
+## Retained secondary cluster — Supplier & Supply-Chain Due Diligence
+
+These four articles stay published, stay indexed and keep their internal links. They are **not** the brand narrative and should not be surfaced as the homepage hook — they serve readers who arrive with a live supplier question and route them into the wider project conversation.
+
+| Topic | Published | Slug |
+|---|---|---|
+| How to Verify a China Supplement Manufacturer Before Paying | 2026-09-16 | `verify-china-supplement-manufacturer` |
+| How to Tell If a Chinese Supplier Is Actually a Factory | 2026-09-11 | `chinese-supplier-factory-or-trading-company` |
+| How to Verify a COA From a Chinese Supplier | 2026-09-05 | `verify-coa-chinese-supplement-supplier` |
+| Alibaba Supplement Sourcing: What Buyers Should Verify | 2026-08-28 | `alibaba-supplement-sourcing-what-to-verify` |
+
+Writer's note: when one of these is updated, reframe the opening toward the *project* rather than the platform. The content stays; the framing follows the positioning.
 
 ---
 
@@ -79,9 +201,12 @@
 1. **Never publish a claim you cannot stand behind.** No invented figures, savings, volumes, timelines or client names.
 2. **No accusations against platforms or suppliers as a category.** Frame everything as buyer risk and verifiable evidence.
 3. **Never promise guarantees.** Use: supplier verification, due diligence, documentation review, manufacturer identification, capability assessment, project-specific screening, risk reduction. Never: "guaranteed authentic", "100% verified", "we eliminate risk".
-4. **Precise language over dramatic language.** The audience is a founder about to spend real money; precision signals competence.
-5. **Every article ends with the Supplier Review CTA** — generated automatically by `build-blog.py`.
-6. **Every article links to at least two other articles and one commercial page.** Internal linking is generated for related reading; the commercial link is added automatically.
+4. **Never publish a price for a service on the site.** Due diligence and consulting are quoted per project. No published day rates, no packaged low-cost reviews.
+5. **No fabricated client names.** Where a client has not agreed to be named, use an anonymised label (*US Supplement Brand — Focus Powder*, *European Supplement Brand — Oral Film*, *US Brand — Functional Gummy*).
+6. **Precise language over dramatic language.** The audience is a founder about to spend real money; precision signals competence.
+7. **Every article ends with the project-enquiry CTA** — generated automatically by `build-blog.py`.
+8. **Every article links to at least two other articles and one commercial page.** Related reading is generated; the commercial link is added automatically.
+9. **Tag from the five clusters.** New tags must be added to `TAG_CLASS` and `TAG_LABEL` in `build-blog.py`, or the article falls back to the `sourcing` class.
 
 ---
 
@@ -89,23 +214,27 @@
 
 There is currently **no analytics on the site**. Until that is added, none of this can be evaluated.
 
-When analytics is in place, track for each article:
+When analytics is in place, track per article:
 
 | Metric | Why |
 |---|---|
 | Organic sessions | Is the topic actually being searched? |
 | Scroll depth past 50% | Is the content being read or bounced? |
-| Click-through to `#review` CTA | Does the CTA convert intent? |
-| Form submissions attributed to `/china-supplement-sourcing.html` | Commercial value |
+| Click-through to the generated CTA | Does the article move a reader toward the project conversation? |
+| Form submissions attributed to assessment sources | Are we attracting product owners or one-off reviewers? |
+| **Share of enquiries selecting "ongoing support" or "long-term partner"** | The single best proxy for whether the repositioning is working |
 | Search Console: impressions vs CTR per query | Whether title/meta match intent |
 | Search Console: queries the page ranks for | Discover unplanned topics worth writing |
 
-`scripts/gsc-fetcher.py` already pulls Search Console data via service account and can supply the last two without any client-side analytics.
+`scripts/gsc-fetcher.py` already pulls Search Console data via service account and can supply the last two without client-side analytics.
+
+**Watch for a positioning regression:** if the due-diligence articles keep out-performing the product-development cluster on conversions, the site is still being read as a supplier-check service. That is the signal to write more from clusters 1, 3 and 5.
 
 ---
 
 ## Suggested cadence
 
-- **Publish 2 remaining articles per month**, prioritising #9 and #8 (strongest internal-link and link-earning value), then #6, #5, #10, #7.
+- **Publish two articles per month**, in this order: **4.4** (strategic bridge to the consulting service), **3.1** (highest-intent manufacturing query), **2.2** (specification template — the best link-earning asset), **1.2**, then work the clusters.
 - **Revisit published articles quarterly** — add a "what we learned from reader questions" section, which refreshes the page and improves rankings without rewriting.
 - **Add FAQ schema to the top three articles** once they have Search Console impressions showing question-style queries.
+- **Batch by cluster where possible.** Two articles from the same cluster interlink for free and build topical authority faster than two scattered topics.

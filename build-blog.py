@@ -173,6 +173,16 @@ TAG_CLASS = {
     'supplier-verification': 'verification', 'manufacturer-verification': 'verification',
     'coa': 'verification', 'due-diligence': 'verification',
     'quality': 'verification', 'procurement': 'sourcing',
+    # ── V2.1 content clusters (product / ingredient / manufacturing / supply chain / consulting) ──
+    'product-strategy': 'product', 'product': 'product',
+    'ingredient-sourcing': 'ingredient', 'ingredients': 'ingredient',
+    'botanical-extract': 'ingredient', 'specification': 'ingredient',
+    'manufacturing': 'manufacturing', 'manufacturer': 'manufacturing',
+    'oem': 'manufacturing', 'moq': 'manufacturing', 'packaging': 'manufacturing',
+    'supply-chain': 'supplychain', 'cost': 'supplychain',
+    'supplier-management': 'supplychain', 'project-management': 'supplychain',
+    'industry-consulting': 'consulting', 'market-entry-strategy': 'consulting',
+    'china': 'consulting',
 }
 
 TAG_LABEL = {
@@ -197,6 +207,16 @@ TAG_LABEL = {
     'manufacturer-verification': 'Manufacturer Verification',
     'coa': 'COA & Documents', 'due-diligence': 'Due Diligence',
     'quality': 'Quality', 'procurement': 'Procurement',
+    # ── V2.1 content clusters ──
+    'product-strategy': 'Product Development', 'product': 'Product Development',
+    'ingredient-sourcing': 'Ingredient Sourcing', 'ingredients': 'Ingredient Sourcing',
+    'botanical-extract': 'Botanical Extracts', 'specification': 'Specifications',
+    'manufacturing': 'Manufacturing', 'manufacturer': 'Manufacturer Selection',
+    'oem': 'OEM / ODM', 'moq': 'MOQ & Cost', 'packaging': 'Packaging',
+    'supply-chain': 'Supply Chain', 'cost': 'Cost Optimization',
+    'supplier-management': 'Supplier Management', 'project-management': 'China Project Management',
+    'industry-consulting': 'Industry Consulting', 'market-entry-strategy': 'Market Strategy',
+    'china': 'China',
 }
 
 
@@ -212,7 +232,7 @@ def tag_label(tag_slug):
 
 SITE_NAV_LINKS = [
     ("How We Help", "/#services"),
-    ("Supplier Verification", "/china-supplement-sourcing.html"),
+    ("Our Process", "/#process"),
     ("Projects", "/#projects"),
     ("About Jun", "/#founder"),
     ("Insights", "/blog/"),
@@ -245,30 +265,32 @@ def nav_html(current="blog"):
 <div class="nav-wrap">
 <a href="/" class="nav-brand">
 <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-<span class="nav-brand-text"><span>China Product &amp; Supply Partner</span></span>
+<span class="nav-brand-text"><span>China Supplement Industry Advisor</span></span>
 </a>
 <ul class="nav-links">{items}</ul>
-<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Start Your Project</a>
+<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
 <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
 </button>
 </div>
 <div class="mobile-menu" id="mobileMenu">
 {mobile}
-<a href="{CONTACT}" style="color:var(--teal);font-weight:700;">Start Your Project →</a>
+<a href="{CONTACT}" style="color:var(--teal);font-weight:700;">Discuss Your Project →</a>
 </div>
 </nav>"""
 
 
 FOOTER_NAV = [
     ("How We Help", "/#services"),
-    ("Supplier Verification", "/china-supplement-sourcing.html"),
-    ("Alibaba Supplier Review", "/china-supplement-sourcing.html#alibaba-review"),
+    ("Our Process", "/#process"),
+    ("Long-Term Partnership", "/#long-term"),
     ("Projects", "/#projects"),
     ("About Jun", "/#founder"),
+    ("Product Formats", "/product-formats.html"),
+    ("Supplier Due Diligence", "/china-supplement-sourcing.html"),
     ("Insights", "/blog/"),
     ("FAQ", "/#faq"),
-    ("Start Your Project", CONTACT),
+    ("Contact", CONTACT),
 ]
 
 
@@ -277,7 +299,7 @@ def footer_html():
     year = datetime.now().year
     return f"""<footer class="blog-footer">
 <div class="container">
-<p>&copy; {year} SuppBridge. China Supplement Product &amp; Supply Partner.</p>
+<p>&copy; {year} SuppBridge. China supplement industry advisor &amp; supply partner.</p>
 <p>{links}</p>
 </div>
 </footer>"""
@@ -352,14 +374,18 @@ def json_esc(text):
 
 
 def article_cta():
-    """Commercial end-of-article CTA. Turns SEO traffic into supplier-review leads."""
+    """Commercial end-of-article CTA.
+
+    Points at the project enquiry rather than a standalone supplier review, so
+    the funnel is content -> lead -> project (§4 of the V2.1 brief).
+    """
     return f"""<div class="article-cta">
-<p class="ac-kicker">Before you commit</p>
-<h3>Already have a supplier? Send us the details before you commit.</h3>
-<p>We review supplier identity, manufacturer-versus-trading-company signals, documentation consistency and project fit — then tell you what to verify next. No guarantees we can't back, and no obligation to work with us afterwards.</p>
+<p class="ac-kicker">Need more than a supplier check?</p>
+<h3>If you are building or sourcing a supplement in China, we can look at the whole project.</h3>
+<p>Formulation, ingredients, manufacturer selection, sampling, production and supply-chain setup — reviewed by someone on your side of the table. Send us the brief, the formula or the quotation and we will tell you what is realistic and what needs checking first.</p>
 <div class="ac-actions">
-<a class="ac-btn" href="{REVIEW}">Request a Supplier Review →</a>
-<a class="ac-btn ac-btn--ghost" href="{CONTACT}">Start a Project</a>
+<a class="ac-btn" href="{CONTACT}">Discuss Your Project →</a>
+<a class="ac-btn ac-btn--ghost" href="{REVIEW}">Supplier due diligence</a>
 </div>
 </div>"""
 
@@ -491,17 +517,17 @@ def build():
 {nav_html()}
 <header class="blog-hero">
 <div class="container">
-<h1>Buying Supplements in China — Without the Guesswork</h1>
-<p>Practical guides for the buyer's side of the table: how to verify a supplier, read a COA, compare quotations and avoid the mistakes that stall Chinese supplement projects.</p>
-<div class="blog-hero-cta"><a href="{REVIEW}" class="btn btn--primary">Request a Supplier Review →</a></div>
+<h1>Building Supplements in China — Industry Notes from the Inside</h1>
+<p>Practical guides on product development, ingredient sourcing, manufacturing and supply-chain management in China — written for brand owners, not for procurement departments.</p>
+<div class="blog-hero-cta"><a href="{CONTACT}" class="btn btn--primary">Discuss Your Project →</a></div>
 </div>
 </header>
 <div class="blog-list">
 <div class="container">
 <div class="blog-cta-band">
-<h2>Already found a supplier?</h2>
-<p>Before you send the deposit, send us the supplier. We'll tell you what to check.</p>
-<a href="{REVIEW}" class="btn btn--onlight">Request a Supplier Review →</a>
+<h2>Working on a product in China?</h2>
+<p>Tell us what you are trying to build. We will tell you what is realistic, what it takes and where the risks sit.</p>
+<a href="{CONTACT}" class="btn btn--onlight">Discuss Your Project →</a>
 </div>
 {cards}
 </div>

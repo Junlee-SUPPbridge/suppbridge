@@ -162,7 +162,14 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 
 @media (max-width: 1080px) {
     .nav-links, .nav-cta-desktop { display: none; }
+    /* Specificity guard: `.btn { display: inline-flex }` is declared later in
+       this file at equal specificity, so it would otherwise win and leave the
+       nav CTA visible and colliding with the hamburger on small screens. */
+    .nav .nav-cta-desktop { display: none; }
     .nav-toggle { display: inline-flex; }
+    .nav-brand .nav-brand-text span {
+        font-size: 0.58rem; letter-spacing: 0.05em; max-width: 152px;
+    }
     .mobile-menu.active {
         display: flex; flex-direction: column; background: #fff;
         border-top: 1px solid var(--line); padding: 8px 36px 22px; gap: 2px;
@@ -236,6 +243,15 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .hero-proof span { display: inline-flex; align-items: center; gap: 7px; }
 .hero-proof svg { width: 15px; height: 15px; color: var(--mint); flex-shrink: 0; }
 
+/* Breadcrumb (sub-pages) */
+.crumbs {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; color: var(--muted); margin-bottom: 20px;
+}
+.crumbs a { color: var(--muted); text-decoration: none; font-weight: 500; }
+.crumbs a:hover { color: var(--teal); }
+.crumbs span[aria-current] { color: var(--ink); font-weight: 600; }
+
 @media (max-width: 700px) {
     .hero { padding: calc(var(--nav-h) + 52px) 0 56px; }
     .hero-sub { font-size: 1.02rem; }
@@ -261,6 +277,28 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 }
 .trust-items .trust-item svg { width: 16px; height: 16px; color: var(--mint); flex-shrink: 0; }
 
+/* V2.1 — trust signals (head + sub, no unverifiable numbers) */
+.trust-signals {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px 18px;
+}
+.trust-signal { text-align: center; padding: 0 6px; }
+.trust-signal .ts-ic { color: var(--mint); margin-bottom: 9px; display: block; }
+.trust-signal .ts-ic svg { width: 20px; height: 20px; margin: 0 auto; }
+.trust-signal .ts-head {
+    display: block; font-size: 1rem; font-weight: 800; color: var(--ink);
+    letter-spacing: -0.01em; margin-bottom: 4px; line-height: 1.25;
+}
+.trust-signal .ts-sub { display: block; font-size: 0.79rem; color: var(--muted); line-height: 1.5; }
+
+@media (max-width: 900px) {
+    .trust-signals { grid-template-columns: 1fr 1fr; gap: 22px 16px; }
+    .trust-signal:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 460px) {
+    .trust-signals { grid-template-columns: 1fr; }
+    .trust-signal:last-child { grid-column: auto; }
+}
+
 /* Regulatory authorities strip (kept from original) */
 .reg-strip { background: var(--bg); border-bottom: 1px solid var(--line); padding: 22px 0; }
 .reg-strip .label {
@@ -272,6 +310,65 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
     gap: 12px 40px; flex-wrap: wrap;
 }
 .reg-strip-items span { font-weight: 700; font-size: 0.86rem; color: var(--muted); letter-spacing: 0.02em; }
+
+/* ══════════════ §7b CORE VALUES (3 PILLARS) ══════════════ */
+.value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.value-card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 34px 30px; transition: all 0.28s;
+}
+.value-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--teal); }
+.value-card .val-ic {
+    width: 48px; height: 48px; border-radius: 12px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--mint-soft); color: var(--teal);
+}
+.value-card .val-ic svg { width: 23px; height: 23px; }
+.value-card h3 { font-size: 1.12rem; margin-bottom: 10px; }
+.value-card p { font-size: 0.92rem; color: var(--muted); line-height: 1.68; }
+
+.value-note {
+    max-width: 780px; margin: 46px auto 0; padding-top: 30px;
+    border-top: 1px solid var(--line); text-align: center;
+    font-size: 1.1rem; font-weight: 600; color: var(--ink); line-height: 1.6;
+}
+.value-note em { font-style: normal; color: var(--teal); }
+
+@media (max-width: 900px) { .value-grid { grid-template-columns: 1fr; } }
+
+/* ══════════════ §7c PARTNER BAND (Meet Jun) ══════════════ */
+.partner-band {
+    display: grid; grid-template-columns: 250px 1fr; gap: 46px; align-items: center;
+    background: linear-gradient(150deg, #FFFFFF 0%, #F4F9F7 100%);
+    border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 40px 44px;
+}
+.partner-photo img {
+    width: 100%; border-radius: var(--radius); display: block;
+    aspect-ratio: 1 / 1; object-fit: cover; background: var(--sage);
+}
+.partner-body h3 { font-size: 1.45rem; margin-bottom: 4px; }
+.partner-body .partner-role {
+    display: block; font-size: 0.76rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--teal); margin-bottom: 20px;
+}
+.partner-body p { color: var(--muted); font-size: 0.95rem; line-height: 1.72; margin-bottom: 14px; }
+.partner-quote {
+    font-size: 1.02rem !important; color: var(--ink) !important; font-weight: 500;
+    border-left: 3px solid var(--mint); padding-left: 18px; margin: 20px 0 22px !important;
+    line-height: 1.66 !important;
+}
+.partner-langs {
+    display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px;
+    padding: 8px 15px; border-radius: 100px; background: var(--mint-soft);
+    font-size: 0.82rem; font-weight: 600; color: var(--teal);
+}
+.partner-langs svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+@media (max-width: 860px) {
+    .partner-band { grid-template-columns: 1fr; gap: 26px; padding: 30px 24px; }
+    .partner-photo { max-width: 210px; }
+}
 
 /* ══════════════ §8 PAIN ══════════════ */
 .pain-copy { max-width: 720px; margin: 0 auto 44px; text-align: center; }
@@ -316,10 +413,10 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .diff-intro p { color: var(--muted); font-size: 1.02rem; margin-top: 14px; }
 .diff-intro p + p { margin-top: 12px; }
 
-.step-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.step-flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 .step-card {
     position: relative; background: var(--white); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 30px 22px 26px; transition: all 0.28s;
+    border-radius: var(--radius); padding: 26px 18px 22px; transition: all 0.28s;
 }
 .step-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--mint); }
 .step-card .step-n {
@@ -334,8 +431,8 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 }
 .step-card:last-child::after { display: none; }
 
-@media (max-width: 1000px) { .step-flow { grid-template-columns: 1fr 1fr; } .step-card::after { display: none; } }
-@media (max-width: 600px) { .step-flow { grid-template-columns: 1fr; } }
+@media (max-width: 1150px) { .step-flow { grid-template-columns: repeat(3, 1fr); gap: 14px; } .step-card::after { display: none; } }
+@media (max-width: 640px) { .step-flow { grid-template-columns: 1fr; } }
 
 .diff-cta { text-align: center; margin-top: 40px; }
 .diff-cta .diff-cta-q { font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 16px; }
@@ -388,24 +485,75 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
     width: 6px; height: 6px; border-radius: 50%; background: var(--mint);
 }
 .service-card .svc-foot { margin-top: auto; }
+.service-card .svc-note {
+    font-size: 0.87rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6;
+}
 .service-card .svc-link {
     font-size: 0.85rem; font-weight: 600; color: var(--teal);
     display: inline-flex; align-items: center; gap: 6px;
 }
 .service-card .svc-link svg { width: 14px; height: 14px; }
 
-/* Lead-gen variant (China Project Review) */
-.service-card--lead {
+/* Featured variant (05 China Project Consulting) — spans the grid */
+.service-card--feature {
+    grid-column: 1 / -1;
     background: linear-gradient(150deg, #0C6259 0%, #0A5049 100%);
-    border-color: transparent; color: #fff;
+    border-color: transparent; color: #fff; padding: 42px 44px;
 }
-.service-card--lead:hover { border-color: transparent; box-shadow: 0 12px 40px rgba(12,98,89,0.28); }
-.service-card--lead h3, .service-card--lead .svc-n { color: #fff; }
-.service-card--lead .svc-n { color: rgba(255,255,255,0.5); }
-.service-card--lead p { color: rgba(255,255,255,0.78); font-size: 0.92rem; }
-.service-card--lead .svc-for { color: var(--mint); }
+.service-card--feature:hover { border-color: transparent; box-shadow: 0 12px 40px rgba(12,98,89,0.28); }
+.service-card--feature .svc-n { color: rgba(255,255,255,0.5); }
+.service-card--feature h3 { color: #fff; font-size: 1.5rem; margin-bottom: 10px; }
+.service-card--feature .svc-for { color: var(--mint); font-size: 0.92rem; }
+.service-card--feature p { color: rgba(255,255,255,0.78); font-size: 0.95rem; line-height: 1.7; }
+.service-card--feature ul { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 26px; }
+.service-card--feature ul li { color: rgba(255,255,255,0.75); }
+.svc-feature-cols { display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; align-items: start; }
 
 @media (max-width: 860px) { .services-grid { grid-template-columns: 1fr; } }
+@media (max-width: 800px) {
+    .service-card--feature { padding: 32px 26px; }
+    .svc-feature-cols { grid-template-columns: 1fr; gap: 26px; }
+    .service-card--feature ul { grid-template-columns: 1fr; }
+}
+
+/* ══════════════ §11b LONG-TERM JOURNEY ══════════════ */
+.journey-flow {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 10px 8px; max-width: 920px; margin: 0 auto 36px;
+}
+.journey-step {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 100px; white-space: nowrap;
+    background: var(--white); border: 1px solid var(--line);
+    font-size: 0.86rem; font-weight: 600; color: var(--ink);
+}
+.journey-step svg { width: 15px; height: 15px; color: var(--mint); flex-shrink: 0; }
+.journey-step--start { background: var(--mint-soft); border-color: var(--mint); color: var(--teal); }
+.journey-step--end { background: var(--teal); border-color: var(--teal); color: #fff; }
+.journey-step--end svg { color: #fff; }
+.journey-arrow { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+
+@media (max-width: 640px) {
+    .journey-flow { flex-direction: column; align-items: stretch; gap: 9px; }
+    .journey-arrow { display: none; }
+    .journey-step { justify-content: center; }
+}
+
+/* ══════════════ §11c BRAND CLAIMS (manifesto) ══════════════ */
+.claims-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    max-width: 880px; margin: 0 auto;
+}
+.claim-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 18px 22px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius); font-size: 0.95rem; font-weight: 600;
+    color: #fff; line-height: 1.5;
+}
+.claim-item svg { width: 18px; height: 18px; color: var(--mint); flex-shrink: 0; margin-top: 2px; }
+.claim-item--wide { grid-column: 1 / -1; justify-content: center; }
+
+@media (max-width: 700px) { .claims-grid { grid-template-columns: 1fr; } .claim-item--wide { grid-column: auto; } }
 
 /* ══════════════ §12 SUPPLIER REVIEW ══════════════ */
 .review-split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
@@ -432,6 +580,28 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .review-disclaimer {
     font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6;
     border-top: 1px solid rgba(255,255,255,0.12); padding-top: 18px;
+}
+
+/* Light variant — the review is now one module, not a hero offer */
+.section--review .review-panel { background: var(--white); border-color: var(--line); }
+.section--review .review-panel h3 { color: var(--ink); }
+.section--review .review-panel .review-focus li { color: var(--muted); }
+.section--review .review-disclaimer { color: var(--muted); border-top-color: var(--line); }
+.section--review .review-bridge { border-top-color: var(--line); }
+.section--review .review-bridge h3 { color: var(--ink); }
+.section--review .review-bridge p { color: var(--muted); }
+.review-inputs-label {
+    margin-bottom: 18px; color: var(--muted); font-size: 0.95rem;
+}
+
+.review-bridge {
+    max-width: 780px; margin: 46px auto 0; padding-top: 34px;
+    border-top: 1px solid rgba(255,255,255,0.12); text-align: center;
+}
+.review-bridge h3 { color: #fff; font-size: 1.22rem; margin-bottom: 12px; }
+.review-bridge p {
+    color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.7;
+    max-width: 640px; margin: 0 auto 24px;
 }
 
 @media (max-width: 900px) { .review-split { grid-template-columns: 1fr; gap: 34px; } }
@@ -470,6 +640,23 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
     font-size: 0.95rem; color: var(--muted);
 }
 .cap-note strong { color: var(--ink); }
+
+/* V2.1 — compact format strip (full catalogue moved to /product-formats.html) */
+.format-strip {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+    max-width: 880px; margin: 0 auto 30px;
+}
+.format-pill {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 12px 24px; border-radius: 100px;
+    background: var(--white); border: 1px solid var(--line);
+    font-size: 0.92rem; font-weight: 600; color: var(--ink);
+    text-decoration: none; transition: all 0.22s;
+}
+.format-pill:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+.format-pill svg { width: 16px; height: 16px; color: var(--mint); flex-shrink: 0; }
+
+@media (max-width: 560px) { .format-pill { padding: 10px 18px; font-size: 0.86rem; } }
 .format-category { margin-bottom: 36px; }
 .format-category:last-child { margin-bottom: 0; }
 .format-category h4 {
@@ -721,6 +908,12 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .tag--pet { background: var(--amber-soft); color: var(--amber); }
 .tag--sourcing { background: #E8F0FE; color: #0B4A8F; }
 .tag--verification { background: var(--mint-soft); color: var(--teal); }
+/* V2.1 content clusters */
+.tag--product { background: #E9EFF4; color: #3B5993; }
+.tag--ingredient { background: #E8F0FE; color: #0B4A8F; }
+.tag--manufacturing { background: var(--mint-soft); color: var(--teal); }
+.tag--supplychain { background: var(--gold-soft); color: var(--gold); }
+.tag--consulting { background: #F0E6F6; color: #7C3AED; }
 .insight-card h3 { font-size: 0.95rem; margin-bottom: 6px; line-height: 1.42; }
 .insight-card p { font-size: 0.82rem; color: var(--muted); flex: 1; margin-bottom: 12px; line-height: 1.6; }
 .insight-card .read-more { font-size: 0.78rem; font-weight: 700; color: var(--teal); }
@@ -846,6 +1039,12 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .tag-pet { background: #FDE8E8; color: #B91C1C; }
 .tag-sourcing { background: #E8F0FE; color: #0B4A8F; }
 .tag-verification { background: var(--mint-soft); color: var(--teal); }
+/* V2.1 content clusters (single-dash form, emitted by build-blog.py) */
+.tag-product { background: #E9EFF4; color: #3B5993; }
+.tag-ingredient { background: #E8F0FE; color: #0B4A8F; }
+.tag-manufacturing { background: var(--mint-soft); color: var(--teal); }
+.tag-supplychain { background: var(--gold-soft); color: var(--gold); }
+.tag-consulting { background: #F0E6F6; color: #7C3AED; }
 .article-hero h1 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); font-weight: 800; line-height: 1.24; letter-spacing: -.02em; margin-bottom: 12px; }
 .article-hero .meta { font-size: .82rem; color: var(--muted); margin-bottom: 10px; }
 .article-hero .excerpt { font-size: 1.02rem; color: var(--muted); line-height: 1.65; }

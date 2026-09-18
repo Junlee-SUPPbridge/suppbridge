@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Files we do not validate as pages
 SKIP_DIRS = {'.git', 'node_modules', '.workbuddy', 'scripts'}
 
-# Phrases that must never appear (see brief §16).
+# Phrases that must never appear (see brief §16 and V2.1 §9 / §13).
 FORBIDDEN = [
     (r'alibaba is full of', 'unsupported claim about Alibaba'),
     (r'most alibaba suppliers are', 'unsupported claim about Alibaba'),
@@ -29,6 +29,43 @@ FORBIDDEN = [
     (r'100% verified', 'absolute guarantee'),
     (r'eliminate all sourcing risk', 'absolute guarantee'),
     (r'we eliminate.{0,15}risk', 'absolute guarantee'),
+
+    # ── V2.1 §13 — no published low-cost services ──
+    (r'\$\s?\d{2,4}\b[^.]{0,24}\b(supplier|factory|alibaba)\b[^.]{0,12}\b(check|review|audit|verification)\b',
+     'published low-price service'),
+    (r'\b(supplier|factory|alibaba)\b[^.]{0,12}\b(check|review|audit)\b[^.]{0,12}\$\s?\d{2,4}',
+     'published low-price service'),
+    (r'\b(cheap|budget|low-?cost)\b[^.]{0,20}\b(sourcing|supplier check|review package)\b',
+     'low-cost package positioning'),
+
+    # ── V2.1 §9 — no unverifiable scale claims ──
+    (r'\b\d{2,}\+?\s*(?:pre-?vetted\s+|partner\s+|verified\s+)?(?:factories|manufacturers|plants|facilities|clients|brands)',
+     'unverifiable scale claim'),
+    (r'\b(?:hundreds|thousands)\s+of\s+(?:factories|manufacturers|clients|brands|plants)',
+     'unverifiable scale claim'),
+    (r'\bour\s+(?:own\s+)?(?:factories|factory|plants|manufacturing\s+facilities|production\s+lines)',
+     'implies facility ownership'),
+
+    # ── V2.1 §1 / §17 — CDMO framing stays off the site ──
+    (r'nutraceutical\s+cdmo', 'CDMO framing'),
+    (r'contract\s+manufactur\w*\s+organization', 'CDMO framing'),
+    (r'contract\s+development\s+and\s+manufactur\w*', 'CDMO framing'),
+
+    # ── V2.1 §4 — supplier review is not the product ──
+    (r'before you send the deposit, send us the supplier', 'supplier review framed as the offer'),
+    (r'request a supplier review\s*(→|-|>)', 'supplier review framed as the primary CTA'),
+]
+
+# Whole-file checks that need structural context rather than a phrase match.
+# Applied to the PRIMARY pages only (homepage, landing pages, thank-you). An
+# individual article may legitimately target an Alibaba query — §4 keeps it as
+# a channel — but it must never be the framing of a primary page.
+PRIMARY_PAGES = {'index.html', 'china-supplement-sourcing.html',
+                 'product-formats.html', 'thanks.html'}
+
+FORBIDDEN_IN_HEADING = [
+    (r'<h1[^>]*>(?:(?!</h1>).)*?alibaba', 'Alibaba in an H1 of a primary page (must not be the core narrative)'),
+    (r'<title>(?:(?!</title>).)*?alibaba', 'Alibaba in <title> of a primary page'),
 ]
 
 # Legacy relative stylesheet path that 404s from /blog/
@@ -109,6 +146,12 @@ def main():
         for pattern, label in FORBIDDEN:
             if re.search(pattern, low):
                 problems.append(f'{rel}: forbidden wording ({label}) matched /{pattern}/')
+
+        # ── forbidden in headings / title (positioning guardrails, primary pages only) ──
+        if rel in PRIMARY_PAGES:
+            for pattern, label in FORBIDDEN_IN_HEADING:
+                if re.search(pattern, low, re.S):
+                    problems.append(f'{rel}: forbidden wording ({label})')
 
         # ── broken icons / lost icon system ──
         if 'class="fas ' in html or "class='fas " in html:
