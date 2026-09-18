@@ -4,62 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>China Supplement Industry Advisor &amp; Supply Partner | SuppBridge</title>
-<meta name="description" content="SuppBridge helps supplement brands develop products, source ingredients, identify manufacturing partners and manage projects in China — with experienced industry guidance from concept to production.">
+<meta name="description" content="SuppBridge helps supplement brands develop products, source ingredients, select manufacturers and manage projects in China — experienced industry guidance from concept to long-term supply.">
 <link rel="canonical" href="https://suppbridge.com/">
 
 <meta property="og:title" content="China Supplement Industry Advisor &amp; Supply Partner | SuppBridge">
-<meta property="og:description" content="Product strategy, ingredient sourcing, manufacturer selection and China-side project management for supplement brands. Industry experience, independent advice, long-term partnership.">
+<meta property="og:description" content="Product development, ingredient sourcing, manufacturer selection and China-side project management for supplement brands. Industry experience, independent advice, long-term partnership.">
 <meta property="og:url" content="https://suppbridge.com/">
 <meta property="og:image" content="https://suppbridge.com/images/blog-og.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SuppBridge">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="China Supplement Industry Advisor &amp; Supply Partner | SuppBridge">
-<meta name="twitter:description" content="Product strategy, ingredient sourcing, manufacturer selection and China-side project management for supplement brands.">
+<meta name="twitter:description" content="Product development, ingredient sourcing, manufacturer selection and China-side project management for supplement brands.">
 <meta name="twitter:image" content="https://suppbridge.com/images/blog-og.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">
 <link rel="preload" href="/styles/main.css" as="style">
 
+<!-- Organization -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
+  "@type": "Organization",
+  "@id": "https://suppbridge.com/#organization",
   "name": "SuppBridge",
-  "description": "China supplement industry advisor and supply partner: product strategy and formulation, ingredient sourcing, manufacturer selection, product development and long-term China-side supply-chain management for supplement brands.",
   "url": "https://suppbridge.com",
+  "logo": { "@type": "ImageObject", "url": "https://suppbridge.com/images/logo.png" },
   "image": "https://suppbridge.com/images/blog-og.png",
+  "description": "China supplement industry advisor and supply partner: product strategy and formulation, ingredient sourcing, manufacturer selection, product development and long-term China-side supply-chain management for supplement brands.",
   "email": "Jun@suppbridge.com",
-  "founder": { "@type": "Person", "name": "Jun Lee", "jobTitle": "Supplement Product & Supply Chain Strategist", "sameAs": "https://www.linkedin.com/in/jun-li-8998b42b1" },
   "address": { "@type": "PostalAddress", "addressLocality": "Changsha", "addressCountry": "CN" },
   "areaServed": ["US", "EU", "GB", "AU", "CA"],
+  "founder": { "@id": "https://suppbridge.com/#jun" },
+  "sameAs": ["https://www.linkedin.com/in/jun-li-8998b42b1"],
   "knowsAbout": [
     "Supplement product development in China",
     "Supplement formulation strategy",
     "Ingredient sourcing",
+    "Botanical and standardized extracts",
     "China supplement manufacturing",
-    "Supplier due diligence",
+    "Manufacturer selection and due diligence",
     "China supply-chain management",
-    "Regulatory compliance"
-  ],
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "Services",
-    "itemListElement": [
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Product Strategy & Formulation" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Ingredient Sourcing" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Manufacturer Sourcing" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Product Development & Manufacturing" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "China Project Consulting" } }
-    ]
-  }
+    "Regulatory awareness for supplement brands"
+  ]
 }
 </script>
 
-<!-- FAQPage Structured Data -->
+<!-- Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://suppbridge.com/#jun",
+  "name": "Jun Lee",
+  "jobTitle": "China Supplement Industry Advisor",
+  "description": "Supplement product and supply-chain strategist based in Changsha, China. Works buyer-side across formulation, ingredient sourcing, manufacturer selection, production and long-term China supply-chain management.",
+  "url": "https://suppbridge.com/#founder",
+  "image": "https://suppbridge.com/images/founder.jpg",
+  "worksFor": { "@id": "https://suppbridge.com/#organization" },
+  "knowsLanguage": ["en", "zh"],
+  "sameAs": ["https://www.linkedin.com/in/jun-li-8998b42b1"]
+}
+</script>
+
+<!-- WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "SuppBridge",
+  "url": "https://suppbridge.com",
+  "publisher": { "@id": "https://suppbridge.com/#organization" }
+}
+</script>
+
+<!-- FAQPage — mirrors the visible FAQ in #faq below, nothing more -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -68,17 +90,17 @@
     {
       "@type": "Question",
       "name": "How do you verify a supplement manufacturer in China?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Verification is project-specific and starts with the company behind the quotation. We look at the legal entity and its registration, whether the operation is a manufacturer or a trading company, which production processes actually sit in-house versus subcontracted, what certifications are held and in whose name, and whether the documents provided are internally consistent. We then compare those findings against your specific formula, dosage form, dosage per unit, MOQ and target market. We report what we found and what remains open — we do not issue guarantees about a supplier's conduct." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Verification is project-specific and starts with the company behind the quotation. We look at the legal entity and how it is registered, whether the operation is a manufacturer or a trading company, which production processes actually sit in-house versus subcontracted, what certifications are held and in whose name, and whether the documents provided are internally consistent. We then compare those findings against your specific formula, dosage form, dose per unit, MOQ and target market. You get a report of what we found and what remains open — we do not issue guarantees about a supplier's conduct." }
     },
     {
       "@type": "Question",
-      "name": "Can you tell whether a Chinese supplement supplier is a factory or a trading company?",
-      "acceptedAnswer": { "@type": "Answer", "text": "In most cases we can establish useful evidence either way. Business registration records, food production licence scopes, certification documents, factory audit reports and the ability to discuss process detail all carry signals. A trading company is not automatically a problem — many are legitimate and useful. The risk is paying factory pricing for a trading company's margin, or discovering that the specific process your product needs is subcontracted to a third party you know nothing about." }
+      "name": "Can you tell whether a Chinese supplier is a factory or a trading company?",
+      "acceptedAnswer": { "@type": "Answer", "text": "In most cases we can establish useful evidence either way. Business registration records, food production licence scopes, certification documents, audit reports and the ability to discuss process detail all carry signals. A trading company is not automatically a problem — many are legitimate and useful. The risk is paying factory pricing for a trading company's margin, or discovering that the specific process your product needs is subcontracted to a third party you know nothing about." }
     },
     {
       "@type": "Question",
       "name": "Do you guarantee that a supplier is honest?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No, and you should be cautious of anyone who does. What we provide is supplier verification, documentation review, manufacturer identification and capability assessment against your project — a structured due-diligence process that reduces risk and gives you specific questions to ask before you commit. We tell you what we could verify, what we could not, and where the remaining exposure sits." }
+      "acceptedAnswer": { "@type": "Answer", "text": "No — and you should be cautious of anyone who does. What we provide is supplier verification, documentation review, manufacturer identification and capability assessment against your project: a structured due-diligence process that reduces risk and gives you specific questions to ask before you commit. We tell you what we could verify, what we could not, and where the remaining exposure sits." }
     },
     {
       "@type": "Question",
@@ -93,17 +115,17 @@
     {
       "@type": "Question",
       "name": "I already have a Chinese supplier. Can you review it before I commit?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Send us the supplier link or company name, the quotation, the product specification, any COA or certificate and the supplier contact. We review company identity, manufacturer-versus-trading-company signals, product capability for your specific format, consistency between certifications and the documents supplied, specification questions and obvious red flags, then give you a list of questions to put to the supplier before you order. It is usually the entry point to a wider project conversation." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Send the supplier link or company name, the quotation, the specification, any COA or certificate and the supplier contact. We review company identity, manufacturer-versus-trading-company signals, product capability for your format, consistency between certifications and documents, specification gaps and obvious red flags — then give you a list of questions to put to the supplier before you order." }
     },
     {
       "@type": "Question",
       "name": "What does a typical project cost and how long does it take?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Scope and timing depend entirely on the project. For standard formats with an existing formulation, we typically work toward a 45–60 day path from confirmed brief to delivery. Advanced delivery systems, or novel formulations that need stability work and regulatory review, more commonly run 90–120 days. Fees are quoted per project after we have reviewed your brief, so you are paying for a defined scope rather than an open-ended retainer." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Scope and timing depend entirely on the project. For standard formats with an existing formulation, we typically work toward a 45–60 day path from confirmed brief to delivery. Advanced delivery systems, or novel formulations that need stability work and regulatory review, more commonly run 90–120 days. Fees are quoted per project after we've reviewed your brief, so you're paying for a defined scope rather than an open-ended retainer." }
     },
     {
       "@type": "Question",
       "name": "Which markets do you work with?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Most of our work is for brands selling into the United States, the European Union, the United Kingdom, Australia and Canada. We help you consider regulatory requirements at the formulation and sourcing stage — including EU Novel Food classification, permitted ingredients, claim substantiation and labelling considerations — so that compliance is not retrofitted after development." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Most of our work is for brands selling into the United States, the European Union, the United Kingdom, Australia and Canada. We consider regulatory requirements at the sourcing and formulation stage — EU Novel Food classification, permitted ingredients, claim substantiation and labelling — so compliance isn't retrofitted after development." }
     }
   ]
 }
@@ -113,241 +135,396 @@
 
 <!-- ══════════ SVG SPRITE ══════════ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.5 3 7.9 7 9 4-1.1 7-4.5 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L5 18a2 2 0 0 0 1.7 3h10.6A2 2 0 0 0 19 18l-5-8.5V3"/><path d="M7.5 15h9"/></symbol>
-  <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h10v9H3zM13 10h4l4 3.5V16h-8z"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></symbol>
-  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 9v5M12 17.5v.01"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5S20 17 20 21"/></symbol>
-  <symbol id="i-factory" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l5 3.5V9l5 3.5V9l5 3.5V21z"/><path d="M7 21v-4M12 21v-4M17 21v-4"/><path d="M3 9V5h3v4"/></symbol>
-  <symbol id="i-gavel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 4 6 6-3 3-6-6z"/><path d="m9 9 6 6"/><path d="M4 21h9"/><path d="m7.5 12.5 4.5 4.5-2 2L5.5 14.5z"/></symbol>
-  <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9z"/><path d="M15 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="m9 13 2 2 4-4"/></symbol>
-  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
-  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></symbol>
-  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17"/><path d="M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17"/><path d="M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.5 3 7.9 7 9 4-1.1 7-4.5 7-9V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L5 18a2 2 0 0 0 1.7 3h10.6A2 2 0 0 0 19 18l-5-8.5V3"/><path d="M7.5 15h9"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H14a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h5.5"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 0 0-5.7-5.7l-1.4 1.4"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 0 0 5.7 5.7l1.4-1.4"/></symbol>
   <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M14 10h4a2 2 0 0 1 2 2v9"/><path d="M7 7h4M7 11h4M7 15h4M17 14h1M17 18h1"/><path d="M3 21h18"/></symbol>
   <symbol id="i-cert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="m8.5 13.5-1 7.5 4.5-2.5 4.5 2.5-1-7.5"/></symbol>
-  <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
-  <symbol id="i-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/><path d="M11 8.5v5M8.5 11h5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6v3H9z"/><path d="M15 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/><path d="m9 13 2 2 4-4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></symbol>
   <symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M5 8h14"/><path d="m5 8-3 6h6z"/><path d="m19 8-3 6h6z"/><path d="M8 20h8"/></symbol>
-  <symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H14a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h5.5"/></symbol>
 </svg>
 
 <!-- ══════════ NAV ══════════ -->
 <nav class="nav" id="nav">
-  <div class="nav-wrap">
-    <a href="/" class="nav-brand">
-      <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-      <span class="nav-brand-text">
-        <span>China Supplement Industry Advisor</span>
-      </span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#services">How We Help</a></li>
-      <li><a href="#process">Our Process</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#founder">About Jun</a></li>
-      <li><a href="/blog/">Insights</a></li>
-    </ul>
-    <a href="#start-project" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <svg><use href="#i-menu"/></svg>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#services">How We Help</a>
-    <a href="#process">Our Process</a>
-    <a href="#projects">Projects</a>
-    <a href="#founder">About Jun</a>
-    <a href="/blog/">Insights</a>
-    <a href="#start-project" style="color:var(--teal);font-weight:700;">Discuss Your Project →</a>
-  </div>
+<div class="nav-wrap">
+<a href="/" class="nav-brand">
+<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<span class="nav-brand-text"><span>China Supplement Industry Advisor</span></span>
+</a>
+<ul class="nav-links"><li><a href="#value">How We Help</a></li><li class="nav-drop"><button class="nav-drop-btn" type="button" aria-expanded="false" aria-controls="expertiseMenu">Expertise<svg><use href="#i-chev"/></svg></button><div class="nav-drop-panel" id="expertiseMenu"><a href="/product-development/"><span class="nd-label">Product Development</span><span class="nd-desc">Formulation, dosage form, cost, samples</span></a><a href="/ingredient-sourcing/"><span class="nd-label">Ingredient Sourcing</span><span class="nd-desc">Specifications, extracts, pricing</span></a><a href="/supplement-manufacturing/"><span class="nd-label">Manufacturing</span><span class="nd-desc">Manufacturers, OEM/ODM, MOQ, production</span></a><a href="/china-supplement-supply-chain/"><span class="nd-label">Supply Chain</span><span class="nd-desc">Supplier management, cost, project control</span></a><a href="/supplement-industry-consulting/"><span class="nd-label">Industry Consulting</span><span class="nd-desc">Market entry, project judgement, long-term partner</span></a></div></li><li><a href="#process">Our Process</a></li><li><a href="#founder">About Jun</a></li><li><a href="/blog/">Insights</a></li></ul>
+<a href="#start-project" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
+<button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+<svg><use href="#i-menu"/></svg>
+</button>
+</div>
+<div class="mobile-menu" id="mobileMenu">
+<a href="#value">How We Help</a><span class="mm-group">Expertise</span><a href="/product-development/" class="mm-sub">Product Development</a><a href="/ingredient-sourcing/" class="mm-sub">Ingredient Sourcing</a><a href="/supplement-manufacturing/" class="mm-sub">Manufacturing</a><a href="/china-supplement-supply-chain/" class="mm-sub">Supply Chain</a><a href="/supplement-industry-consulting/" class="mm-sub">Industry Consulting</a><a href="#process">Our Process</a><a href="#founder">About Jun</a><a href="/blog/">Insights</a>
+<a href="#start-project" style="color:var(--gold-ink);font-weight:700;">Discuss Your Project →</a>
+</div>
 </nav>
 
 <!-- ══════════ HERO ══════════ -->
 <section class="hero" id="home">
   <div class="container">
-    <div class="hero-content">
-      <div class="hero-badge"><span class="dot"></span> Independent advice — not factory sales</div>
-      <h1>Build Better Supplements in China — <em>With Someone Who Knows the Industry.</em></h1>
-      <p class="hero-sub">SuppBridge helps supplement brands develop products, source ingredients, identify manufacturing partners and manage projects in China — with experienced industry guidance from concept to production.</p>
-      <div class="hero-actions">
-        <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-        <a href="#services" class="btn btn--outline btn--lg">See How We Can Help</a>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge"><span class="dot"></span> Independent advice — not factory sales</div>
+        <h1>Build Better Supplements in China — <em>With Someone Who Knows the Industry.</em></h1>
+        <p class="hero-sub">Product development, ingredient sourcing, manufacturer selection and China-side project management — guided by someone who has spent eighteen years inside the industry, not in front of it.</p>
+        <div class="hero-actions">
+          <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
+          <a href="#value" class="btn btn--ghost btn--lg">Explore How We Help</a>
+        </div>
       </div>
-      <div class="hero-proof">
-        <span><svg><use href="#i-check"/></svg> 18 years in China's supplement industry</span>
-        <span><svg><use href="#i-check"/></svg> Formulation → sourcing → manufacturing</span>
-        <span><svg><use href="#i-check"/></svg> You keep the final decision</span>
+
+      <div>
+        <div class="hero-plate" role="img" aria-label="A seven-stage China supply-chain project file: product, formulation, ingredients, manufacturer, sample, production and shipment — all coordinated by one accountable partner.">
+          <svg viewBox="0 0 500 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" font-family="Inter, -apple-system, 'Helvetica Neue', sans-serif">
+            <rect x="0" y="0" width="500" height="600" fill="#FFFFFF"/>
+            <rect x="0" y="0" width="500" height="3" fill="#B08D57"/>
+
+            <text x="34" y="46" font-size="10.5" font-weight="700" letter-spacing="2.2" fill="#7A5C33">CHINA SUPPLY CHAIN — PROJECT FILE</text>
+            <text x="466" y="46" font-size="10.5" font-weight="700" letter-spacing="1.6" fill="#7A736A" text-anchor="end">01 — 07</text>
+            <line x1="34" y1="64" x2="466" y2="64" stroke="#E4DED3" stroke-width="1"/>
+
+            <g font-size="10" font-weight="700" letter-spacing="1.4" fill="#7A5C33" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+              <text x="34" y="110">01</text><text x="34" y="172">02</text><text x="34" y="234">03</text>
+              <text x="34" y="296">04</text><text x="34" y="358">05</text><text x="34" y="420">06</text>
+              <text x="34" y="482">07</text>
+            </g>
+
+            <g font-size="13" font-weight="650" letter-spacing="1.7" fill="#12100E">
+              <text x="68" y="110">PRODUCT</text>
+              <text x="68" y="172">FORMULATION</text>
+              <text x="68" y="234">INGREDIENTS</text>
+              <text x="68" y="296">MANUFACTURER</text>
+              <text x="68" y="358">SAMPLE</text>
+              <text x="68" y="420">PRODUCTION</text>
+              <text x="68" y="482">SHIPMENT</text>
+            </g>
+
+            <g font-size="11" fill="#7A736A">
+              <text x="68" y="129">dosage form · positioning · target market</text>
+              <text x="68" y="191">actives · dose · carrier · flavour</text>
+              <text x="68" y="253">specification · extract ratio · origin</text>
+              <text x="68" y="315">capability · MOQ · certificates · fit</text>
+              <text x="68" y="377">approval against the production line</text>
+              <text x="68" y="439">batch · QC · documentation</text>
+              <text x="68" y="501">release · terms · handover</text>
+            </g>
+
+            <g stroke="#EFEAE1" stroke-width="1">
+              <line x1="34" y1="146" x2="466" y2="146"/>
+              <line x1="34" y1="208" x2="466" y2="208"/>
+              <line x1="34" y1="270" x2="466" y2="270"/>
+              <line x1="34" y1="332" x2="466" y2="332"/>
+              <line x1="34" y1="394" x2="466" y2="394"/>
+              <line x1="34" y1="456" x2="466" y2="456"/>
+            </g>
+
+            <line x1="34" y1="524" x2="466" y2="524" stroke="#E4DED3" stroke-width="1"/>
+            <text x="34" y="556" font-size="13.5" font-weight="600" fill="#12100E">Every stage is a decision someone has to own.</text>
+            <text x="34" y="578" font-size="13.5" font-weight="600" fill="#7A5C33">That is the role.</text>
+          </svg>
+        </div>
+        <p class="plate-legend">
+          <span>One project · seven stages</span>
+          <span class="pl-mark">Buyer-side coordination</span>
+        </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ TRUST SIGNALS ══════════ -->
-<div class="trust-strip">
-  <div class="container">
-    <div class="trust-signals">
-      <div class="trust-signal">
-        <span class="ts-ic"><svg><use href="#i-clock"/></svg></span>
-        <span class="ts-head">18 Years</span>
-        <span class="ts-sub">China supplement industry experience</span>
-      </div>
-      <div class="trust-signal">
-        <span class="ts-ic"><svg><use href="#i-route"/></svg></span>
-        <span class="ts-head">End-to-End</span>
-        <span class="ts-sub">Formulation → ingredients → manufacturing → production</span>
-      </div>
-      <div class="trust-signal">
-        <span class="ts-ic"><svg><use href="#i-user"/></svg></span>
-        <span class="ts-head">Buyer-Side</span>
-        <span class="ts-sub">Independent project coordination, never factory sales</span>
-      </div>
-      <div class="trust-signal">
-        <span class="ts-ic"><svg><use href="#i-layers"/></svg></span>
-        <span class="ts-head">China Network</span>
-        <span class="ts-sub">Factories · suppliers · labs · packaging · QA/QC</span>
-      </div>
-      <div class="trust-signal">
-        <span class="ts-ic"><svg><use href="#i-gavel"/></svg></span>
-        <span class="ts-head">Client Control</span>
-        <span class="ts-sub">You make the final decisions</span>
-      </div>
+<!-- ══════════ AUTHORITY STRIP ══════════ -->
+<div class="authority">
+  <div class="authority-inner">
+    <div class="authority-item">
+      <span class="au-head">18 Years</span>
+      <span class="au-sub">China supplement industry</span>
+    </div>
+    <div class="authority-item">
+      <span class="au-head">Formulation</span>
+      <span class="au-sub">Product development</span>
+    </div>
+    <div class="authority-item">
+      <span class="au-head">Sourcing</span>
+      <span class="au-sub">Ingredients &amp; manufacturers</span>
+    </div>
+    <div class="authority-item">
+      <span class="au-head">Execution</span>
+      <span class="au-sub">China project management</span>
+    </div>
+    <div class="authority-item">
+      <span class="au-head">Long Term</span>
+      <span class="au-sub">Ongoing supply support</span>
     </div>
   </div>
 </div>
 
-<!-- ══════════ REGULATORY FRAMEWORKS (kept, condensed) ══════════ -->
-<div class="reg-strip">
-  <div class="container">
-    <div class="label">Regulatory Frameworks We Work Within</div>
-    <div class="reg-strip-items">
-      <span>FDA</span><span>EFSA / EU Novel Food</span><span>FSANZ</span><span>TGA</span><span>Health Canada</span><span>UK FSA</span>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ CORE VALUES — THREE PILLARS ══════════ -->
+<!-- ══════════ WHERE WE ADD VALUE ══════════ -->
 <section class="section" id="value">
+  <span id="services" class="sr-only"></span>
   <div class="container">
-    <div class="section-header">
+    <div class="section-header section-header--left">
       <span class="eyebrow">Where We Add Value</span>
-      <h2>Product Development, Sourcing and Execution — Under One Roof.</h2>
+      <h2>Five disciplines, one continuous project.</h2>
+      <p>Most brands start with one of these and expand. Every engagement begins the same way — understanding what you are actually trying to build.</p>
     </div>
-    <div class="value-grid">
-      <div class="value-card reveal">
-        <div class="val-ic"><svg><use href="#i-flask"/></svg></div>
-        <h3>Product Development</h3>
-        <p>We help turn product ideas into practical supplement formulas — deciding the format, the actives, the dosage and the positioning before anything is sourced or manufactured.</p>
-      </div>
-      <div class="value-card reveal">
-        <div class="val-ic"><svg><use href="#i-globe"/></svg></div>
-        <h3>China Sourcing</h3>
-        <p>We source ingredients, manufacturers and supply-chain partners based on the actual project requirements — not on whoever happens to be easiest to introduce.</p>
-      </div>
-      <div class="value-card reveal">
-        <div class="val-ic"><svg><use href="#i-clipboard"/></svg></div>
-        <h3>China Project Management</h3>
-        <p>We coordinate suppliers, factories, samples, documents and production from the client side, so decisions stay with you and execution stays with us.</p>
-      </div>
+
+    <div class="cap-list">
+      <article class="cap-row">
+        <span class="cap-n">01</span>
+        <div>
+          <h3>Product Strategy &amp; Formulation</h3>
+          <span class="cap-for">For brands deciding what to make — and how.</span>
+        </div>
+        <div class="cap-body-right">
+          <p>We help you turn a product idea into a specification that can be quoted, developed and manufactured — deciding the dosage form, actives, dose and positioning before anything is sourced.</p>
+          <ul class="cap-meta">
+            <li>Formula</li><li>Ingredients</li><li>Dosage form</li><li>Cost</li><li>Positioning</li>
+          </ul>
+          <p style="margin-top:1rem;margin-bottom:0;"><a class="cap-link" href="/product-development/">Explore product development <svg><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </article>
+
+      <article class="cap-row">
+        <span class="cap-n">02</span>
+        <div>
+          <h3>Ingredient Sourcing</h3>
+          <span class="cap-for">For brands that know what they need sourced.</span>
+        </div>
+        <div class="cap-body-right">
+          <p>Specification before price. We evaluate whether the ingredient, the grade and the supplier genuinely fit the project — not just whether the number is the lowest on the table.</p>
+          <ul class="cap-meta">
+            <li>Specification</li><li>Extract ratio</li><li>Standardisation</li><li>Origin</li><li>Benchmarking</li>
+          </ul>
+          <p style="margin-top:1rem;margin-bottom:0;"><a class="cap-link" href="/ingredient-sourcing/">Explore ingredient sourcing <svg><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </article>
+
+      <article class="cap-row">
+        <span class="cap-n">03</span>
+        <div>
+          <h3>Manufacturer Sourcing</h3>
+          <span class="cap-for">Find the right manufacturing partner — not just a factory.</span>
+        </div>
+        <div class="cap-body-right">
+          <p>Capability, licence scope, product fit, MOQ, certifications and how the plant communicates. A manufacturer that runs your format at scale elsewhere may still not be set up for your product.</p>
+          <ul class="cap-meta">
+            <li>Capability</li><li>Licence scope</li><li>MOQ</li><li>Certificates</li><li>Product fit</li>
+          </ul>
+          <p style="margin-top:1rem;margin-bottom:0;"><a class="cap-link" href="/supplement-manufacturing/">Explore manufacturing <svg><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </article>
+
+      <article class="cap-row">
+        <span class="cap-n">04</span>
+        <div>
+          <h3>Product Development &amp; Manufacturing</h3>
+          <span class="cap-for">Formula → sample → pilot → production.</span>
+        </div>
+        <div class="cap-body-right">
+          <p>Sample coordination, formula adjustment, packaging, production planning, QA coordination and shipment preparation — managed from your side of the table, through the stage where most projects lose control.</p>
+          <ul class="cap-meta">
+            <li>Sampling</li><li>Scale-up</li><li>QA / QC</li><li>Packaging</li><li>Production</li>
+          </ul>
+          <p style="margin-top:1rem;margin-bottom:0;"><a class="cap-link" href="/china-supplement-supply-chain/">Explore supply chain <svg><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </article>
+
+      <article class="cap-row">
+        <span class="cap-n">05</span>
+        <div>
+          <h3>China Project Consulting</h3>
+          <span class="cap-for">For brands without their own team on the ground in China.</span>
+        </div>
+        <div class="cap-body-right">
+          <p>An independent China-side partner: supplier and factory communication, ingredient procurement, cost optimisation, problem solving and ongoing supply-chain support — with the final decisions staying yours.</p>
+          <ul class="cap-meta">
+            <li>Project coordination</li><li>Supplier communication</li><li>Cost optimisation</li><li>Problem solving</li><li>Ongoing support</li>
+          </ul>
+          <p style="margin-top:1rem;margin-bottom:0;"><a class="cap-link" href="/supplement-industry-consulting/">Explore industry consulting <svg><use href="#i-arrow"/></svg></a></p>
+        </div>
+      </article>
     </div>
-    <p class="value-note">You don't need another supplier directory. <em>You need experienced people who understand the industry and can manage the China side.</em></p>
   </div>
 </section>
 
-<!-- ══════════ MEET YOUR CHINA-SIDE PARTNER ══════════ -->
-<section class="section section--soft section--tight" id="partner">
+<!-- ══════════ CHINA SUPPLY CHAIN ══════════ -->
+<section class="band" id="chain">
   <div class="container">
-    <div class="partner-band reveal">
-      <div class="partner-photo">
+    <div class="chain">
+      <div>
+        <span class="eyebrow">The Working Model</span>
+        <h2 style="margin-bottom:1.25rem;">One project. Multiple Chinese resources.<br>One accountable partner.</h2>
+        <p class="chain-note">A supplement product is not made by one company. It is made by a chain of them — an ingredient supplier, an extract house, a contract manufacturer, a laboratory, a printer, a packaging converter and a freight forwarder. Each is someone's business; none of them is accountable for your product.</p>
+        <p class="chain-note">SuppBridge sits on your side of that chain and owns the coordination: the specification that travels between them, the questions that get asked in Mandarin, and the decisions that get escalated to you before they become expensive.</p>
+        <div class="path-grid">
+          <a href="#start-project" class="path-item">
+            <strong>Building a new product?</strong>
+            <span>Send the concept. We will tell you what is realistic to develop.</span>
+          </a>
+          <a href="#start-project" class="path-item">
+            <strong>Sourcing or scaling?</strong>
+            <span>Send your formula, ingredient list or target cost.</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <ol class="chain-rail">
+          <li class="chain-step"><span class="cs-idx">01</span><span><span class="cs-name">Product</span><span class="cs-note">Dosage form, dose and price point decided before anything is sourced</span></span></li>
+          <li class="chain-step"><span class="cs-idx">02</span><span><span class="cs-name">Formulation</span><span class="cs-note">A specification that can actually be quoted comparably</span></span></li>
+          <li class="chain-step"><span class="cs-idx">03</span><span><span class="cs-name">Ingredients</span><span class="cs-note">Grade, extract ratio, standardisation, origin and documents</span></span></li>
+          <li class="chain-step"><span class="cs-idx">04</span><span><span class="cs-name">Manufacturer</span><span class="cs-note">Capability and licence scope matched to the product, not the other way round</span></span></li>
+          <li class="chain-step"><span class="cs-idx">05</span><span><span class="cs-name">Sample</span><span class="cs-note">Approved against the line that will run production</span></span></li>
+          <li class="chain-step"><span class="cs-idx">06</span><span><span class="cs-name">Production</span><span class="cs-note">Batch records, QA/QC and documentation that hold together</span></span></li>
+          <li class="chain-step"><span class="cs-idx">07</span><span><span class="cs-name">QC &amp; Documentation</span><span class="cs-note">Certificates, traceability and market-specific paperwork</span></span></li>
+          <li class="chain-step"><span class="cs-idx">08</span><span><span class="cs-name">Shipment</span><span class="cs-note">Release, terms, and a handover you can audit</span></span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ WHY CHINA PROJECTS BECOME DIFFICULT ══════════ -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-header section-header--left">
+      <span class="eyebrow">Where Projects Go Wrong</span>
+      <h2>Why China projects become difficult</h2>
+    </div>
+
+    <div class="risk-list">
+      <div class="risk-item reveal">
+        <span class="risk-n">01</span>
+        <h3>Wrong Specification</h3>
+        <p>Two quotations priced against "the same" ingredient or the same formula, describing two different materials. The gap does not show up in the price — it shows up in the batch. Most cost, compliance and repeatability problems are specification problems that were never written down.</p>
+      </div>
+      <div class="risk-item reveal">
+        <span class="risk-n">02</span>
+        <h3>Wrong Supply Partner</h3>
+        <p>The operation quoted may be an intermediary, or the process your product actually needs may sit with a plant nobody has shown you. Capability, licence scope and product fit have to line up at once — and they rarely do by accident.</p>
+      </div>
+      <div class="risk-item reveal">
+        <span class="risk-n">03</span>
+        <h3>No One Managing the Project</h3>
+        <p>After the deposit, communication slows and no independent person in China is representing your interests. Language, distance and time zones make this hard to correct from abroad — which is exactly the gap that decides how a project ends.</p>
+      </div>
+    </div>
+
+    <p class="risk-close reveal">SuppBridge closes the gap between <strong>product decisions</strong> and <strong>China execution</strong>.</p>
+  </div>
+</section>
+
+<!-- ══════════ FOUNDER ══════════ -->
+<section class="section section--soft" id="founder">
+  <span id="about" class="sr-only"></span>
+  <span id="industries" class="sr-only"></span>
+  <div class="container">
+    <div class="founder-split">
+      <div class="founder-photo reveal">
         <picture>
           <source srcset="/images/founder.webp" type="image/webp">
-          <img src="/images/founder.jpg" alt="Jun Lee, supplement product and supply chain strategist" width="500" height="500" loading="lazy" decoding="async">
+          <img src="/images/founder.jpg" alt="Jun Lee, founder of SuppBridge, China supplement industry advisor based in Changsha" width="900" height="1125" loading="lazy" decoding="async">
         </picture>
       </div>
-      <div class="partner-body">
-        <span class="eyebrow">Meet Your China-Side Partner</span>
-        <h3>Jun Lee</h3>
-        <span class="partner-role">Supplement Product &amp; Supply Chain Strategist</span>
-        <p>18 years of experience across supplement formulation, ingredient sourcing, manufacturing and supply-chain management in China.</p>
-        <span class="partner-langs"><svg><use href="#i-globe"/></svg> English with clients · Mandarin with suppliers, factories and labs</span>
-        <p class="partner-quote">My role is not to sell you a factory. My role is to help you make the right decisions and get the project executed in China.</p>
-        <a href="#start-project" class="btn btn--primary">Talk About Your Next Product <svg><use href="#i-arrow"/></svg></a>
+      <div class="founder-body reveal">
+        <span class="eyebrow">The Person Behind the China Side</span>
+        <h2 style="margin-bottom:1rem;">Built From Inside China's Supplement Industry.</h2>
+        <p class="founder-name">Jun Lee</p>
+        <p class="founder-role">China Supplement Industry Advisor</p>
+
+        <p class="founder-quote">I don't represent a factory. I represent the project.</p>
+
+        <p>Eighteen years across supplement R&amp;D, manufacturing, ingredient sourcing and brand building in China taught me the same lesson repeatedly, and usually from the other side of the table: brands with a good product and a real deadline, trying to work out whether the company in front of them was the right one.</p>
+        <p>SuppBridge exists to be the missing person in that conversation. I work in English with you and in Mandarin with suppliers, factories, laboratories and packaging partners — across formulation, raw materials, documentation, QA coordination and production scheduling. The decisions stay yours; the execution in China is mine to carry.</p>
+
+        <div class="founder-creds">
+          <div class="cred"><svg><use href="#i-check"/></svg> 18 years inside China's supplement industry</div>
+          <div class="cred"><svg><use href="#i-check"/></svg> Formulation, manufacturing &amp; sourcing background</div>
+          <div class="cred"><svg><use href="#i-check"/></svg> Practical factory- and supplier-side knowledge</div>
+          <div class="cred"><svg><use href="#i-check"/></svg> End-to-end project management</div>
+          <div class="cred"><svg><use href="#i-check"/></svg> English-speaking client coordination</div>
+          <div class="cred"><svg><use href="#i-check"/></svg> Directly involved — not a sales layer</div>
+        </div>
+
+        <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ THE REAL RISK ══════════ -->
-<section class="section" id="pain">
+<!-- ══════════ LONG-TERM PARTNERSHIP ══════════ -->
+<section class="section" id="long-term">
   <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">The Real Risk</span>
-      <h2>Finding a Supplier Is Easy. Knowing What You're Buying Is Not.</h2>
+    <div class="section-header section-header--left">
+      <span class="eyebrow">The Long View</span>
+      <h2>From one product to a long-term supply partner.</h2>
+      <p>Most of our work is repeat work. Once the chain is built and documented, the next product is a much shorter conversation — because the specification, the suppliers and the standards already exist.</p>
     </div>
-    <div class="pain-copy">
-      <p>Finding a supplier is easy.</p>
-      <p><strong>Knowing who you are actually buying from is much harder.</strong></p>
-      <p>A polished supplier profile does not tell you everything about the company behind it, the actual manufacturer, the raw material source, or how your production will be managed after the deposit is paid.</p>
-      <p class="pain-bridge">That's where SuppBridge comes in.</p>
-    </div>
-    <div class="pain-grid">
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-building"/></svg></span>
-        <h3>The "Factory" Isn't Actually the Factory</h3>
-        <p>You are quoted factory pricing, but the company quoted may be an intermediary — or the specific process your product needs may be subcontracted to a plant nobody has shown you.</p>
+
+    <div class="tl">
+      <div class="tl-step tl-step--now">
+        <span class="tl-n">01</span><span class="tl-t">Product</span>
+        <span class="tl-d">What are we actually making, for whom, at what price</span>
       </div>
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-flask"/></svg></span>
-        <h3>The Ingredient Isn't What You Expected</h3>
-        <p>Raw material source, extract ratio, standardisation, carrier and grade all change what you actually receive — and the quotation rarely states any of it precisely enough to compare offers.</p>
+      <div class="tl-step">
+        <span class="tl-n">02</span><span class="tl-t">Formula</span>
+        <span class="tl-d">Specified so it can be quoted and manufactured</span>
       </div>
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-file"/></svg></span>
-        <h3>The COA Doesn't Tell the Whole Story</h3>
-        <p>A certificate is only as good as the sample it describes. Batch correspondence, test method, issuing laboratory and the link between document and delivered goods are where buyers lose control.</p>
+      <div class="tl-step">
+        <span class="tl-n">03</span><span class="tl-t">Ingredients</span>
+        <span class="tl-d">Sourced, specified and documented</span>
       </div>
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-layers"/></svg></span>
-        <h3>The Sample Doesn't Match Production</h3>
-        <p>Samples are frequently made by hand, made in small pilot batches, or made by a different line than the one that will run your order. Approval based on a sample is not approval of your production.</p>
+      <div class="tl-step">
+        <span class="tl-n">04</span><span class="tl-t">Manufacturer</span>
+        <span class="tl-d">Matched to the product and verified</span>
       </div>
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-user"/></svg></span>
-        <h3>Nobody Is Actually Managing the Project for You</h3>
-        <p>After the deposit, communication slows, questions go unanswered, and there is no independent person in China whose job is to represent your interests rather than the supplier's.</p>
+      <div class="tl-step">
+        <span class="tl-n">05</span><span class="tl-t">Production</span>
+        <span class="tl-d">Batch, QC and documentation run properly</span>
       </div>
-      <div class="pain-card reveal">
-        <span class="pain-num"><svg><use href="#i-globe"/></svg></span>
-        <h3>You Can't Check Anything Yourself</h3>
-        <p>Language, distance, time zones and unfamiliar business registries make independent verification impractical from abroad — so decisions get made on trust and hope. That's the gap we close.</p>
+      <div class="tl-step">
+        <span class="tl-n">06</span><span class="tl-t">Next SKU</span>
+        <span class="tl-d">Same chain, same standards, far less friction</span>
+      </div>
+      <div class="tl-step tl-step--end">
+        <span class="tl-n">07</span><span class="tl-t">Ongoing Supply</span>
+        <span class="tl-d">Recurring supply, cost work, supplier management</span>
       </div>
     </div>
+
+    <p class="risk-close reveal">You are not looking for someone to find you a factory. <strong>You are building a China-side team you don't have to hire.</strong></p>
   </div>
 </section>
 
-<!-- ══════════ HOW WE WORK WITH YOU — 6-STEP ══════════ -->
-<section class="section section--soft" id="different">
+<!-- ══════════ HOW WE WORK WITH YOU ══════════ -->
+<section class="section section--soft" id="process">
   <div class="container">
-    <div class="diff-intro">
+    <div class="section-header section-header--left">
       <span class="eyebrow">How We Work With You</span>
-      <h2>We Don't Just Find Suppliers. We Help You Build the Right Supply Chain.</h2>
+      <h2>We don't just find suppliers. We help you build the right supply chain.</h2>
       <p>The right manufacturer depends on your formula, dosage form, ingredient requirements, MOQ, target market, documentation requirements and target cost.</p>
-      <p>Our role is to investigate the options, identify the right fit and manage communication through development and production — then stay involved as your product line grows.</p>
     </div>
 
-    <div class="step-flow" id="process">
+    <div class="step-flow step-flow--rail">
       <div class="step-card reveal">
         <span class="step-n">01</span>
         <h3>Understand the Product</h3>
-        <p>Concept · market · target customer · dosage form · commercial requirements</p>
+        <p>Concept · market · customer · dosage form · commercial requirements</p>
       </div>
       <div class="step-card reveal">
         <span class="step-n">02</span>
@@ -357,7 +534,7 @@
       <div class="step-card reveal">
         <span class="step-n">03</span>
         <h3>Build the Right Supply Chain</h3>
-        <p>Ingredients · manufacturers · labs · packaging · other China-side partners</p>
+        <p>Ingredients · manufacturers · labs · packaging · China-side partners</p>
       </div>
       <div class="step-card reveal">
         <span class="step-n">04</span>
@@ -376,305 +553,136 @@
       </div>
     </div>
 
-    <div class="diff-cta reveal">
-      <p class="diff-cta-q">The goal is not one successful order. The goal is to build a supply chain that works for your brand long term.</p>
-      <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-    </div>
+    <p class="risk-close reveal">The goal is not one successful order. <strong>The goal is a supply chain that works for your brand for years.</strong></p>
   </div>
 </section>
 
-<!-- ══════════ SOMEONE ON YOUR SIDE ══════════ -->
-<section class="section section--navy" id="on-your-side">
+<!-- ══════════ PRINCIPLES ══════════ -->
+<section class="band" id="principles">
   <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Whose Side We're On</span>
-      <h2>Someone on Your Side in China.</h2>
-    </div>
-    <div class="ally-copy">
-      <p>You don't need another supplier trying to sell you something.</p>
-      <p>You need someone who understands your requirements and can communicate with the Chinese supply chain on your behalf.</p>
-      <p>SuppBridge acts as your project-side partner — coordinating suppliers, manufacturers, documents, samples and production while keeping your requirements at the center of the process.</p>
-    </div>
-    <div class="ally-grid">
-      <div class="ally-card reveal">
-        <div class="ally-ic"><svg><use href="#i-user"/></svg></div>
-        <h3>Your Requirements</h3>
-        <p>We start from your product and commercial goals.</p>
+    <div class="split">
+      <div>
+        <span class="eyebrow">What We Stand For</span>
+        <h2 class="stmt">Industry experience, not just supplier contacts.</h2>
       </div>
-      <div class="ally-card reveal">
-        <div class="ally-ic"><svg><use href="#i-factory"/></svg></div>
-        <h3>China Execution</h3>
-        <p>We coordinate the suppliers, manufacturers and technical resources needed.</p>
-      </div>
-      <div class="ally-card reveal">
-        <div class="ally-ic"><svg><use href="#i-gavel"/></svg></div>
-        <h3>Your Decision</h3>
-        <p>You remain in control of the final supplier, product and commercial decisions.</p>
+      <div class="principle-list">
+        <div class="principle-item"><span class="pi-n">01</span><p>Industry experience, not just supplier contacts.</p></div>
+        <div class="principle-item"><span class="pi-n">02</span><p>Independent advice, not factory sales.</p></div>
+        <div class="principle-item"><span class="pi-n">03</span><p>Product development, not just sourcing.</p></div>
+        <div class="principle-item"><span class="pi-n">04</span><p>Supply-chain execution, not just introductions.</p></div>
+        <div class="principle-item"><span class="pi-n">05</span><p>Long-term partnership, not one-off transactions.</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ SERVICES ══════════ -->
-<section class="section" id="services">
+<!-- ══════════ SELECTED PROJECT EXPERIENCE ══════════ -->
+<section class="section" id="experience">
+  <span id="projects" class="sr-only"></span>
   <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">How We Help</span>
-      <h2>Five Ways Brands Work With Us</h2>
-      <p>Most projects start with one service and expand. Every engagement begins by understanding what you are actually trying to build.</p>
-    </div>
-
-    <div class="services-grid">
-      <div class="service-card reveal">
-        <span class="svc-n">01</span>
-        <h3>Product Strategy &amp; Formulation</h3>
-        <span class="svc-for">For brands deciding what to make — and how.</span>
-        <ul>
-          <li>Product concept</li>
-          <li>Formula development</li>
-          <li>Ingredient selection</li>
-          <li>Dosage form</li>
-          <li>Active specifications</li>
-          <li>Cost / performance balance</li>
-          <li>Product positioning</li>
-        </ul>
-        <p class="svc-note">We help you make practical product decisions before you start sourcing or manufacturing.</p>
-        <div class="svc-foot"><a href="#start-project" class="svc-link">Start a Product Discussion <svg><use href="#i-arrow"/></svg></a></div>
-      </div>
-
-      <div class="service-card reveal">
-        <span class="svc-n">02</span>
-        <h3>Ingredient Sourcing</h3>
-        <span class="svc-for">For brands that know what they need sourced.</span>
-        <ul>
-          <li>Active ingredients</li>
-          <li>Botanical extracts</li>
-          <li>Functional ingredients</li>
-          <li>Specialty ingredients</li>
-          <li>Supplier identification</li>
-          <li>Specification comparison</li>
-          <li>Cost benchmarking</li>
-          <li>China sourcing</li>
-        </ul>
-        <p class="svc-note">We look beyond price and evaluate whether the ingredient, specification and supplier fit the project.</p>
-        <div class="svc-foot"><a href="#start-project" class="svc-link">Discuss Your China Supply Chain <svg><use href="#i-arrow"/></svg></a></div>
-      </div>
-
-      <div class="service-card reveal">
-        <span class="svc-n">03</span>
-        <h3>Manufacturer Sourcing</h3>
-        <span class="svc-for">Find the right manufacturing partner — not just a factory.</span>
-        <ul>
-          <li>Manufacturer identification</li>
-          <li>Capability assessment</li>
-          <li>MOQ</li>
-          <li>Technology</li>
-          <li>Certification</li>
-          <li>Product fit</li>
-          <li>Cost</li>
-          <li>Communication</li>
-          <li>Production capability</li>
-        </ul>
-        <div class="svc-foot"><a href="#start-project" class="svc-link">Discuss Manufacturer Options <svg><use href="#i-arrow"/></svg></a></div>
-      </div>
-
-      <div class="service-card reveal">
-        <span class="svc-n">04</span>
-        <h3>Product Development &amp; Manufacturing</h3>
-        <span class="svc-for">Formula → Sample → Pilot → Production</span>
-        <ul>
-          <li>Sample coordination</li>
-          <li>Formula adjustment</li>
-          <li>Packaging coordination</li>
-          <li>Production planning</li>
-          <li>QA/QC coordination</li>
-          <li>Manufacturing follow-up</li>
-          <li>Shipment preparation</li>
-        </ul>
-        <div class="svc-foot"><a href="#start-project" class="svc-link">Talk About Your Next Product <svg><use href="#i-arrow"/></svg></a></div>
-      </div>
-
-      <div class="service-card service-card--feature reveal">
-        <span class="svc-n">05</span>
-        <h3>Need Someone on the Ground in China?</h3>
-        <span class="svc-for">For brands without their own China team.</span>
-        <div class="svc-feature-cols">
-          <div>
-            <p>SuppBridge can act as an independent China-side project partner — coordinating suppliers, manufacturers, ingredients and production while keeping the client in control of the final decisions.</p>
-            <a href="#start-project" class="btn btn--onlight btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-          </div>
-          <ul>
-            <li>Supplier communication</li>
-            <li>Factory communication</li>
-            <li>Ingredient procurement</li>
-            <li>Project coordination</li>
-            <li>Cost optimization</li>
-            <li>Sample development</li>
-            <li>Production follow-up</li>
-            <li>Problem solving</li>
-            <li>Ongoing supply-chain support</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ LONG-TERM SUPPLY PARTNER ══════════ -->
-<section class="section section--soft" id="long-term">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">The Long View</span>
-      <h2>From One Product to a Long-Term Supply Partner.</h2>
-      <p>Many brands do not need another factory introduction. They need someone who understands their products and can continue helping as the business grows.</p>
-    </div>
-
-    <div class="journey-flow reveal">
-      <span class="journey-step journey-step--start"><svg><use href="#i-flask"/></svg> First Product</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step">Formula &amp; Ingredients</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step">Manufacturer</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step">Production</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step">Next SKU</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step">Cost Optimization</span>
-      <svg class="journey-arrow"><use href="#i-arrow"/></svg>
-      <span class="journey-step journey-step--end"><svg><use href="#i-route"/></svg> Ongoing China Supply Chain</span>
-    </div>
-
-    <div class="diff-cta reveal">
-      <p class="diff-cta-q">Most of our work is repeat work. Once the supply chain is working, the next product is a much shorter conversation.</p>
-      <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ BRAND CLAIMS ══════════ -->
-<section class="section section--dark" id="principles">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">What We Stand For</span>
-      <h2>Industry Experience, Not Just Supplier Contacts.</h2>
-    </div>
-    <div class="claims-grid reveal">
-      <div class="claim-item"><svg><use href="#i-check"/></svg> Industry experience, not just supplier contacts.</div>
-      <div class="claim-item"><svg><use href="#i-check"/></svg> Independent advice, not factory sales.</div>
-      <div class="claim-item"><svg><use href="#i-check"/></svg> Product development, not just sourcing.</div>
-      <div class="claim-item"><svg><use href="#i-check"/></svg> Supply-chain execution, not just introductions.</div>
-      <div class="claim-item claim-item--wide"><svg><use href="#i-check"/></svg> Long-term partnership, not one-off transactions.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ SUPPLIER REVIEW (one module, not the product) ══════════ -->
-<section class="section section--review" id="supplier-review">
-  <div class="container">
-    <div class="review-split">
-      <div class="reveal">
-        <span class="eyebrow">Supplier &amp; Supply-Chain Due Diligence</span>
-        <h2>Already Working With a Supplier in China?</h2>
-        <p class="review-lede">If you already have a quotation on the table and want an independent view before committing, we can review it. In practice it is usually the entry point to a wider conversation — formulation, ingredients, manufacturer selection and supply-chain setup.</p>
-        <p class="review-inputs-label">Anything you already have is enough to start:</p>
-        <ul class="review-inputs">
-          <li><svg><use href="#i-link"/></svg> Supplier link</li>
-          <li><svg><use href="#i-building"/></svg> Company name</li>
-          <li><svg><use href="#i-file"/></svg> Quotation</li>
-          <li><svg><use href="#i-clipboard"/></svg> Product specification</li>
-          <li><svg><use href="#i-cert"/></svg> COA or certificate</li>
-          <li><svg><use href="#i-mail"/></svg> Supplier contact</li>
-        </ul>
-        <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-      </div>
-
-      <div class="review-panel reveal">
-        <h3>A supplier review can focus on:</h3>
-        <ul class="review-focus">
-          <li><svg><use href="#i-building"/></svg><span><strong>Company identity</strong> — who the contracting entity actually is and how it is registered</span></li>
-          <li><svg><use href="#i-factory"/></svg><span><strong>Manufacturer vs trading company</strong> — signals about where production actually happens</span></li>
-          <li><svg><use href="#i-shield"/></svg><span><strong>Product capability</strong> — whether your specific dosage form and dose are realistically in scope</span></li>
-          <li><svg><use href="#i-cert"/></svg><span><strong>Certification &amp; document consistency</strong> — whether the paperwork holds together and belongs to that entity</span></li>
-          <li><svg><use href="#i-clipboard"/></svg><span><strong>Specification questions</strong> — the gaps where offers quietly differ from each other</span></li>
-          <li><svg><use href="#i-zoom"/></svg><span><strong>Obvious red flags</strong> — and the questions you should ask before ordering</span></li>
-        </ul>
-        <p class="review-disclaimer">We do not promise absolute authentication. A review is a structured due-diligence exercise that tells you what could be verified, what could not, and where your remaining exposure sits — so you can decide with better information.</p>
-      </div>
-    </div>
-
-    <div class="review-bridge reveal">
-      <h3>Need more than a supplier check?</h3>
-      <p>If you are developing or sourcing a supplement product in China, we can review the broader project — including formulation, ingredients, supplier selection, manufacturing and supply-chain setup.</p>
-      <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ PROJECTS ══════════ -->
-<section class="section section--soft" id="projects">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Projects</span>
-      <h2>Real Projects. Real Supply-Chain Problems.</h2>
+    <div class="section-header section-header--left">
+      <span class="eyebrow">Selected Project Experience</span>
+      <h2>The work, by discipline.</h2>
+      <p>A written case study has to be published with the client's agreement and with outcomes we can stand behind — so they are added deliberately rather than quickly.</p>
     </div>
 
     <!--
       ══════════════════════════════════════════════════════════════════
-      CASE-STUDY TEMPLATE — ready for Jun to populate.
-      Copy the .case-grid block below, delete this comment, and fill in
-      ONLY facts you can stand behind. Never invent revenue, savings,
-      volumes, timelines or client results.
+      CASE-STUDY SLOT — ready to publish, no redesign required.
+      Replace an .exp-card's <p> with a .exp-case block, or add a fourth
+      .exp-card. Publish ONLY facts you can stand behind. Never invent
+      revenue, savings, volumes, timelines or client results.
 
-      Client names are optional. Where a client has not agreed to be
-      named, use an anonymised label:
+      Client names are optional. Where a client has not agreed to be named:
         US Supplement Brand — Focus Powder
         European Supplement Brand — Oral Film
         US Brand — Functional Gummy
-        China Supply Chain Optimization — Ingredient Sourcing
 
-      Useful dimensions to write about (use only what actually happened):
-      product concept · formula problem · ingredient sourcing problem ·
-      manufacturing problem · supplier problem · regulatory consideration ·
-      cost challenge · development process · final execution
-
-      <div class="case-grid">
-        <article class="case-card">
-          <h3>US Supplement Brand — Focus Powder</h3>
-          <div class="case-rows">
-            <div class="case-row">
-              <span class="case-label">Client Problem</span>
-              <p>…</p>
-            </div>
-            <div class="case-row">
-              <span class="case-label">What SuppBridge Did</span>
-              <p>…</p>
-            </div>
-            <div class="case-row">
-              <span class="case-label">Supply Chain Challenge</span>
-              <p>…</p>
-            </div>
-          </div>
-          <div class="case-status">Current / Final Status: …</div>
-        </article>
+      <div class="exp-case">
+        <span class="exp-n">Case · US Brand — Functional Gummy</span>
+        <p><strong>Problem.</strong> …</p>
+        <p><strong>What we did.</strong> …</p>
+        <p><strong>Where it landed.</strong> …</p>
       </div>
       ══════════════════════════════════════════════════════════════════
     -->
 
-    <div class="projects-note reveal">
-      <p>Written project case studies are being prepared. Because we only publish projects our clients are comfortable seeing in public, and we never publish projections in place of outcomes, this section is updated deliberately rather than quickly.</p>
-      <p>In the meantime, the most useful thing we can do is talk about a project that resembles yours — including the problems that came up and how they were handled.</p>
-      <a href="#start-project" class="btn btn--primary">Ask About a Similar Project <svg><use href="#i-arrow"/></svg></a>
+    <div class="exp-grid reveal">
+      <article class="exp-card">
+        <span class="exp-n">01</span>
+        <h3>Product Development</h3>
+        <ul class="exp-flow">
+          <li>Formula</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Ingredients</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Sample</li>
+        </ul>
+        <p>Turning a product concept into a specified formula and an approved sample — dosage form, actives and dose decided before sourcing begins, then validated against the line that will actually run it.</p>
+      </article>
+
+      <article class="exp-card">
+        <span class="exp-n">02</span>
+        <h3>Ingredient Sourcing</h3>
+        <ul class="exp-flow">
+          <li>Specification</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Supplier</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Supply</li>
+        </ul>
+        <p>Writing specifications precise enough to compare quotations properly, identifying suppliers that match the grade required, and establishing terms that hold up on the second and third order rather than only the first.</p>
+      </article>
+
+      <article class="exp-card">
+        <span class="exp-n">03</span>
+        <h3>China Manufacturing</h3>
+        <ul class="exp-flow">
+          <li>Manufacturer</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Production</li><li class="exp-arrow" aria-hidden="true">→</li>
+          <li>Shipment</li>
+        </ul>
+        <p>Matching the plant to the product, verifying what it can genuinely run in-house, then managing sampling, production scheduling, QA/QC documentation and release through to shipment.</p>
+      </article>
+    </div>
+
+    <p class="exp-note reveal">Selected client projects are presented anonymously where confidentiality requires it. We publish project detail only where the client has agreed and where the outcome is verifiable.</p>
+
+    <p class="text-center" style="margin-top:2rem;"><a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a></p>
+  </div>
+</section>
+
+<!-- ══════════ ALREADY HAVE A SUPPLIER ══════════ -->
+<section class="section section--tight section--review" id="supplier-review">
+  <div class="container">
+    <div class="split">
+      <div>
+        <span class="eyebrow">Secondary Entry Point</span>
+        <h2 style="margin-bottom:1rem;">Already have a supplier?</h2>
+        <p style="color:var(--muted);margin-bottom:1.5rem;">If a quotation is already on the table and you want an independent view before committing, we can review it. Anything you have is enough to start — a supplier link, a company name, a quotation, a specification, a COA. It is usually the beginning of a wider conversation.</p>
+        <ul class="cap-meta" style="margin-bottom:1.75rem;">
+          <li>Supplier link</li><li>Company name</li><li>Quotation</li><li>Specification</li><li>COA</li>
+        </ul>
+        <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
+        <a href="/china-supplement-sourcing.html" class="cap-link" style="margin-left:1.25rem;">Supplier due diligence <svg><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="review-panel">
+        <h3>A review can focus on:</h3>
+        <ul class="review-focus">
+          <li><svg><use href="#i-building"/></svg><span><strong>Company identity</strong> — who the contracting entity actually is and how it is registered</span></li>
+          <li><svg><use href="#i-cert"/></svg><span><strong>Manufacturer vs trading company</strong> — signals about where production actually happens</span></li>
+          <li><svg><use href="#i-shield"/></svg><span><strong>Product capability</strong> — whether your dosage form and dose are realistically in scope</span></li>
+          <li><svg><use href="#i-file"/></svg><span><strong>Document consistency</strong> — whether the paperwork holds together and belongs to that entity</span></li>
+          <li><svg><use href="#i-clipboard"/></svg><span><strong>Specification gaps</strong> — the places where offers quietly differ from one another</span></li>
+        </ul>
+        <p class="review-disclaimer">We do not promise absolute authentication. A review is a structured due-diligence exercise that tells you what could be verified, what could not, and where your remaining exposure sits.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════ FORMATS (compact) ══════════ -->
-<section class="section" id="formats">
+<!-- ══════════ FORMATS ══════════ -->
+<section class="section section--tight" id="formats">
   <div class="container">
     <div class="section-header">
       <span class="eyebrow">Coordinated Capability</span>
-      <h2>Formats We Help You Bring to Market</h2>
+      <h2>Formats we help you bring to market</h2>
     </div>
     <p class="cap-note">SuppBridge is not a factory owner. We coordinate the right resources for your project — <strong>the plants, lines, certifications and specialists that already do this work every day</strong> — and we stay accountable for how it runs.</p>
 
@@ -687,88 +695,40 @@
       <span class="format-pill"><svg><use href="#i-check"/></svg> Liquids</span>
     </div>
 
-    <div class="text-center reveal">
-      <a href="/product-formats.html" class="btn btn--outline">See All Formats &amp; Delivery Systems <svg><use href="#i-arrow"/></svg></a>
-    </div>
+    <p class="text-center reveal"><a href="/product-formats.html" class="btn btn--ghost">See all formats &amp; delivery systems <svg><use href="#i-arrow"/></svg></a></p>
   </div>
 </section>
 
 <!-- ══════════ REGULATORY ══════════ -->
-<section class="section section--dark" id="regulatory">
+<section class="band" id="regulatory">
   <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Built-In Expertise</span>
-      <h2>Regulatory Awareness Up Front</h2>
-      <p>We help you navigate the regulatory landscape before development begins — saving months of rework.</p>
-    </div>
-    <div class="reg-grid">
-      <div class="reg-card"><strong>FDA</strong><span>United States</span></div>
-      <div class="reg-card"><strong>EFSA</strong><span>European Union</span></div>
-      <div class="reg-card"><strong>FSANZ</strong><span>Australia &amp; NZ</span></div>
-      <div class="reg-card"><strong>TGA</strong><span>Australia Therapeutics</span></div>
-      <div class="reg-card"><strong>Health Canada</strong><span>Canada NHP</span></div>
-    </div>
-    <div class="reg-detail">
-      <div class="reveal">
-        <span class="reg-detail-ic"><svg><use href="#i-shield"/></svg></span>
-        <h4>EU Novel Food Awareness</h4>
-        <p>Understanding classification, authorization pathways and risk assessment under EFSA.</p>
+    <div class="split--rev split">
+      <div>
+        <span class="eyebrow">Regulatory</span>
+        <h2 class="stmt stmt--wide">Regulatory awareness built into product decisions.</h2>
+        <p style="margin-top:1.5rem;">Which ingredients are permitted, at what dose, with what claim, differs by market. We consider that at the formulation and sourcing stage, so compliance is designed in rather than retrofitted after development. <a href="/regulatory/" style="color:var(--gold-lt);border-bottom:1px solid rgba(212,180,131,0.4);">See the regulatory detail →</a></p>
       </div>
-      <div class="reveal">
-        <span class="reg-detail-ic"><svg><use href="#i-clipboard"/></svg></span>
-        <h4>Labeling Considerations</h4>
-        <p>Claim substantiation, supplement facts panels and market-specific label requirements.</p>
-      </div>
-      <div class="reveal">
-        <span class="reg-detail-ic"><svg><use href="#i-globe"/></svg></span>
-        <h4>Cross-Market Strategy</h4>
-        <p>Design formulations that can register across multiple jurisdictions from day one.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ FOUNDER ══════════ -->
-<section class="section" id="founder">
-  <span id="about" class="sr-only"></span>
-  <span id="industries" class="sr-only"></span>
-  <div class="container">
-    <div class="founder-split">
-      <div class="founder-photo reveal">
-        <picture>
-          <source srcset="/images/founder.webp" type="image/webp">
-          <img src="/images/founder.jpg" alt="Jun Lee, founder of SuppBridge, supplement product and supply chain strategist based in Changsha, China" width="900" height="600" loading="lazy" decoding="async">
-        </picture>
-      </div>
-      <div class="founder-body reveal">
-        <span class="eyebrow">About</span>
-        <h2>Built From Inside China's Supplement Industry.</h2>
-        <p class="founder-name" style="margin-top:16px;">Jun Lee</p>
-        <p class="founder-role">Supplement Product &amp; Supply Chain Strategist</p>
-        <p>After 18 years working across supplement R&amp;D, manufacturing, ingredient sourcing and brand building in China, I kept meeting the same situation from the other side of the table: brands with a good product and a real deadline, trying to work out whether the company in front of them was the right one.</p>
-        <p>SuppBridge exists to be that missing person. I am an independent advisor and project partner — I sit on your side of the project, investigating options, verifying what can be verified, coordinating the Chinese supply chain and telling you plainly where the risks are.</p>
-        <p>Day to day, that means working in English with you and in Mandarin with suppliers, factories, labs and packaging partners — across formulation, raw materials, documentation, QA coordination and production scheduling.</p>
-        <div class="founder-creds">
-          <div class="cred"><svg><use href="#i-check"/></svg> Long-term China supplement industry experience</div>
-          <div class="cred"><svg><use href="#i-check"/></svg> Formulation, manufacturing &amp; sourcing background</div>
-          <div class="cred"><svg><use href="#i-check"/></svg> Practical factory &amp; supplier-side knowledge</div>
-          <div class="cred"><svg><use href="#i-check"/></svg> Project management end to end</div>
-          <div class="cred"><svg><use href="#i-check"/></svg> English-speaking client coordination</div>
-          <div class="cred"><svg><use href="#i-check"/></svg> Directly involved in your project — not a sales layer</div>
+      <div>
+        <div class="reg-inline">
+          <span class="ri-item">FDA</span><span class="ri-sep" aria-hidden="true">·</span>
+          <span class="ri-item">EU</span><span class="ri-sep" aria-hidden="true">·</span>
+          <span class="ri-item">UK</span><span class="ri-sep" aria-hidden="true">·</span>
+          <span class="ri-item">Australia</span><span class="ri-sep" aria-hidden="true">·</span>
+          <span class="ri-item">Canada</span>
         </div>
-        <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
+        <p style="font-size:0.875rem;">EU Novel Food classification, permitted ingredient lists, claim substantiation and labelling requirements — reviewed against the formulation, not after it.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ══════════ PROJECT ENQUIRY FORM ══════════ -->
-<section class="section section--dark" id="start-project">
+<section class="section band" id="start-project">
   <span id="contact" class="sr-only"></span>
   <div class="container">
     <div class="section-header">
       <span class="eyebrow">Project Enquiry</span>
-      <h2>Tell Us What You're Working On.</h2>
+      <h2>Tell us what you're working on.</h2>
       <p>The more you send now, the more specific our first reply can be. Nothing you send is shared with a supplier without your agreement.</p>
     </div>
 
@@ -776,7 +736,7 @@
       <form class="lead-form" id="projectForm" action="https://formspree.io/f/mgozvejr" method="POST" enctype="multipart/form-data" novalidate>
         <input type="hidden" name="_subject" value="New SuppBridge project enquiry">
         <input type="hidden" name="_next" value="https://suppbridge.com/thanks.html">
-        <input type="hidden" name="form_name" value="Project Enquiry V2.1">
+        <input type="hidden" name="form_name" value="Project Enquiry V2.2">
         <div class="hp-field" aria-hidden="true">
           <label for="hp-gotcha">Leave this field empty</label>
           <input type="text" id="hp-gotcha" name="_gotcha" tabindex="-1" autocomplete="off">
@@ -947,33 +907,49 @@
   </div>
 </section>
 
-<!-- ══════════ PRE-FOOTER CTA ══════════ -->
-<section class="prefooter">
+<!-- ══════════ INSIGHTS / KNOWLEDGE BASE ══════════ -->
+<section class="section" id="insights">
   <div class="container">
-    <h2>Have a Supplement Project in China?</h2>
-    <div class="prefooter-paths">
-      <a href="#start-project" class="prefooter-path">
-        <strong><svg><use href="#i-flask"/></svg> Building a new product?</strong>
-        <span>Send us the concept. We'll tell you what's realistic to develop.</span>
-      </a>
-      <a href="#start-project" class="prefooter-path">
-        <strong><svg><use href="#i-route"/></svg> Sourcing or scaling?</strong>
-        <span>Send us your formula, ingredient list or target cost.</span>
-      </a>
+    <div class="section-header section-header--left">
+      <span class="eyebrow">Industry Knowledge Base</span>
+      <h2>Notes from inside the China supply chain.</h2>
+      <p>Organised by discipline, so you can read the whole of one before you have to make a decision.</p>
     </div>
-    <a href="#start-project" class="btn btn--primary btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
-  </div>
-</section>
 
-<!-- ══════════ INSIGHTS ══════════ -->
-<section class="section section--soft" id="insights">
-  <div class="container">
-    <div class="section-header">
-      <span class="eyebrow">Insights</span>
-      <h2>Practical Guides for Building Supplements in China</h2>
-      <p>Written for brand owners — product development, ingredient sourcing, manufacturing and supply-chain decisions.</p>
+    <div class="pillar-cards">
+      <a class="pillar-card" href="/product-development/">
+        <span class="pc-n">01</span>
+        <span class="pc-t">Product Development</span>
+        <span class="pc-d">Dosage form, formula, cost, samples</span>
+        <span class="pc-c">4 guides</span>
+      </a>
+      <a class="pillar-card" href="/ingredient-sourcing/">
+        <span class="pc-n">02</span>
+        <span class="pc-t">Ingredient Sourcing</span>
+        <span class="pc-d">Specifications, extracts, pricing</span>
+        <span class="pc-c">1 guide</span>
+      </a>
+      <a class="pillar-card" href="/supplement-manufacturing/">
+        <span class="pc-n">03</span>
+        <span class="pc-t">Manufacturing</span>
+        <span class="pc-d">Manufacturers, OEM/ODM, MOQ</span>
+        <span class="pc-c">4 guides</span>
+      </a>
+      <a class="pillar-card" href="/china-supplement-supply-chain/">
+        <span class="pc-n">04</span>
+        <span class="pc-t">Supply Chain</span>
+        <span class="pc-d">Supplier management, cost, control</span>
+        <span class="pc-c">4 guides</span>
+      </a>
+      <a class="pillar-card" href="/supplement-industry-consulting/">
+        <span class="pc-n">05</span>
+        <span class="pc-t">Industry Consulting</span>
+        <span class="pc-d">Market entry, judgement, long-term work</span>
+        <span class="pc-c">7 guides</span>
+      </a>
     </div>
-    <div class="insights-grid" id="insightsGrid">
+
+    <div class="insights-grid" style="margin-top:3rem;">
       <article class="insight-card reveal">
         <span class="tag tag--product">Product Development</span>
         <h3>How to Develop a Supplement Product in China</h3>
@@ -981,36 +957,35 @@
         <a href="/blog/how-to-develop-a-supplement-product-in-china.html" class="read-more">Read →</a>
       </article>
       <article class="insight-card reveal">
-        <span class="tag tag--product">Product Development</span>
-        <h3>Flavor Masking in Functional Powders</h3>
-        <p>Why a good formula can still fail at the scoop — and where masking decisions belong in the development sequence.</p>
-        <a href="/blog/flavor-masking-functional-powders.html" class="read-more">Read →</a>
+        <span class="tag tag--manufacturing">Manufacturing</span>
+        <h3>How to Verify a China Supplement Manufacturer</h3>
+        <p>A due-diligence sequence for the legal entity, the production site, licences and documentation — before any deposit.</p>
+        <a href="/blog/verify-china-supplement-manufacturer.html" class="read-more">Read →</a>
+      </article>
+      <article class="insight-card reveal">
+        <span class="tag tag--supplychain">Supply Chain</span>
+        <h3>What a COA Does and Doesn't Tell You</h3>
+        <p>Batch correspondence, test method and the link between document and delivered goods — where buyers lose control.</p>
+        <a href="/blog/verify-coa-chinese-supplement-supplier.html" class="read-more">Read →</a>
       </article>
       <article class="insight-card reveal">
         <span class="tag tag--ingredient">Ingredient Sourcing</span>
         <h3>Bitter Orange Extract &amp; EU Compliance</h3>
-        <p>Synephrine content, Novel Food classification and what to settle before you buy an ingredient at volume.</p>
+        <p>Synephrine content, Novel Food classification and what to settle before buying an ingredient at volume.</p>
         <a href="/blog/bitter-orange-extract-eu-compliance.html" class="read-more">Read →</a>
       </article>
-      <article class="insight-card reveal">
-        <span class="tag tag--consulting">Industry Consulting</span>
-        <h3>FDA vs EFSA — Key Differences for Supplement Brands</h3>
-        <p>Structural vs. function claims, permitted ingredients and registration pathways across the two largest markets.</p>
-        <a href="/blog/fda-vs-efsa-supplement-regulations.html" class="read-more">Read →</a>
-      </article>
     </div>
-    <div class="text-center mt-32 reveal">
-      <a href="/blog/" class="btn btn--outline">View All Insights <svg><use href="#i-arrow"/></svg></a>
-    </div>
+
+    <p class="text-center mt-32 reveal"><a href="/blog/" class="btn btn--ghost">View all insights <svg><use href="#i-arrow"/></svg></a></p>
   </div>
 </section>
 
 <!-- ══════════ FAQ ══════════ -->
-<section class="section" id="faq">
+<section class="section section--soft" id="faq">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header section-header--left">
       <span class="eyebrow">Common Questions</span>
-      <h2>Frequently Asked</h2>
+      <h2>Frequently asked</h2>
     </div>
     <div class="faq-list reveal">
       <div class="faq-item">
@@ -1076,10 +1051,9 @@
 <!-- ══════════ RESOURCES ══════════ -->
 <section class="links-section" id="links">
   <div class="container">
-    <div class="section-header reveal">
+    <div class="section-header section-header--left reveal">
       <span class="eyebrow">Resources</span>
-      <h2>Regulatory &amp; Industry Authorities</h2>
-      <p>Primary sources worth reading directly when you are checking requirements for a target market.</p>
+      <h2>Primary sources worth reading directly</h2>
     </div>
     <div class="links-grid reveal">
       <div class="links-col">
@@ -1156,33 +1130,44 @@
   </div>
 </section>
 
+<!-- ══════════ PRE-FOOTER CTA ══════════ -->
+<section class="prefooter">
+  <div class="container">
+    <h2>Have a supplement project in China?</h2>
+    <div class="prefooter-paths">
+      <a href="#start-project" class="prefooter-path">
+        <strong><svg><use href="#i-flask"/></svg> Building a new product?</strong>
+        <span>Send us the concept. We'll tell you what's realistic to develop.</span>
+      </a>
+      <a href="#start-project" class="prefooter-path">
+        <strong><svg><use href="#i-route"/></svg> Sourcing or scaling?</strong>
+        <span>Send us your formula, ingredient list or target cost.</span>
+      </a>
+    </div>
+    <a href="#start-project" class="btn btn--onlight btn--lg">Discuss Your Project <svg><use href="#i-arrow"/></svg></a>
+  </div>
+</section>
+
 <!-- ══════════ FOOTER ══════════ -->
 <footer class="site-footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-        <span>China supplement industry advisor &amp; supply partner. Product development, ingredient sourcing, manufacturing management and long-term China supply-chain support.</span>
-      </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <a href="#services">How We Help</a>
-        <a href="#process">Our Process</a>
-        <a href="#long-term">Long-Term Partnership</a>
-        <a href="#projects">Projects</a>
-        <a href="#founder">About Jun</a>
-        <a href="/product-formats.html">Product Formats</a>
-        <a href="/china-supplement-sourcing.html">Supplier Due Diligence</a>
-        <a href="/blog/">Insights</a>
-        <a href="#faq">FAQ</a>
-        <a href="#start-project">Contact</a>
-      </nav>
-    </div>
-    <div class="footer-bottom">
-      <div>&copy; 2026 SuppBridge. All rights reserved.</div>
-      <div><a href="mailto:Jun@suppbridge.com">Jun@suppbridge.com</a></div>
-    </div>
-    <p class="footer-legal">SuppBridge is an independent product, sourcing and supply-chain advisory partner. We are not affiliated with any marketplace or manufacturing group, and we do not provide guarantees of supplier conduct, ingredient authenticity or product quality. Verification and due-diligence findings are project-specific and provided in writing.</p>
-  </div>
+<div class="container">
+<div class="footer-inner">
+<div class="footer-brand">
+<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<span>China supplement industry advisor &amp; supply partner. Product development, ingredient sourcing, manufacturing management and long-term China supply-chain support.</span>
+</div>
+<div class="footer-cols">
+<div class="footer-col"><h4>Expertise</h4><nav aria-label="Expertise"><a href="/product-development/">Product Development</a><a href="/ingredient-sourcing/">Ingredient Sourcing</a><a href="/supplement-manufacturing/">Manufacturing</a><a href="/china-supplement-supply-chain/">Supply Chain</a><a href="/supplement-industry-consulting/">Industry Consulting</a></nav></div>
+<div class="footer-col"><h4>Company</h4><nav aria-label="Company"><a href="#value">How We Help</a><a href="#process">Our Process</a><a href="#long-term">Long-Term Partnership</a><a href="#experience">Project Experience</a><a href="#founder">About Jun</a><a href="/blog/">Insights</a><a href="#faq">FAQ</a></nav></div>
+<div class="footer-col"><h4>More</h4><nav aria-label="More"><a href="/product-formats.html">Product Formats</a><a href="/china-supplement-sourcing.html">Supplier Due Diligence</a><a href="/regulatory/">Regulatory</a><a href="mailto:Jun@suppbridge.com">Email</a></nav></div>
+</div>
+</div>
+<div class="footer-bottom">
+<div>&copy; 2026 SuppBridge. All rights reserved.</div>
+<div><a href="mailto:Jun@suppbridge.com">Jun@suppbridge.com</a></div>
+</div>
+<p class="footer-legal">SuppBridge is an independent product, sourcing and supply-chain advisory partner. We are not affiliated with any marketplace or manufacturing group, and we do not provide guarantees of supplier conduct, ingredient authenticity or product quality. Verification and due-diligence findings are project-specific and provided in writing.</p>
+</div>
 </footer>
 
 <script>
@@ -1207,6 +1192,19 @@
     menu.classList.remove('active');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Open menu');
+  }
+
+  /* ── Expertise dropdown (click + keyboard; also opens on hover via CSS) ── */
+  var drop = document.querySelector('.nav-drop-btn');
+  if (drop) {
+    drop.addEventListener('click', function (e) {
+      e.preventDefault();
+      var open = drop.getAttribute('aria-expanded') === 'true';
+      drop.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') drop.setAttribute('aria-expanded', 'false');
+    });
   }
 
   /* ── Reveal on scroll ── */
@@ -1281,7 +1279,6 @@
   form.addEventListener('submit', function (e) {
     clearError();
 
-    /* Native constraint check (form is novalidate so we control the message) */
     if (!form.checkValidity()) {
       e.preventDefault();
       var bad = form.querySelector(':invalid');
@@ -1293,7 +1290,6 @@
       return;
     }
 
-    /* At least one "what kind of support" selection */
     var support = form.querySelectorAll('input[name="support"]:checked');
     if (support.length === 0) {
       e.preventDefault();
@@ -1301,7 +1297,6 @@
       return;
     }
 
-    /* Upload size guard (Formspree rejects oversized multipart posts) */
     var files = document.getElementById('f-files').files;
     var total = 0;
     for (var i = 0; i < files.length; i++) total += files[i].size;

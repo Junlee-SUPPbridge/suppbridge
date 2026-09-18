@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
-"""Validate the static site: internal links, required SEO metadata, and
-language-compliance rules (the claims we must never make).
+"""Validate the static site: internal links, required SEO metadata, structured
+data, taxonomy coverage, and language-compliance rules (the claims we must
+never make).
 
 Usage: python3 scripts/validate-site.py
 Exit code 0 = clean, 1 = problems found.
+
+V2.2 additions
+--------------
+The site is now metadata-driven: build-blog.py emits articles and pillar
+pages from content/taxonomy.py. That makes it possible to check things that
+were previously only checked by eye:
+
+  * every markdown article has an ARTICLE_META entry (no orphan content)
+  * every emitted page carries the schema its type requires
+  * FAQPage schema is only present when a visible FAQ is also present
+  * canonical / title / description are unique across the site
+  * breadcrumb depth is correct for the page's position in the IA
 """
 
 import os
@@ -13,6 +26,9 @@ import glob
 from urllib.parse import urlparse, unquote
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+from content.taxonomy import VALID_SEARCH_INTENT, SITE_URL  # noqa: E402
 
 # Files we do not validate as pages
 SKIP_DIRS = {'.git', 'node_modules', '.workbuddy', 'scripts'}
@@ -57,11 +73,89 @@ FORBIDDEN = [
 ]
 
 # Whole-file checks that need structural context rather than a phrase match.
-# Applied to the PRIMARY pages only (homepage, landing pages, thank-you). An
-# individual article may legitimately target an Alibaba query — §4 keeps it as
-# a channel — but it must never be the framing of a primary page.
+# Applied to the PRIMARY pages only (homepage, landing pages, pillar hubs,
+# thank-you). An individual article may legitimately target an Alibaba query —
+# §4 keeps it as a channel — but it must never frame a primary page.
+PILLAR_DIRS = {'product-development', 'ingredient-sourcing',
+               'supplement-manufacturing', 'china-supplement-supply-chain',
+               'supplement-industry-consulting'}
+
 PRIMARY_PAGES = {'index.html', 'china-supplement-sourcing.html',
-                 'product-formats.html', 'thanks.html'}
+                 'product-formats.html', 'regulatory/index.html',
+                 'thanks.html'} | {f'{d}/index.html' for d in PILLAR_DIRS}
+
+# ── V2.2 structured-data expectations ─────────────────────────────────────
+# page kind -> schema @type values that must appear at least once
+SCHEMA_REQUIRED = {
+    'article': {'Article', 'BreadcrumbList'},
+    'pillar': {'CollectionPage', 'BreadcrumbList'},
+    # The homepage is the site root, so it carries the site-level identity
+    # graph. No BreadcrumbList: a one-item trail is not a breadcrumb (§27).
+    'home': {'Organization', 'Person', 'WebSite'},
+}
+
+# FAQPage may only be emitted on a page that also renders a visible FAQ.
+# §23: "do not force FAQ schema onto every page." Any of these markers means
+# a human can actually read the questions on the page.
+FAQ_VISIBLE_MARKERS = ('class="faq-list"', 'class="faq-block"', 'class="faq-item"')
+
+
+def page_kind(rel):
+    if rel == 'index.html':
+        return 'home'
+    if rel.startswith('blog' + os.sep) and rel != os.path.join('blog', 'index.html'):
+        return 'article'
+    head = rel.split(os.sep)[0]
+    if head in PILLAR_DIRS and rel.endswith('index.html'):
+        return 'pillar'
+    return 'page'
+
+
+def is_redirect_stub(html):
+    """Generated alias pages carry meta-refresh + noindex by design.
+
+    They deliberately have no description/OG/schema — the destination page is
+    the indexable entity. scripts/validate-site.py checks them for a working
+    canonical target instead of the full page contract.
+    """
+    return 'http-equiv="refresh"' in html
+
+
+def validate_redirect_stub(rel, html, problems):
+    m = re.search(r'<link rel="canonical" href="([^"]+)"', html)
+    if not m:
+        problems.append(f'{rel}: redirect stub has no canonical')
+        return
+    dest = m.group(1)
+    if not dest.startswith(SITE_URL):
+        problems.append(f'{rel}: redirect canonical is not on {SITE_URL}: {dest}')
+        return
+    if 'noindex' not in html:
+        problems.append(f'{rel}: redirect stub must carry noindex')
+    # The destination must be a real page on disk.
+    rel_dest = unquote(urlparse(dest).path).lstrip('/')
+    if rel_dest in ('', '/'):
+        return
+    cand = os.path.join(BASE_DIR, rel_dest)
+    if not (os.path.isfile(cand)
+            or os.path.isfile(cand + '.html')
+            or os.path.isfile(os.path.join(cand, 'index.html'))):
+        problems.append(f'{rel}: redirect destination does not exist -> {dest}')
+
+
+def jsonld_types(html):
+    """Every @type declared in every ld+json block on the page.
+
+    Handles both the scalar form `"@type": "Article"` and the array form
+    `"@type": ["Article", "BlogPosting"]` — build-blog.py emits the latter for
+    articles so the page satisfies readers looking for either type name.
+    """
+    found = set()
+    for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S):
+        for raw in re.findall(r'"@type"\s*:\s*(\[[^\]]*\]|"[^"]+")', block):
+            found.update(re.findall(r'"([^"]+)"', raw))
+    return found
+
 
 FORBIDDEN_IN_HEADING = [
     (r'<h1[^>]*>(?:(?!</h1>).)*?alibaba', 'Alibaba in an H1 of a primary page (must not be the core narrative)'),
@@ -113,6 +207,10 @@ def main():
 
     pages = html_files()
     all_ids = {}
+    seen_canonical = {}
+    seen_title = {}
+    seen_desc = {}
+    redirect_stubs = []
 
     # Collect ids per page so we can validate #anchors
     for rel, path in pages:
@@ -123,6 +221,14 @@ def main():
     for rel, path in pages:
         with open(path, encoding='utf-8') as f:
             html = f.read()
+
+        kind = page_kind(rel)
+
+        # Redirect stubs are a different contract — check them and move on.
+        if is_redirect_stub(html):
+            redirect_stubs.append(rel)
+            validate_redirect_stub(rel, html, problems)
+            continue
 
         # ── required SEO metadata ──
         if not re.search(r'<title>[^<]{10,}</title>', html):
@@ -135,6 +241,47 @@ def main():
             problems.append(f'{rel}: missing og:title')
         if 'viewport' not in html:
             problems.append(f'{rel}: missing viewport meta')
+        if 'twitter:card' not in html:
+            warnings.append(f'{rel}: no twitter:card')
+
+        # ── canonical / title / description uniqueness ──
+        for label, rx, bucket in (
+            ('canonical', r'rel="canonical" href="([^"]+)"', seen_canonical),
+            ('title', r'<title>([^<]+)</title>', seen_title),
+            ('description', r'<meta name="description" content="([^"]+)"', seen_desc),
+        ):
+            m = re.search(rx, html)
+            if not m:
+                continue
+            val = m.group(1)
+            if val in bucket:
+                problems.append(f'{rel}: duplicate {label} shared with {bucket[val]}')
+            else:
+                bucket[val] = rel
+
+        # ── structured data expectations per page kind ──
+        types = jsonld_types(html)
+        for required in SCHEMA_REQUIRED.get(kind, set()):
+            if required not in types:
+                problems.append(f'{rel}: missing {required} schema (page kind: {kind})')
+
+        # ── FAQ schema only where a visible FAQ exists (§23) ──
+        has_faq_schema = 'FAQPage' in types
+        has_faq_visible = any(mk in html for mk in FAQ_VISIBLE_MARKERS)
+        if has_faq_schema and not has_faq_visible:
+            problems.append(f'{rel}: FAQPage schema without a visible FAQ')
+        if has_faq_visible and not has_faq_schema and kind in ('article', 'page'):
+            warnings.append(f'{rel}: visible FAQ but no FAQPage schema')
+
+        # ── breadcrumb depth (Home > Insights > Pillar > Article) ──
+        if kind == 'article':
+            crumbs = re.search(r'<nav class="crumbs"[^>]*>(.*?)</nav>', html, re.S)
+            if not crumbs:
+                problems.append(f'{rel}: article has no breadcrumb trail in markup')
+            else:
+                depth = len(re.findall(r'<a\b|<span\b', crumbs.group(1)))
+                if depth < 4:
+                    problems.append(f'{rel}: article breadcrumb depth {depth} (expected Home > Insights > Pillar > Article)')
 
         # ── stylesheet path ──
         for bad in BAD_CSS_PATHS:
@@ -203,6 +350,9 @@ def main():
     for rel, _ in pages:
         if rel == 'thanks.html' or rel.startswith('scripts'):
             continue
+        # Redirect stubs must NOT be in the sitemap — they are noindex aliases.
+        if rel in redirect_stubs:
+            continue
         if rel == 'index.html':
             url = 'https://suppbridge.com/'
         elif rel.endswith(os.sep + 'index.html'):
@@ -212,8 +362,54 @@ def main():
         if url not in root_sitemap:
             warnings.append(f'sitemap.xml: {rel} not listed ({url})')
 
+    # Noindex stubs in the sitemap would be a contradictory signal.
+    for rel in redirect_stubs:
+        path = '/' + rel.replace(os.sep, '/')
+        if path.replace('/index.html', '/') in root_sitemap:
+            problems.append(f'{rel}: noindex redirect stub is listed in sitemap.xml')
+
+    # ── taxonomy coverage: no orphan content ──
+    # §18/§19 — an article added to blog/*.md without an ARTICLE_META entry
+    # would silently lose its cluster, pillar, breadcrumb and related links.
+    try:
+        from content.taxonomy import ARTICLE_META, PILLARS, PILLAR_ORDER, article_meta
+    except Exception as exc:  # pragma: no cover
+        problems.append(f'content/taxonomy.py could not be imported: {exc}')
+    else:
+        md_slugs = {
+            os.path.splitext(os.path.basename(p))[0]
+            for p in glob.glob(os.path.join(BASE_DIR, 'blog', '*.md'))
+        }
+        for slug in sorted(md_slugs):
+            if slug not in ARTICLE_META:
+                problems.append(f'blog/{slug}.md: no ARTICLE_META entry (orphan article — no cluster/pillar/CTA)')
+
+        valid_pillar_urls = {PILLARS[k]['url'] for k in PILLAR_ORDER}
+        for slug in sorted(ARTICLE_META):
+            meta = article_meta(slug)
+            for field in ('cluster', 'pillar', 'commercial_intent', 'search_intent', 'entities'):
+                if not meta.get(field):
+                    problems.append(f'ARTICLE_META["{slug}"]: resolved "{field}" is empty')
+            if meta['pillar'] not in valid_pillar_urls:
+                problems.append(f'ARTICLE_META["{slug}"]: pillar "{meta["pillar"]}" not in PILLARS')
+            if meta['commercial_intent'] not in ('low', 'medium', 'high'):
+                problems.append(f'ARTICLE_META["{slug}"]: invalid commercial_intent')
+            for si in meta['search_intent']:
+                if si not in VALID_SEARCH_INTENT:
+                    problems.append(f'ARTICLE_META["{slug}"]: invalid search_intent "{si}"')
+            if slug not in md_slugs:
+                warnings.append(f'ARTICLE_META["{slug}"]: entry has no blog/{slug}.md on disk')
+
+        # every pillar must resolve to a generated page on disk
+        for key in PILLAR_ORDER:
+            url = PILLARS[key]['url'].strip('/')
+            if not os.path.exists(os.path.join(BASE_DIR, url, 'index.html')):
+                problems.append(f'pillar {key}: {PILLARS[key]["url"]} has no generated index.html')
+
     # ── report ──
-    print(f'Validated {len(pages)} HTML pages\n')
+    indexable = len(pages) - len(redirect_stubs)
+    print(f'Validated {len(pages)} HTML pages '
+          f'({indexable} indexable, {len(redirect_stubs)} redirect stubs)\n')
     if problems:
         print(f'PROBLEMS ({len(problems)}):')
         for p in problems:

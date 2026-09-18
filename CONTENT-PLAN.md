@@ -2,21 +2,40 @@
 
 **Purpose:** the blog supports the positioning *China Supplement Industry Advisor & Supply Partner*. It publishes work that demonstrates product-development, sourcing, manufacturing and supply-chain judgement — not marketplace anxiety.
 
-**Cluster taxonomy** (matches the `TAG_CLASS` / `TAG_LABEL` maps in `build-blog.py`):
+**Cluster taxonomy** — each cluster is also an SEO pillar page (§17). The pillar URL is derived from the cluster key, so this table *is* the site's information architecture:
 
-| Cluster | HTML tag class | What it proves |
-|---|---|---|
-| Product Development | `tag--product` | We can make product decisions, not just source |
-| Ingredient Sourcing | `tag--ingredient` | We understand specifications and comparability |
-| Manufacturing | `tag--manufacturing` | We understand plants, MOQ and production reality |
-| Supply Chain | `tag--supplychain` | We can run an ongoing relationship, not a transaction |
-| Industry Consulting | `tag--consulting` | We know where foreign brands get China wrong |
+| Cluster key | Pillar URL | HTML tag class | What it proves |
+|---|---|---|---|
+| `product` | `/product-development/` | `tag-product` | We can make product decisions, not just source |
+| `ingredient` | `/ingredient-sourcing/` | `tag-ingredient` | We understand specifications and comparability |
+| `manufacturing` | `/supplement-manufacturing/` | `tag-manufacturing` | We understand plants, MOQ and production reality |
+| `supply` | `/china-supplement-supply-chain/` | `tag-supplychain` | We can run an ongoing relationship, not a transaction |
+| `consulting` | `/supplement-industry-consulting/` | `tag-consulting` | We know where foreign brands get China wrong |
+
+**Architecture — metadata-first, not a CMS.** All content metadata lives in `content/taxonomy.py`; `build-blog.py` reads it and emits every derived artefact. Publishing an article is three steps:
+
+1. write `blog/<slug>.md` with frontmatter
+2. add one object to `ARTICLE_META` in `content/taxonomy.py`
+3. run `python3 build-blog.py` then `python3 scripts/sync-chrome.py`
+
+Step 3 generates, with no hand-edited HTML: article page · cluster tag · breadcrumb markup **and** BreadcrumbList schema · canonical · the pillar link block · related articles · an intent-scaled CTA · Article schema · FAQ block + FAQPage schema (only when a visible FAQ exists) · blog-index grouping · pillar-page listing · sitemap entries · `blog/articles.json`.
+
+`ARTICLE_META` fields: `cluster` (required, drives `pillar`), `commercial_intent` (`high`/`medium`/`low`, drives CTA weight), `search_intent`, `entities`, `secondary`, `featured`. `pillar` is **derived** from `cluster` by `article_meta()` rather than stored — duplicating it would only create a way for the two to disagree.
+
+Two guard scripts keep this honest and are worth running before any deploy:
+
+| Script | What it catches |
+|---|---|
+| `scripts/validate-site.py` | broken internal links & anchors · missing/duplicate canonical, title, description · missing schema for the page's kind · FAQPage schema without a visible FAQ · orphan `.md` with no `ARTICLE_META` · pillar URL that has no generated page · every forbidden claim |
+| `scripts/sync-chrome.py --check` | nav/footer drift between the generated pages and the hand-authored ones |
+
+Redirects are also metadata: `content/redirects.py` is the single source, and the build emits both real HTML redirect pages (which is what makes them work on GitHub Pages, where `_redirects` is ignored) and the `_redirects` file itself for hosts that support server-side 301s.
 
 **Conversion path for every article:**
 
 `organic search → article → "Discuss Your Project" (generated end-of-article CTA) → /#start-project → form → /thanks.html`
 
-The CTA is emitted automatically by `article_cta()` in `build-blog.py`. A secondary ghost link to `/china-supplement-sourcing.html` (supplier due diligence) remains for readers who arrive with a live supplier question — but it is the *second* action, not the offer.
+The CTA is emitted automatically by `article_cta()` in `build-blog.py`, at three visual weights. A ghost link to `/china-supplement-sourcing.html` (supplier due diligence) appears on high-intent articles only — never as the primary offer.
 
 ---
 
@@ -52,7 +71,7 @@ The CTA is emitted automatically by `article_cta()` in `build-blog.py`. A second
 | # | Topic | Status | Slug |
 |---|---|---|---|
 | 2.1 | How to Source Functional Ingredients in China | Planned | `source-functional-ingredients-china` |
-| 2.2 | How to Compare Ingredient Specifications | Planned | `compare-ingredient-specifications` |
+| 2.2 | How to Compare Ingredient Specifications | **Published** | `how-to-compare-ingredient-specifications` |
 | 2.3 | Extract Ratio vs Standardized Extract | Planned | `extract-ratio-vs-standardized-extract` |
 | 2.4 | How to Evaluate Botanical Extract Suppliers | Planned | `evaluate-botanical-extract-suppliers` |
 | 2.5 | How to Compare Ingredient Quotes | Planned | `compare-ingredient-quotes` |
@@ -63,10 +82,12 @@ The CTA is emitted automatically by `article_cta()` in `build-blog.py`. A second
 - **Internal links:** 2.2, 2.5, `/#services`
 
 ### 2.2 — How to Compare Ingredient Specifications
+- **Status:** **Published** as `blog/how-to-compare-ingredient-specifications.md` (2026-09-18, high commercial intent)
 - **Intent:** "ingredient specification comparison", "how to read a supplement ingredient spec", "spec sheet supplement"
 - **Outline:** the fields that must be fixed before quotes are comparable → identity and form → assay, method and basis → standardisation and markers → carrier, excipient and grade → particle size, flow, density → tolerances → worked example: three quotes, one specification
 - **Internal links:** 2.3, 2.5, 3.4
 - **Deliverable bonus:** a copy-ready specification template. Highest link-earning asset in this cluster.
+- **Note:** the copy-ready specification template is still outstanding — the published article is the argument for it, not the template itself. Worth building as a downloadable asset once there is a way to gate it.
 
 ### 2.3 — Extract Ratio vs Standardized Extract
 - **Intent:** "extract ratio vs standardized", "what does 10:1 extract mean", "standardized extract supplement"

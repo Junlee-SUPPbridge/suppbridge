@@ -1,214 +1,344 @@
 [
   {
-    "slug": "how-to-develop-a-supplement-product-in-china",
-    "title": "How to Develop a Supplement Product in China",
+    "slug": "how-to-compare-ingredient-specifications",
+    "url": "/blog/how-to-compare-ingredient-specifications.html",
+    "title": "How to Compare Ingredient Specifications",
+    "description": "Two quotations for the same ingredient are not comparable until their specifications match. A practical checklist for writing a spec that produces a quote you can actually judge.",
     "date": "2026-09-18",
-    "description": "The development sequence that decides your cost, your compliance and how hard production will be — the decisions worth getting right before you approach a manufacturer in China.",
-    "tags": [
-      "product-strategy",
-      "ingredient-sourcing",
-      "manufacturing",
-      "project-management"
+    "minutes": 5,
+    "cluster": "ingredient",
+    "secondary_clusters": [],
+    "pillar": "/ingredient-sourcing/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial"
     ],
-    "primary_tag": "product-strategy",
-    "tag_cls": "tag-product",
-    "tag_lbl": "Product Development"
+    "entities": [
+      "ingredient specification",
+      "ingredient sourcing",
+      "botanical extract",
+      "standardized extract",
+      "certificate of analysis"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "how-to-develop-a-supplement-product-in-china",
+    "url": "/blog/how-to-develop-a-supplement-product-in-china.html",
+    "title": "How to Develop a Supplement Product in China",
+    "description": "The development sequence that decides your cost, your compliance and how hard production will be — the decisions worth getting right before you approach a manufacturer in China.",
+    "date": "2026-09-18",
+    "minutes": 8,
+    "cluster": "product",
+    "secondary_clusters": [],
+    "pillar": "/product-development/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "supplement formulation",
+      "dosage form",
+      "sample development",
+      "formula cost",
+      "supplement manufacturer"
+    ],
+    "featured": true
   },
   {
     "slug": "verify-china-supplement-manufacturer",
+    "url": "/blog/verify-china-supplement-manufacturer.html",
     "title": "How to Verify a China Supplement Manufacturer Before Paying",
-    "date": "2026-09-16",
     "description": "A practical due-diligence sequence for supplement brands — what to check about the legal entity, the production site, licences, documentation and capability before any deposit leaves your account.",
-    "tags": [
-      "manufacturer-verification",
-      "supplier-verification",
-      "sourcing",
-      "due-diligence"
+    "date": "2026-09-16",
+    "minutes": 9,
+    "cluster": "manufacturing",
+    "secondary_clusters": [
+      "supply"
     ],
-    "primary_tag": "manufacturer-verification",
-    "tag_cls": "tag-verification",
-    "tag_lbl": "Manufacturer Verification"
+    "pillar": "/supplement-manufacturing/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "supplement manufacturer",
+      "production readiness",
+      "due diligence"
+    ],
+    "featured": false
   },
   {
     "slug": "chinese-supplier-factory-or-trading-company",
+    "url": "/blog/chinese-supplier-factory-or-trading-company.html",
     "title": "How to Tell If a Chinese Supplier Is Actually a Factory (and Why It Sometimes Doesn't Matter)",
-    "date": "2026-09-11",
     "description": "The signals worth checking when you want to know whether a Chinese supplement supplier is a manufacturer or a trading company — and when the answer genuinely changes what you should do.",
-    "tags": [
-      "factory",
-      "trading-company",
-      "sourcing",
-      "supplier-verification"
+    "date": "2026-09-11",
+    "minutes": 7,
+    "cluster": "manufacturing",
+    "secondary_clusters": [
+      "supply"
     ],
-    "primary_tag": "factory",
-    "tag_cls": "tag-sourcing",
-    "tag_lbl": "Factory Checks"
+    "pillar": "/supplement-manufacturing/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial",
+      "transactional"
+    ],
+    "entities": [
+      "trading company",
+      "supplement manufacturer",
+      "due diligence"
+    ],
+    "featured": false
   },
   {
     "slug": "verify-coa-chinese-supplement-supplier",
+    "url": "/blog/verify-coa-chinese-supplement-supplier.html",
     "title": "How to Verify a COA From a Chinese Supplement Supplier",
-    "date": "2026-09-05",
     "description": "Batch correspondence, test method, issuing laboratory and specification limits — the four things a certificate of analysis must tell you, and what to do when it doesn't.",
-    "tags": [
-      "coa",
-      "supplier-verification",
-      "quality",
-      "due-diligence"
+    "date": "2026-09-05",
+    "minutes": 7,
+    "cluster": "supply",
+    "secondary_clusters": [
+      "manufacturing"
     ],
-    "primary_tag": "coa",
-    "tag_cls": "tag-verification",
-    "tag_lbl": "COA & Documents"
+    "pillar": "/china-supplement-supply-chain/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "certificate of analysis",
+      "supplier management",
+      "ingredient specification"
+    ],
+    "featured": false
   },
   {
     "slug": "alibaba-supplement-sourcing-what-to-verify",
+    "url": "/blog/alibaba-supplement-sourcing-what-to-verify.html",
     "title": "Alibaba Supplement Sourcing: What Buyers Should Verify Before Paying",
-    "date": "2026-08-28",
     "description": "A practical buyer's checklist for sourcing supplements through Alibaba — what a supplier profile actually establishes, the checks worth running, and the payment-stage decisions that are hard to reverse.",
-    "tags": [
-      "alibaba",
-      "sourcing",
-      "supplier-verification",
-      "china-sourcing"
+    "date": "2026-08-28",
+    "minutes": 7,
+    "cluster": "supply",
+    "secondary_clusters": [
+      "manufacturing"
     ],
-    "primary_tag": "alibaba",
-    "tag_cls": "tag-sourcing",
-    "tag_lbl": "Alibaba Sourcing"
+    "pillar": "/china-supplement-supply-chain/",
+    "commercial_intent": "high",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "due diligence",
+      "trading company",
+      "ingredient supplier"
+    ],
+    "featured": false
   },
   {
     "slug": "bitter-orange-extract-eu-compliance",
+    "url": "/blog/bitter-orange-extract-eu-compliance.html",
     "title": "Bitter Orange Extract (Citrus aurantium) — What the Research Actually Says, and How to Stay Compliant in the EU",
-    "date": "2026-06-10",
     "description": "Bitter orange extract is widely used in weight management supplements, but the clinical evidence is mixed and EU regulations are fragmented. A practical guide for brands navigating efficacy claims, safety, and compliance.",
-    "tags": [
-      "regulatory",
-      "botanicals",
-      "weight-management",
-      "eu-compliance",
-      "bitter-orange",
-      "synephrine"
+    "date": "2026-06-10",
+    "minutes": 10,
+    "cluster": "ingredient",
+    "secondary_clusters": [
+      "consulting"
     ],
-    "primary_tag": "regulatory",
-    "tag_cls": "tag-regulatory",
-    "tag_lbl": "Regulatory"
+    "pillar": "/ingredient-sourcing/",
+    "commercial_intent": "medium",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "botanical extract",
+      "ingredient sourcing",
+      "novel food",
+      "EFSA"
+    ],
+    "featured": false
   },
   {
     "slug": "oral-films-wellness-frontier",
+    "url": "/blog/oral-films-wellness-frontier.html",
     "title": "Oral Films — The Next Wellness Frontier",
-    "date": "2026-06-05",
     "description": "Why sublingual and buccal delivery formats are gaining traction with DTC wellness brands globally — faster absorption, better bioavailability, and a premium consumer experience.",
-    "tags": [
-      "delivery-systems",
-      "oral-films",
-      "innovation",
-      "sublingual"
+    "date": "2026-06-05",
+    "minutes": 2,
+    "cluster": "product",
+    "secondary_clusters": [],
+    "pillar": "/product-development/",
+    "commercial_intent": "medium",
+    "search_intent": [
+      "informational",
+      "commercial"
     ],
-    "primary_tag": "delivery-systems",
-    "tag_cls": "tag-delivery",
-    "tag_lbl": "Delivery Systems"
+    "entities": [
+      "oral film",
+      "dosage form"
+    ],
+    "featured": false
   },
   {
     "slug": "functional-beverage-startups",
+    "url": "/blog/functional-beverage-startups.html",
     "title": "The Rise of Functional Beverage Startups",
-    "date": "2026-06-02",
     "description": "How independent brands are entering the functional beverage space with format-first product strategies — and what you can learn from their playbook.",
-    "tags": [
-      "market-trends",
-      "functional-beverage",
-      "dtc",
-      "startup"
+    "date": "2026-06-02",
+    "minutes": 2,
+    "cluster": "consulting",
+    "secondary_clusters": [],
+    "pillar": "/supplement-industry-consulting/",
+    "commercial_intent": "low",
+    "search_intent": [
+      "informational"
     ],
-    "primary_tag": "market-trends",
-    "tag_cls": "tag-market",
-    "tag_lbl": "Industry Trends"
+    "entities": [
+      "industry trends",
+      "dosage form",
+      "market entry"
+    ],
+    "featured": false
   },
   {
     "slug": "dtc-wellness-evolution-2026",
+    "url": "/blog/dtc-wellness-evolution-2026.html",
     "title": "DTC Wellness Evolution: What's Next for 2026–2027",
-    "date": "2026-06-01",
     "description": "From TikTok virality to sustainable brand building — a data-driven look at how founder-led wellness brands are maturing and what's coming next.",
-    "tags": [
-      "market-trends",
-      "dtc",
-      "brand-strategy",
-      "industry-outlook"
+    "date": "2026-06-01",
+    "minutes": 3,
+    "cluster": "consulting",
+    "secondary_clusters": [],
+    "pillar": "/supplement-industry-consulting/",
+    "commercial_intent": "low",
+    "search_intent": [
+      "informational"
     ],
-    "primary_tag": "market-trends",
-    "tag_cls": "tag-market",
-    "tag_lbl": "Industry Trends"
+    "entities": [
+      "industry trends",
+      "market entry"
+    ],
+    "featured": false
   },
   {
     "slug": "melatonin-regulations-eu",
+    "url": "/blog/melatonin-regulations-eu.html",
     "title": "Melatonin Regulations Across EU Markets: A Guide for Supplement Brands",
-    "date": "2026-05-28",
     "description": "Navigating novel food classification and dosage limits that vary significantly between EU member states — what wellness brands need to know before launching.",
-    "tags": [
-      "regulatory",
-      "eu",
-      "melatonin",
-      "sleep-health"
+    "date": "2026-05-28",
+    "minutes": 2,
+    "cluster": "product",
+    "secondary_clusters": [
+      "consulting"
     ],
-    "primary_tag": "regulatory",
-    "tag_cls": "tag-regulatory",
-    "tag_lbl": "Regulatory"
+    "pillar": "/product-development/",
+    "commercial_intent": "medium",
+    "search_intent": [
+      "informational",
+      "commercial"
+    ],
+    "entities": [
+      "supplement formulation",
+      "regulatory compliance",
+      "EFSA"
+    ],
+    "featured": false
   },
   {
     "slug": "card-liquid-wellness-trends",
+    "url": "/blog/card-liquid-wellness-trends.html",
     "title": "Why Card Liquids Are Growing in Wellness",
-    "date": "2026-05-15",
     "description": "Snap-open liquid formats offer unprecedented convenience, precise single-dose accuracy, and a premium unboxing experience that modern consumers expect.",
-    "tags": [
-      "delivery-systems",
-      "functional-beverage",
-      "product-innovation"
+    "date": "2026-05-15",
+    "minutes": 2,
+    "cluster": "consulting",
+    "secondary_clusters": [],
+    "pillar": "/supplement-industry-consulting/",
+    "commercial_intent": "low",
+    "search_intent": [
+      "informational"
     ],
-    "primary_tag": "delivery-systems",
-    "tag_cls": "tag-delivery",
-    "tag_lbl": "Delivery Systems"
+    "entities": [
+      "industry trends",
+      "dosage form",
+      "market entry"
+    ],
+    "featured": false
   },
   {
     "slug": "pet-wellness-supplements-growth",
+    "url": "/blog/pet-wellness-supplements-growth.html",
     "title": "Growth Trends in Pet Wellness Supplements",
-    "date": "2026-05-10",
     "description": "The companion animal supplement market is outpacing human wellness — here's what's driving the growth and which categories offer the most opportunity for brands.",
-    "tags": [
-      "pet-wellness",
-      "market-trends",
-      "companion-animal",
-      "supplements"
+    "date": "2026-05-10",
+    "minutes": 2,
+    "cluster": "consulting",
+    "secondary_clusters": [],
+    "pillar": "/supplement-industry-consulting/",
+    "commercial_intent": "low",
+    "search_intent": [
+      "informational"
     ],
-    "primary_tag": "pet-wellness",
-    "tag_cls": "tag-pet",
-    "tag_lbl": "Pet Wellness"
+    "entities": [
+      "industry trends",
+      "supplement formulation"
+    ],
+    "featured": false
   },
   {
     "slug": "flavor-masking-functional-powders",
+    "url": "/blog/flavor-masking-functional-powders.html",
     "title": "Flavor Masking Challenges in Functional Powders",
-    "date": "2026-04-22",
     "description": "Technical approaches to making bitter botanicals palatable without sacrificing label cleanliness — a practical guide for wellness product developers.",
-    "tags": [
-      "formulation",
-      "flavor",
-      "functional-powders",
-      "product-development"
+    "date": "2026-04-22",
+    "minutes": 2,
+    "cluster": "product",
+    "secondary_clusters": [],
+    "pillar": "/product-development/",
+    "commercial_intent": "medium",
+    "search_intent": [
+      "informational",
+      "commercial"
     ],
-    "primary_tag": "formulation",
-    "tag_cls": "tag-formulation",
-    "tag_lbl": "Formulation"
+    "entities": [
+      "flavor masking",
+      "powder",
+      "supplement formulation"
+    ],
+    "featured": false
   },
   {
     "slug": "fda-vs-efsa-supplement-regulations",
+    "url": "/blog/fda-vs-efsa-supplement-regulations.html",
     "title": "FDA vs EFSA: Key Differences for Supplement Brands",
-    "date": "2026-04-08",
     "description": "Understanding the structural differences between FDA and EFSA supplement regulations — structural vs. function claims, permitted ingredients, and registration pathways.",
-    "tags": [
-      "regulatory",
-      "fda",
-      "efsa",
-      "compliance",
-      "market-entry"
+    "date": "2026-04-08",
+    "minutes": 3,
+    "cluster": "consulting",
+    "secondary_clusters": [],
+    "pillar": "/supplement-industry-consulting/",
+    "commercial_intent": "medium",
+    "search_intent": [
+      "informational",
+      "commercial"
     ],
-    "primary_tag": "regulatory",
-    "tag_cls": "tag-regulatory",
-    "tag_lbl": "Regulatory"
+    "entities": [
+      "regulatory compliance",
+      "FDA",
+      "EFSA",
+      "market entry"
+    ],
+    "featured": false
   }
 ]

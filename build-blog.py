@@ -1,37 +1,64 @@
 #!/usr/bin/env python3
-"""Build static blog HTML pages from Markdown files.
+"""SuppBridge static site generator (V2.2 — metadata-first).
 
 Usage: python3 build-blog.py
-Reads blog/*.md -> generates blog/*.html + blog/index.html + blog/sitemap.xml
-                 + blog/articles.json
 
-Notes
+Reads
 -----
-* Blog pages use the SAME stylesheet as the rest of the site (/styles/main.css).
-  Blog-specific rules inside that file are scoped under `body.page-blog`, so
-  they can never leak into the homepage layout again.
-* Blog pages carry `class="page-blog"` on <body> for exactly that reason.
-* Every article ends with a commercial CTA (supplier review), not a generic
-  "contact us" link, so SEO traffic has a real conversion path.
+content/taxonomy.py   all cluster / pillar / intent / FAQ metadata
+blog/*.md             article content + frontmatter
+
+Writes
+------
+blog/<slug>.html      article pages (breadcrumbs, schema, pillar block,
+                      related reading, intent-scaled CTA)
+blog/index.html       insights index grouped by pillar
+blog/articles.json    machine-readable index for future SEO automation
+<slug>/index.html     the five pillar pages
+sitemap.xml           root sitemap (static pages + pillars + blog)
+blog/sitemap.xml      blog-only sitemap
+
+Design notes
+------------
+* Nothing here is CMS-shaped. Metadata is plain Python; output is plain
+  HTML. `git push` still deploys.
+* Blog pages use the same stylesheet as the rest of the site. Blog-specific
+  rules are scoped under `body.page-blog` / `.page-pillar` so they can never
+  leak into the homepage layout again.
+* Adding an article = write the .md, add one ARTICLE_META entry, run this.
 """
 
-import os, re, glob, json
+import os
+import re
+import glob
+import json
+import html as html_lib
 from datetime import datetime
+
+from content.taxonomy import (
+    SITE_URL, CONTACT, PILLARS, PILLAR_ORDER, ARTICLE_META, FAQ_DATA,
+    ENTITIES, STATIC_PAGES, article_meta, articles_in_pillar,
+)
+from content.chrome import (
+    nav_block, nav_html, footer_block, NAV_SCRIPT, NAV_SIMPLE,
+    FOOTER_COMPANY, FOOTER_MORE, SPRITE_SYMBOLS,
+)
+from content.redirects import redirect_pairs, netlify_format
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BLOG_DIR = os.path.join(BASE_DIR, "blog")
-SITE_URL = "https://suppbridge.com"
 CSS_URL = "/styles/main.css"
+OG_IMAGE = f"{SITE_URL}/images/blog-og.png"
 
-# Contact / conversion destinations
-CONTACT = "/#start-project"
-REVIEW = "/china-supplement-sourcing.html#review"
+# Commercial fallback destination when an article has no pillar block
+DUE_DILIGENCE = "/china-supplement-sourcing.html"
 
 
-# ── Markdown -> HTML converter (no external deps) ──
+# ══════════════════════════════════════════════════════════════════
+# Markdown -> HTML (no external dependencies)
+# ══════════════════════════════════════════════════════════════════
 
 def md_to_html(md_text):
-    """Convert basic Markdown to HTML fragments."""
     lines = md_text.split('\n')
     result = []
     i = 0
@@ -54,19 +81,15 @@ def md_to_html(md_text):
     while i < len(lines):
         line = lines[i]
 
-        # Table detection
         if '|' in line and line.strip().startswith('|'):
-            if not in_table:
-                in_table = True
+            in_table = True
             if not re.match(r'^\|[\s\-:|]+\|$', line.strip()):
                 table_lines.append(line.strip())
             i += 1
             continue
-        else:
-            if in_table:
-                flush_table()
+        elif in_table:
+            flush_table()
 
-        # Headers
         m = re.match(r'^(#{1,6})\s+(.+)$', line)
         if m:
             level = len(m.group(1))
@@ -74,13 +97,11 @@ def md_to_html(md_text):
             i += 1
             continue
 
-        # Horizontal rule
         if re.match(r'^[-*_]{3,}\s*$', line):
             result.append('<hr>')
             i += 1
             continue
 
-        # Blockquote
         if line.startswith('> '):
             qlines = []
             while i < len(lines) and lines[i].startswith('> '):
@@ -89,7 +110,6 @@ def md_to_html(md_text):
             result.append('<blockquote>' + process_inline(' '.join(qlines)) + '</blockquote>')
             continue
 
-        # Unordered list (multi-line)
         if re.match(r'^\s*[-*+]\s+', line):
             items = []
             while i < len(lines) and re.match(r'^\s*[-*+]\s+', lines[i]):
@@ -98,7 +118,6 @@ def md_to_html(md_text):
             result.append('<ul>' + ''.join(f'<li>{process_inline(it)}</li>' for it in items) + '</ul>')
             continue
 
-        # Ordered list (multi-line)
         if re.match(r'^\s*\d+\.\s+', line):
             items = []
             while i < len(lines) and re.match(r'^\s*\d+\.\s+', lines[i]):
@@ -107,12 +126,10 @@ def md_to_html(md_text):
             result.append('<ol>' + ''.join(f'<li>{process_inline(it)}</li>' for it in items) + '</ol>')
             continue
 
-        # Blank line
         if line.strip() == '':
             i += 1
             continue
 
-        # Paragraph
         plines = []
         while i < len(lines) and lines[i].strip() and not re.match(r'^(#{1,6}\s|[|>\-*+]\s|\d+\.\s)', lines[i]):
             plines.append(lines[i])
@@ -126,7 +143,6 @@ def md_to_html(md_text):
 
 
 def process_inline(text):
-    """Process inline Markdown formatting."""
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
     text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
@@ -136,7 +152,6 @@ def process_inline(text):
 
 
 def parse_frontmatter(md_text):
-    """Parse YAML-like frontmatter from Markdown."""
     if not md_text.startswith('---'):
         return {}, md_text
     parts = md_text.split('---', 2)
@@ -153,372 +168,407 @@ def parse_frontmatter(md_text):
     return fm, parts[2].strip()
 
 
-# Tag slug -> CSS class / human label.
-# Buyer-problem tags (sourcing, verification, ...) are the growth area; the
-# legacy topic tags are kept so existing articles keep rendering correctly.
-TAG_CLASS = {
-    'delivery-systems': 'delivery', 'regulatory': 'regulatory',
-    'formulation': 'formulation', 'market-trends': 'market',
-    'pet-wellness': 'pet', 'dtc': 'market', 'brand-strategy': 'market',
-    'fda': 'regulatory', 'efsa': 'regulatory', 'eu': 'regulatory',
-    'compliance': 'regulatory', 'functional-beverage': 'delivery',
-    'product-innovation': 'delivery', 'sleep-health': 'formulation',
-    'functional-powders': 'formulation', 'product-development': 'formulation',
-    'flavor': 'formulation', 'companion-animal': 'pet', 'supplements': 'pet',
-    'innovation': 'delivery', 'oral-films': 'delivery', 'sublingual': 'delivery',
-    'market-entry': 'regulatory', 'industry-outlook': 'market',
-    # ── buyer-problem / sourcing cluster ──
-    'sourcing': 'sourcing', 'china-sourcing': 'sourcing', 'alibaba': 'sourcing',
-    'factory': 'sourcing', 'trading-company': 'sourcing',
-    'supplier-verification': 'verification', 'manufacturer-verification': 'verification',
-    'coa': 'verification', 'due-diligence': 'verification',
-    'quality': 'verification', 'procurement': 'sourcing',
-    # ── V2.1 content clusters (product / ingredient / manufacturing / supply chain / consulting) ──
-    'product-strategy': 'product', 'product': 'product',
-    'ingredient-sourcing': 'ingredient', 'ingredients': 'ingredient',
-    'botanical-extract': 'ingredient', 'specification': 'ingredient',
-    'manufacturing': 'manufacturing', 'manufacturer': 'manufacturing',
-    'oem': 'manufacturing', 'moq': 'manufacturing', 'packaging': 'manufacturing',
-    'supply-chain': 'supplychain', 'cost': 'supplychain',
-    'supplier-management': 'supplychain', 'project-management': 'supplychain',
-    'industry-consulting': 'consulting', 'market-entry-strategy': 'consulting',
-    'china': 'consulting',
-}
-
-TAG_LABEL = {
-    'delivery-systems': 'Delivery Systems', 'regulatory': 'Regulatory',
-    'formulation': 'Formulation', 'market-trends': 'Industry Trends',
-    'pet-wellness': 'Pet Wellness', 'dtc': 'DTC Strategy',
-    'brand-strategy': 'Brand Strategy', 'fda': 'FDA', 'efsa': 'EFSA',
-    'eu': 'EU Regulatory', 'compliance': 'Compliance',
-    'functional-beverage': 'Functional Beverage',
-    'product-innovation': 'Product Innovation', 'sleep-health': 'Sleep Health',
-    'functional-powders': 'Functional Powders',
-    'product-development': 'Product Dev', 'flavor': 'Flavor Science',
-    'companion-animal': 'Pet Health', 'supplements': 'Supplements',
-    'innovation': 'Innovation', 'oral-films': 'Oral Films',
-    'sublingual': 'Sublingual', 'market-entry': 'Market Entry',
-    'industry-outlook': 'Industry Outlook',
-    # ── buyer-problem / sourcing cluster ──
-    'sourcing': 'Sourcing', 'china-sourcing': 'China Sourcing',
-    'alibaba': 'Alibaba Sourcing', 'factory': 'Factory Checks',
-    'trading-company': 'Trading Companies',
-    'supplier-verification': 'Supplier Verification',
-    'manufacturer-verification': 'Manufacturer Verification',
-    'coa': 'COA & Documents', 'due-diligence': 'Due Diligence',
-    'quality': 'Quality', 'procurement': 'Procurement',
-    # ── V2.1 content clusters ──
-    'product-strategy': 'Product Development', 'product': 'Product Development',
-    'ingredient-sourcing': 'Ingredient Sourcing', 'ingredients': 'Ingredient Sourcing',
-    'botanical-extract': 'Botanical Extracts', 'specification': 'Specifications',
-    'manufacturing': 'Manufacturing', 'manufacturer': 'Manufacturer Selection',
-    'oem': 'OEM / ODM', 'moq': 'MOQ & Cost', 'packaging': 'Packaging',
-    'supply-chain': 'Supply Chain', 'cost': 'Cost Optimization',
-    'supplier-management': 'Supplier Management', 'project-management': 'China Project Management',
-    'industry-consulting': 'Industry Consulting', 'market-entry-strategy': 'Market Strategy',
-    'china': 'China',
-}
-
-
-def tag_class(tag_slug):
-    return f"tag-{TAG_CLASS.get(tag_slug, 'sourcing')}"
-
-
-def tag_label(tag_slug):
-    return TAG_LABEL.get(tag_slug, tag_slug.replace('-', ' ').title())
-
-
-# ── Shared page chrome ──
-
-SITE_NAV_LINKS = [
-    ("How We Help", "/#services"),
-    ("Our Process", "/#process"),
-    ("Projects", "/#projects"),
-    ("About Jun", "/#founder"),
-    ("Insights", "/blog/"),
-]
-
-
-def page_head(title, description, canonical_url):
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{title}</title>
-<meta name="description" content="{description}">
-<link rel="canonical" href="{canonical_url}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{CSS_URL}">
-<link rel="preload" href="{CSS_URL}" as="style">"""
-
-
-def nav_html(current="blog"):
-    items = "".join(
-        f'<li><a href="{url}"{" aria-current=\"page\"" if label == current else ""}>{label}</a></li>'
-        for label, url in SITE_NAV_LINKS
-    )
-    mobile = "".join(f'<a href="{url}">{label}</a>' for label, url in SITE_NAV_LINKS)
-    return f"""<nav class="nav" id="nav">
-<div class="nav-wrap">
-<a href="/" class="nav-brand">
-<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-<span class="nav-brand-text"><span>China Supplement Industry Advisor</span></span>
-</a>
-<ul class="nav-links">{items}</ul>
-<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
-<button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-</button>
-</div>
-<div class="mobile-menu" id="mobileMenu">
-{mobile}
-<a href="{CONTACT}" style="color:var(--teal);font-weight:700;">Discuss Your Project →</a>
-</div>
-</nav>"""
-
-
-FOOTER_NAV = [
-    ("How We Help", "/#services"),
-    ("Our Process", "/#process"),
-    ("Long-Term Partnership", "/#long-term"),
-    ("Projects", "/#projects"),
-    ("About Jun", "/#founder"),
-    ("Product Formats", "/product-formats.html"),
-    ("Supplier Due Diligence", "/china-supplement-sourcing.html"),
-    ("Insights", "/blog/"),
-    ("FAQ", "/#faq"),
-    ("Contact", CONTACT),
-]
-
-
-def footer_html():
-    links = " · ".join(f'<a href="{url}">{label}</a>' for label, url in FOOTER_NAV)
-    year = datetime.now().year
-    return f"""<footer class="blog-footer">
-<div class="container">
-<p>&copy; {year} SuppBridge. China supplement industry advisor &amp; supply partner.</p>
-<p>{links}</p>
-</div>
-</footer>"""
-
-
-NAV_SCRIPT = """<script>
-(function(){
-  var nav=document.getElementById('nav');
-  var toggle=document.getElementById('navToggle');
-  var menu=document.getElementById('mobileMenu');
-  function onScroll(){ if(nav) nav.classList.toggle('scrolled', window.scrollY>24); }
-  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
-  if(toggle&&menu){
-    toggle.addEventListener('click',function(){
-      var open=menu.classList.toggle('active');
-      toggle.setAttribute('aria-expanded', open?'true':'false');
-      toggle.setAttribute('aria-label', open?'Close menu':'Open menu');
-    });
-  }
-  document.querySelectorAll('a[href^="#"]').forEach(function(a){
-    a.addEventListener('click',function(e){
-      var id=this.getAttribute('href');
-      if(id==='#'||id.length<2) return;
-      var t=document.querySelector(id);
-      if(!t) return;
-      e.preventDefault();
-      window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-78, behavior:'smooth'});
-      if(menu) menu.classList.remove('active');
-    });
-  });
-})();
-</script>"""
-
-
-def breadcrumb_schema(title, canonical):
-    return f"""<script type="application/ld+json">
-{{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {{ "@type": "ListItem", "position": 1, "name": "Home", "item": "{SITE_URL}/" }},
-    {{ "@type": "ListItem", "position": 2, "name": "Insights", "item": "{SITE_URL}/blog/" }},
-    {{ "@type": "ListItem", "position": 3, "name": "{json_esc(title)}", "item": "{canonical}" }}
-  ]
-}}
-</script>"""
-
-
-def article_schema(title, date, description, slug, tags, og_image):
-    tag_names = [tag_label(t) for t in tags]
-    return f"""<script type="application/ld+json">
-{{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "{json_esc(title)}",
-  "datePublished": "{date}",
-  "dateModified": "{date}",
-  "description": "{json_esc(description)}",
-  "url": "{SITE_URL}/blog/{slug}.html",
-  "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{SITE_URL}/blog/{slug}.html" }},
-  "image": "{og_image}",
-  "author": {{ "@type": "Person", "name": "Jun Lee", "jobTitle": "Supplement Product & Supply Chain Strategist", "url": "{SITE_URL}/#founder" }},
-  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }},
-  "keywords": "{json_esc(', '.join(tag_names))}"
-}}
-</script>"""
-
-
 def json_esc(text):
     """Escape a string for safe embedding inside a JSON string literal."""
     return (text or '').replace('\\', '\\\\').replace('"', '\\"').replace('\n', ' ').replace('\r', ' ')
 
 
-def article_cta():
-    """Commercial end-of-article CTA.
+def e(text):
+    return html_lib.escape(text or '', quote=True)
 
-    Points at the project enquiry rather than a standalone supplier review, so
-    the funnel is content -> lead -> project (§4 of the V2.1 brief).
+
+def reading_time(body_md):
+    words = len(re.findall(r'\S+', re.sub(r'[#*>`\[\]()]', ' ', body_md)))
+    return max(2, round(words / 220))
+
+
+def pretty_date(iso):
+    try:
+        d = datetime.strptime(iso, '%Y-%m-%d')
+        return d.strftime('%d %B %Y').lstrip('0')
+    except ValueError:
+        return iso
+
+
+# Shared chrome lives in content/chrome.py (single source of truth).
+
+
+def page_head(title, description, canonical, extra_head=""):
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{e(title)}</title>
+<meta name="description" content="{e(description)}">
+<link rel="canonical" href="{canonical}">
+<meta property="og:title" content="{e(title)}">
+<meta property="og:description" content="{e(description)}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:site_name" content="SuppBridge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(title)}">
+<meta name="twitter:description" content="{e(description)}">
+<meta name="twitter:image" content="{OG_IMAGE}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{CSS_URL}">
+<link rel="preload" href="{CSS_URL}" as="style">{extra_head}"""
+
+
+def breadcrumb_html(trail):
+    """trail = [(label, href|None), ...]"""
+    parts = []
+    for i, (label, href) in enumerate(trail):
+        if href:
+            parts.append(f'<a href="{href}">{e(label)}</a>')
+        else:
+            parts.append(f'<span aria-current="page">{e(label)}</span>')
+        if i < len(trail) - 1:
+            parts.append('<span class="crumb-sep" aria-hidden="true">/</span>')
+    return f'<nav class="crumbs" aria-label="Breadcrumb">{"".join(parts)}</nav>'
+
+
+def breadcrumb_schema(trail):
+    items = ",\n".join(
+        f'    {{ "@type": "ListItem", "position": {i + 1}, "name": "{json_esc(label)}", "item": "{href}" }}'
+        for i, (label, href) in enumerate(trail)
+    )
+    return f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+{items}
+  ]
+}}
+</script>"""
+
+
+def faq_items_for(key):
+    """FAQ content for a page key.
+
+    `index` → FAQ_DATA['index']. `pillar:<k>` → the pillar's own FAQ list.
+    Returns [] when the page genuinely has no FAQ — in which case NO
+    FAQPage schema is emitted (§23: never invent FAQ for SEO's sake).
     """
-    return f"""<div class="article-cta">
-<p class="ac-kicker">Need more than a supplier check?</p>
-<h3>If you are building or sourcing a supplement in China, we can look at the whole project.</h3>
-<p>Formulation, ingredients, manufacturer selection, sampling, production and supply-chain setup — reviewed by someone on your side of the table. Send us the brief, the formula or the quotation and we will tell you what is realistic and what needs checking first.</p>
+    if key.startswith('pillar:'):
+        return PILLARS[key.split(':', 1)[1]].get('faq') or []
+    return FAQ_DATA.get(key) or []
+
+
+def faq_block_html(key, heading="Frequently Asked"):
+    """Visible FAQ + matching FAQPage schema. Both or neither."""
+    items = faq_items_for(key)
+    if not items:
+        return "", ""
+    body = "\n".join(
+        f'<details><summary>{e(q)}<span class="sr-only"> — toggle answer</span></summary>'
+        f'<div class="faq-body">{"".join(f"<p>{e(p)}</p>" for p in paras)}</div></details>'
+        for q, paras in items
+    )
+    visible = f"""<section class="faq-block">
+<h2>{e(heading)}</h2>
+{body}
+</section>"""
+    schema_items = ",\n".join(
+        '    {\n'
+        '      "@type": "Question",\n'
+        f'      "name": "{json_esc(q)}",\n'
+        '      "acceptedAnswer": { "@type": "Answer", "text": "'
+        + json_esc(' '.join(paras)) + '" }\n'
+        '    }'
+        for q, paras in items
+    )
+    schema = f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+{schema_items}
+  ]
+}}
+</script>"""
+    return visible, schema
+
+
+# ══════════════════════════════════════════════════════════════════
+# CTA — scales with commercial intent
+# ══════════════════════════════════════════════════════════════════
+
+def article_cta(intent, cluster_title):
+    if intent == "low":
+        return f"""<div class="article-cta article-cta--low">
+<p class="ac-kicker">Working on something in {e(cluster_title)}?</p>
+<h3>Send us the brief and we will tell you what is realistic.</h3>
+<p>No pitch deck, no discovery call script — a straight read on specification, supply and timeline.</p>
 <div class="ac-actions">
 <a class="ac-btn" href="{CONTACT}">Discuss Your Project →</a>
-<a class="ac-btn ac-btn--ghost" href="{REVIEW}">Supplier due diligence</a>
+</div>
+</div>"""
+    if intent == "medium":
+        return f"""<div class="article-cta article-cta--medium">
+<p class="ac-kicker">Next step</p>
+<h3>If you are making this decision now, we can look at it with you.</h3>
+<p>Formulation, ingredients, manufacturer selection, sampling, production and supply-chain setup — reviewed by someone on your side of the table. Send the brief, the formula or the quotation and we will tell you what is realistic and what needs checking first.</p>
+<div class="ac-actions">
+<a class="ac-btn" href="{CONTACT}">Discuss Your Project →</a>
+</div>
+</div>"""
+    return f"""<div class="article-cta">
+<p class="ac-kicker">Project enquiry</p>
+<h3>If you are building or sourcing a supplement in China, we can look at the whole project.</h3>
+<p>Formulation, ingredients, manufacturer selection, sampling, production and supply-chain setup — reviewed by someone on your side of the table. Send the brief, the formula or the quotation and we will tell you what is realistic and what needs checking first.</p>
+<div class="ac-actions">
+<a class="ac-btn" href="{CONTACT}">Discuss Your Project →</a>
+<a class="ac-btn ac-btn--ghost" href="/china-supplement-sourcing.html">Supplier due diligence</a>
 </div>
 </div>"""
 
 
-# ── Build ──
+# ══════════════════════════════════════════════════════════════════
+# Related-article engine
+#
+# Priority: same cluster → shared cluster overlap → shared entities →
+# same pillar, most commercially relevant first. Never random.
+# ══════════════════════════════════════════════════════════════════
 
-def build():
-    md_files = sorted(glob.glob(os.path.join(BLOG_DIR, "*.md")))
+def related_articles(current, all_articles, limit=3):
+    cur_cluster = current['cluster']
+    cur_secondary = set(current.get('secondary') or [])
+    cur_entities = set(current.get('entities') or [])
+    intent_rank = {'high': 3, 'medium': 2, 'low': 1}
+
+    scored = []
+    for other in all_articles:
+        if other['slug'] == current['slug']:
+            continue
+        score = 0
+        other_secondary = set(other.get('secondary') or [])
+        shared_entities = cur_entities & set(other.get('entities') or [])
+        score += 3 * len(shared_entities)
+        if other['cluster'] == cur_cluster:
+            score += 5
+        if other['cluster'] in cur_secondary or cur_cluster in other_secondary:
+            score += 3
+        score += len(other_secondary & cur_secondary)
+        score += 0.4 * intent_rank.get(other.get('commercial_intent', 'low'), 1)
+        if score > 0:
+            scored.append((score, other['date'], other['slug'], other['title']))
+
+    scored.sort(key=lambda x: (-x[0], x[1]), reverse=False)
+    scored.sort(key=lambda x: -x[0])
+    return [(s, t) for _, _, s, t in scored[:limit]]
+
+
+# ══════════════════════════════════════════════════════════════════
+# Build
+# ══════════════════════════════════════════════════════════════════
+
+def load_articles():
     articles = []
-
-    for md_path in md_files:
-        with open(md_path, 'r', encoding='utf-8') as f:
+    warnings = []
+    for md_path in sorted(glob.glob(os.path.join(BLOG_DIR, "*.md"))):
+        with open(md_path, encoding='utf-8') as f:
             md_text = f.read()
         fm, body = parse_frontmatter(md_text)
         slug = fm.get('slug', os.path.splitext(os.path.basename(md_path))[0])
-        title = fm.get('title', slug)
-        date = fm.get('date', '2026-01-01')
-        tags = fm.get('tags', [])
-        description = fm.get('description', '')
-        primary_tag = tags[0] if tags else 'sourcing'
-        tag_cls = tag_class(primary_tag)
-        tag_lbl = tag_label(primary_tag)
+        meta = article_meta(slug)
+        if meta is None:
+            warnings.append(f"{slug}.md has no ARTICLE_META entry — falling back to 'consulting'/low")
+            meta = {
+                'cluster': 'consulting', 'commercial_intent': 'low',
+                'secondary': [], 'entities': [], 'featured': False,
+                'search_intent': ['informational'],
+            }
+        cluster = meta['cluster']
+        if cluster not in PILLARS:
+            warnings.append(f"{slug}: unknown cluster '{cluster}' — falling back to 'consulting'")
+            cluster = 'consulting'
+        articles.append({
+            'slug': slug,
+            'title': fm.get('title', slug),
+            'date': fm.get('date', '2026-01-01'),
+            'tags': fm.get('tags', []),
+            'description': fm.get('description', ''),
+            'body_md': body,
+            'body_html': md_to_html(body),
+            'og_image': fm.get('og_image', OG_IMAGE),
+            'cluster': cluster,
+            'secondary': meta.get('secondary', []),
+            'commercial_intent': meta.get('commercial_intent', 'low'),
+            'search_intent': meta.get('search_intent', ['informational']),
+            'entities': meta.get('entities', []),
+            'featured': meta.get('featured', False),
+            'minutes': reading_time(body),
+        })
+    articles.sort(key=lambda a: a['date'], reverse=True)
+    return articles, warnings
 
-        body_html = md_to_html(body)
-        canonical = f"{SITE_URL}/blog/{slug}.html"
-        og_image = fm.get('og_image', f"{SITE_URL}/images/blog-og.png")
-        page_title = f"{title} — SuppBridge Insights"
 
-        # Related articles: shared tags first, most recently published first.
-        related = []
-        for other in articles:
-            common = set(tags) & set(other['tags'])
-            if other['slug'] != slug and common:
-                related.append((other['slug'], other['title'], len(common)))
-        related.sort(key=lambda x: -x[2])
-        related_links = related[:3]
-        # Always give the reader a commercial next step alongside related reading.
-        related_links.append(('/china-supplement-sourcing.html#alibaba-review',
-                              'China Supplement Sourcing & Manufacturer Verification', 0))
-        related_articles = '\n'.join(
-            f'<li><a href="/blog/{s}.html">{t}</a></li>' if not s.startswith('/')
-            else f'<li><a href="{s}">{t}</a></li>'
-            for s, t, _ in related_links
+def build_articles(articles):
+    for art in articles:
+        k = art['cluster']
+        pillar = PILLARS[k]
+        trail = [("Home", "/"), ("Insights", "/blog/"),
+                 (pillar['nav_title'], pillar['url']),
+                 (art['title'], None)]
+        canonical = f"{SITE_URL}/blog/{art['slug']}.html"
+
+        related = related_articles(art, articles)
+        related_html = "\n".join(
+            f'<li><a href="/blog/{s}.html">{e(t)}</a></li>' for s, t in related
+        ) or '<li><a href="/blog/">Browse all insights</a></li>'
+
+        # Other articles in the same cluster, surfaced as the pillar block.
+        siblings = [
+            o for o in articles
+            if o['slug'] != art['slug'] and (o['cluster'] == k or k in (o.get('secondary') or []))
+        ]
+        sibling_links = "\n".join(
+            f'<li><a href="/blog/{o["slug"]}.html">{e(o["title"])}</a></li>'
+            for o in siblings[:4]
         )
+        pillar_block = f"""<aside class="pillar-block">
+<span class="pb-kicker">Part of · {e(pillar['nav_title'])}</span>
+<h3><a href="{pillar['url']}">{e(pillar['title'])}</a></h3>
+<p>{e(pillar['lede'])}</p>
+<ul class="pb-links">{sibling_links}</ul>
+</aside>"""
 
-        html = f"""{page_head(page_title, description, canonical)}
-<meta property="og:title" content="{json_esc(title)}">
-<meta property="og:description" content="{json_esc(description)}">
-<meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{og_image}">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="SuppBridge">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{json_esc(title)}">
-<meta name="twitter:description" content="{json_esc(description)}">
-<meta name="twitter:image" content="{og_image}">
-{article_schema(title, date, description, slug, tags, og_image)}
-{breadcrumb_schema(title, canonical)}
+        cta = article_cta(art['commercial_intent'], pillar['nav_title'])
+
+        article_schema = f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": ["Article", "BlogPosting"],
+  "headline": "{json_esc(art['title'])}",
+  "description": "{json_esc(art['description'])}",
+  "datePublished": "{art['date']}",
+  "dateModified": "{art['date']}",
+  "url": "{canonical}",
+  "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{canonical}" }},
+  "image": "{art['og_image']}",
+  "articleSection": "{json_esc(pillar['nav_title'])}",
+  "keywords": "{json_esc(', '.join(art['entities']) or pillar['nav_title'])}",
+  "wordCount": {len(re.findall(r'\S+', art['body_md']))},
+  "author": {{
+    "@type": "Person",
+    "name": "Jun Lee",
+    "jobTitle": "Supplement Product & Supply Chain Strategist",
+    "url": "{SITE_URL}/#founder",
+    "worksFor": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }}
+  }},
+  "publisher": {{
+    "@type": "Organization",
+    "name": "SuppBridge",
+    "url": "{SITE_URL}",
+    "logo": {{ "@type": "ImageObject", "url": "{SITE_URL}/images/logo.png" }}
+  }}
+}}
+</script>"""
+
+        html = f"""{page_head(f"{art['title']} — SuppBridge Insights", art['description'], canonical)}
+{article_schema}
+{breadcrumb_schema(trail)}
 </head>
 <body class="page-blog">
 {nav_html()}
 <article>
 <header class="article-hero">
 <div class="container">
-<span class="tag {tag_cls}">{tag_lbl}</span>
-<h1>{title}</h1>
-<p class="meta">{date}</p>
-<p class="excerpt">{description}</p>
+{breadcrumb_html(trail)}
+<span class="tag tag-{k}">{e(pillar['nav_title'])}</span>
+<h1>{e(art['title'])}</h1>
+<div class="meta">
+<span>{pretty_date(art['date'])}</span>
+<span class="meta-dot" aria-hidden="true">·</span>
+<span>{art['minutes']} min read</span>
+<span class="meta-dot" aria-hidden="true">·</span>
+<span>Jun Lee</span>
+</div>
+<p class="excerpt">{e(art['description'])}</p>
 </div>
 </header>
 <div class="article-body">
 <div class="container">
-{body_html}
-{article_cta()}
+{art['body_html']}
+{cta}
+{pillar_block}
 <div class="related-reading">
 <h3>Related Reading</h3>
 <ul>
-{related_articles}
+{related_html}
 </ul>
 </div>
 </div>
 </div>
 </article>
-{footer_html()}
+{footer_block()}
 {NAV_SCRIPT}
 </body>
 </html>"""
 
-        with open(os.path.join(BLOG_DIR, f"{slug}.html"), 'w', encoding='utf-8') as f:
+        with open(os.path.join(BLOG_DIR, f"{art['slug']}.html"), 'w', encoding='utf-8') as f:
             f.write(html)
-        print(f"  + {slug}.html")
+        print(f"  + blog/{art['slug']}.html  [{k}/{art['commercial_intent']}]")
 
-        articles.append({
-            'slug': slug, 'title': title, 'date': date, 'description': description,
-            'tags': tags, 'primary_tag': primary_tag, 'tag_cls': tag_cls, 'tag_lbl': tag_lbl
-        })
 
-    articles.sort(key=lambda a: a['date'], reverse=True)
+def build_blog_index(articles):
+    groups = []
+    for k in PILLAR_ORDER:
+        p = PILLARS[k]
+        items = [a for a in articles if a['cluster'] == k or k in (a.get('secondary') or [])]
+        if not items:
+            continue
+        cards = "\n".join(f"""<a class="blog-card" href="/blog/{a['slug']}.html">
+<div class="blog-card-head"><span class="tag tag-{a['cluster']}">{e(PILLARS[a['cluster']]['nav_title'])}</span></div>
+<h3>{e(a['title'])}</h3>
+<p class="desc">{e(a['description'])}</p>
+<p class="meta">{pretty_date(a['date'])} · {a['minutes']} min read</p>
+</a>""" for a in items)
+        groups.append(f"""<section class="pillar-group">
+<div class="pg-head">
+<h2><a href="{p['url']}">{e(p['nav_title'])}</a></h2>
+<span class="pg-count">{len(items)} article{'s' if len(items) != 1 else ''}</span>
+</div>
+<p class="pg-intro">{e(p['lede'])}</p>
+{cards}
+</section>""")
 
-    # ── Blog index ──
-    cards = '\n'.join(f"""<article class="blog-card">
-<span class="tag {a['tag_cls']}">{a['tag_lbl']}</span>
-<h2><a href="/blog/{a['slug']}.html">{a['title']}</a></h2>
-<p class="desc">{a['description']}</p>
-<p class="meta">{a['date']}</p>
-</article>""" for a in articles)
-
-    index_description = ("Practical guides for brands buying supplements in China — supplier verification, "
-                         "manufacturer due diligence, ingredient sourcing and regulatory questions, written from the buyer's side.")
-    index_html = f"""{page_head("SuppBridge Insights — Buying Supplements in China", index_description, f"{SITE_URL}/blog/")}
-<meta property="og:title" content="SuppBridge Insights — Buying Supplements in China">
-<meta property="og:description" content="{json_esc(index_description)}">
-<meta property="og:image" content="{SITE_URL}/images/blog-og.png">
-<meta property="og:url" content="{SITE_URL}/blog/">
-<meta property="og:type" content="website">
-<script type="application/ld+json">
+    desc = ("Practical guides on supplement product development, ingredient sourcing, "
+            "manufacturing and China supply-chain management — written from the buyer's side "
+            "of the table, not the factory's.")
+    canonical = f"{SITE_URL}/blog/"
+    blog_schema = f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "Blog",
   "name": "SuppBridge Insights",
-  "description": "{json_esc(index_description)}",
-  "url": "{SITE_URL}/blog/",
+  "description": "{json_esc(desc)}",
+  "url": "{canonical}",
+  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }},
   "author": {{ "@type": "Person", "name": "Jun Lee", "url": "{SITE_URL}/#founder" }},
-  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }}
+  "blogPost": [
+{chr(10).join(f'    {{ "@type": "BlogPosting", "headline": "{json_esc(a["title"])}", "url": "{SITE_URL}/blog/{a["slug"]}.html", "datePublished": "{a["date"]}" }}{"," if i < len(articles) - 1 else ""}' for i, a in enumerate(articles))}
+  ]
 }}
-</script>
+</script>"""
+
+    html = f"""{page_head("Insights — Building Supplements in China | SuppBridge", desc, canonical)}
+{blog_schema}
+{breadcrumb_schema([("Home", "/"), ("Insights", None)])}
 </head>
 <body class="page-blog">
 {nav_html()}
 <header class="blog-hero">
 <div class="container">
-<h1>Building Supplements in China — Industry Notes from the Inside</h1>
-<p>Practical guides on product development, ingredient sourcing, manufacturing and supply-chain management in China — written for brand owners, not for procurement departments.</p>
+{breadcrumb_html([("Home", "/"), ("Insights", None)])}
+<span class="eyebrow">Industry Knowledge Base</span>
+<h1>Building Supplements in China — Notes From Inside the Industry</h1>
+<p>Practical guides on product development, ingredient sourcing, manufacturing and supply-chain management. Organised by discipline, written for brand owners rather than procurement departments.</p>
 <div class="blog-hero-cta"><a href="{CONTACT}" class="btn btn--primary">Discuss Your Project →</a></div>
 </div>
 </header>
@@ -529,34 +579,271 @@ def build():
 <p>Tell us what you are trying to build. We will tell you what is realistic, what it takes and where the risks sit.</p>
 <a href="{CONTACT}" class="btn btn--onlight">Discuss Your Project →</a>
 </div>
-{cards}
+{''.join(groups)}
 </div>
 </div>
-{footer_html()}
+{footer_block()}
 {NAV_SCRIPT}
 </body>
 </html>"""
 
     with open(os.path.join(BLOG_DIR, "index.html"), 'w', encoding='utf-8') as f:
-        f.write(index_html)
-    print(f"  + index.html ({len(articles)} articles)")
+        f.write(html)
+    print(f"  + blog/index.html ({len(articles)} articles in {len(groups)} pillars)")
 
-    # ── Sitemap ──
-    urls = [f"{SITE_URL}/blog/"] + [f"{SITE_URL}/blog/{a['slug']}.html" for a in articles]
-    sitemap = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-    for url in urls:
-        sitemap += f"  <url><loc>{url}</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n"
-    sitemap += '</urlset>'
-    with open(os.path.join(BLOG_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
-        f.write(sitemap)
+
+def build_pillars(articles):
+    for idx, k in enumerate(PILLAR_ORDER):
+        p = PILLARS[k]
+        canonical = f"{SITE_URL}{p['url']}"
+        own = [a for a in articles if a['cluster'] == k]
+        also = [a for a in articles if a['cluster'] != k and k in (a.get('secondary') or [])]
+        items = own + also
+
+        if items:
+            listing = "\n".join(f"""<a class="blog-card" href="/blog/{a['slug']}.html">
+<div class="blog-card-head"><span class="tag tag-{a['cluster']}">{e(PILLARS[a['cluster']]['nav_title'])}</span></div>
+<h3>{e(a['title'])}</h3>
+<p class="desc">{e(a['description'])}</p>
+<p class="meta">{pretty_date(a['date'])} · {a['minutes']} min read</p>
+</a>""" for a in items)
+        else:
+            listing = ('<p class="pillar-empty">Guides in this discipline are in preparation. '
+                       'In the meantime, <a href="/#start-project">tell us what you are working on</a> '
+                       'and we will answer the specific question directly.</p>')
+
+        faq_visible, faq_schema = faq_block_html(f"pillar:{k}", "Questions we get asked")
+        topics = "".join(f"<li>{e(t)}</li>" for t in p['topics'])
+        intro = "".join(f"<p>{e(par)}</p>" for par in p['intro'])
+
+        trail = [("Home", "/"), (p['nav_title'], None)]
+        siblings = "".join(
+            f'<a class="pillar-sibling" href="{PILLARS[o]["url"]}">'
+            f'<span class="ps-t">{e(PILLARS[o]["nav_title"])}</span>'
+            f'<span class="ps-d">{e(PILLARS[o]["nav_desc"])}</span></a>'
+            for o in PILLAR_ORDER if o != k
+        )
+
+        collection_schema = f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{json_esc(p['title'])}",
+  "description": "{json_esc(p['lede'])}",
+  "url": "{canonical}",
+  "isPartOf": {{ "@type": "WebSite", "name": "SuppBridge", "url": "{SITE_URL}" }},
+  "author": {{ "@type": "Person", "name": "Jun Lee", "url": "{SITE_URL}/#founder" }},
+  "publisher": {{ "@type": "Organization", "name": "SuppBridge", "url": "{SITE_URL}" }},
+  "hasPart": [
+{chr(10).join(f'    {{ "@type": "Article", "headline": "{json_esc(a["title"])}", "url": "{SITE_URL}/blog/{a["slug"]}.html" }}{"," if i < len(items) - 1 else ""}' for i, a in enumerate(items)) or "  "}
+  ]
+}}
+</script>"""
+
+        html = f"""{page_head(f"{p['title']} | SuppBridge", p['lede'], canonical)}
+{collection_schema}
+{breadcrumb_schema([("Home", SITE_URL + "/"), (p['nav_title'], canonical)])}
+{faq_schema}
+</head>
+<body class="page-pillar">
+{nav_html()}
+<header class="pillar-hero">
+<div class="container">
+{breadcrumb_html(trail)}
+<span class="eyebrow">{e(p['num'])} — Expertise</span>
+<h1>{e(p['h1'])}</h1>
+<p class="pillar-lede">{e(p['lede'])}</p>
+<ul class="pillar-topics">{topics}</ul>
+</div>
+</header>
+<div class="pillar-body">
+<div class="container">
+<div class="pillar-intro">{intro}</div>
+<div class="pillar-articles">
+<h2>Guides in this discipline</h2>
+{listing}
+</div>
+{faq_visible}
+<div class="pillar-next">
+<h3>Working on a project in this area?</h3>
+<p>Send us the brief, the formula or the quotation. We will tell you what is realistic, what it costs to get wrong, and what needs checking before you commit.</p>
+<a href="{CONTACT}" class="btn btn--primary">Discuss Your Project →</a>
+</div>
+</div>
+</div>
+<section class="section section--soft">
+<div class="container">
+<div class="section-header section-header--left">
+<span class="eyebrow">Other disciplines</span>
+<h2>Where else we work</h2>
+</div>
+<div class="pillar-siblings">{siblings}</div>
+</div>
+</section>
+{footer_block()}
+{NAV_SCRIPT}
+</body>
+</html>"""
+
+        out_dir = os.path.join(BASE_DIR, p['slug'])
+        os.makedirs(out_dir, exist_ok=True)
+        with open(os.path.join(out_dir, "index.html"), 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f"  + {p['slug']}/index.html ({len(items)} articles)")
+
+
+def build_sitemaps(articles):
+    today = datetime.now().strftime('%Y-%m-%d')
+
+    def url(loc, freq, pri):
+        return (f"  <url>\n    <loc>{loc}</loc>\n    <changefreq>{freq}</changefreq>\n"
+                f"    <priority>{pri}</priority>\n    <lastmod>{today}</lastmod>\n  </url>\n")
+
+    root = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+    for rel, freq, pri in STATIC_PAGES:
+        if rel == 'index.html':
+            loc = f"{SITE_URL}/"
+        elif rel.endswith('/index.html'):
+            loc = f"{SITE_URL}/{rel[:-len('index.html')]}"
+        else:
+            loc = f"{SITE_URL}/{rel}"
+        root += url(loc, freq, pri)
+    for k in PILLAR_ORDER:
+        root += url(f"{SITE_URL}{PILLARS[k]['url']}", "weekly", "0.9")
+    root += url(f"{SITE_URL}/blog/", "weekly", "0.8")
+    for a in articles:
+        root += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7")
+    root += '</urlset>'
+    with open(os.path.join(BASE_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
+        f.write(root)
     print("  + sitemap.xml")
 
-    with open(os.path.join(BLOG_DIR, "articles.json"), 'w', encoding='utf-8') as f:
-        json.dump(articles, f, ensure_ascii=False, indent=2)
-    print("  + articles.json")
+    blog = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+    blog += url(f"{SITE_URL}/blog/", "weekly", "0.8")
+    for a in articles:
+        blog += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7")
+    blog += '</urlset>'
+    with open(os.path.join(BLOG_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
+        f.write(blog)
+    print("  + blog/sitemap.xml")
 
-    print(f"\nDone: {len(articles)} articles in blog/  ->  deploy to suppbridge.com/blog/")
+
+def build_articles_json(articles):
+    """Machine-readable index — the hook for future Search Console work (§30):
+    query · page · impressions · clicks · ctr · position · cluster · intent."""
+    out = [{
+        'slug': a['slug'],
+        'url': f"/blog/{a['slug']}.html",
+        'title': a['title'],
+        'description': a['description'],
+        'date': a['date'],
+        'minutes': a['minutes'],
+        'cluster': a['cluster'],
+        'secondary_clusters': a['secondary'],
+        'pillar': PILLARS[a['cluster']]['url'],
+        'commercial_intent': a['commercial_intent'],
+        'search_intent': a['search_intent'],
+        'entities': a['entities'],
+        'featured': a['featured'],
+    } for a in articles]
+    with open(os.path.join(BLOG_DIR, "articles.json"), 'w', encoding='utf-8') as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print("  + blog/articles.json")
+
+
+def build_redirects():
+    """Emit real HTML redirect pages + a host redirects file from one map.
+
+    GitHub Pages ignores `_redirects`, so an alias declared only there 404s.
+    A static page carrying meta-refresh + canonical works everywhere, and the
+    canonical tag is what tells a crawler which URL to actually index.
+
+    Two output shapes, matching how the source path would be requested:
+      /formats            -> formats/index.html
+      /product-formats.html -> product-formats.html  (overwrites nothing;
+                               skipped if a real page already owns the path)
+    """
+    written = 0
+    skipped = []
+    for src, dst in redirect_pairs():
+        rel = src.strip('/')
+        dest_url = f"{SITE_URL}{dst}"
+
+        if rel.endswith('.html'):
+            out_path = os.path.join(BASE_DIR, rel)
+        else:
+            out_path = os.path.join(BASE_DIR, rel, 'index.html')
+
+        # Never shadow a real page: if a genuine page already lives here, the
+        # alias is redundant and generating over it would break the site.
+        if os.path.exists(out_path):
+            skipped.append(src)
+            continue
+
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirecting — SuppBridge</title>
+<link rel="canonical" href="{dest_url}">
+<meta name="robots" content="noindex, follow">
+<meta http-equiv="refresh" content="0; url={dest_url}">
+<script>location.replace("{dest_url}");</script>
+</head>
+<body>
+<p>This page has moved to <a href="{dest_url}">{dest_url}</a>.</p>
+</body>
+</html>
+"""
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(page)
+        written += 1
+
+    with open(os.path.join(BASE_DIR, '_redirects'), 'w', encoding='utf-8') as f:
+        f.write(netlify_format())
+
+    print(f"  + {written} redirect pages + _redirects")
+    if skipped:
+        print(f"    (skipped {len(skipped)} that a real page already owns: {', '.join(skipped)})")
+
+
+def build():
+    print("Reading content/taxonomy.py + blog/*.md …\n")
+
+    articles, warnings = load_articles()
+
+    print("Articles:")
+    build_articles(articles)
+    build_blog_index(articles)
+
+    print("\nPillar pages:")
+    build_pillars(articles)
+
+    print("\nIndex files:")
+    build_sitemaps(articles)
+    build_articles_json(articles)
+
+    print("\nRedirects:")
+    build_redirects()
+
+    if warnings:
+        print(f"\nWARNINGS ({len(warnings)}):")
+        for w in warnings:
+            print(f"  ! {w}")
+
+    # Coverage summary — metadata gaps should be obvious, not silent.
+    print("\nCluster coverage:")
+    for k in PILLAR_ORDER:
+        own = len([a for a in articles if a['cluster'] == k])
+        also = len([a for a in articles if a['cluster'] != k and k in (a.get('secondary') or [])])
+        print(f"  {PILLARS[k]['num']} {PILLARS[k]['nav_title']:<24} {own} primary, {also} secondary")
+
+    print(f"\nDone: {len(articles)} articles, {len(PILLAR_ORDER)} pillar pages.")
+    print("Deploy step: git push (GitHub Pages serves the repo as-is).")
 
 
 if __name__ == '__main__':

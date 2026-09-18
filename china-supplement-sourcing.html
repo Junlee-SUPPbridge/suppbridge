@@ -92,6 +92,7 @@
 
 <!-- ══════════ SVG SPRITE ══════════ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
@@ -118,33 +119,21 @@
 
 <!-- ══════════ NAV ══════════ -->
 <nav class="nav" id="nav">
-  <div class="nav-wrap">
-    <a href="/" class="nav-brand">
-      <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-      <span class="nav-brand-text">
-        <span>China Supplement Industry Advisor</span>
-      </span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="/#services">How We Help</a></li>
-      <li><a href="/#process">Our Process</a></li>
-      <li><a href="/#projects">Projects</a></li>
-      <li><a href="/#founder">About Jun</a></li>
-      <li><a href="/blog/">Insights</a></li>
-    </ul>
-    <a href="/#start-project" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <svg><use href="#i-menu"/></svg>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="/#services">How We Help</a>
-    <a href="/#process">Our Process</a>
-    <a href="/#projects">Projects</a>
-    <a href="/#founder">About Jun</a>
-    <a href="/blog/">Insights</a>
-    <a href="/#start-project" style="color:var(--teal);font-weight:700;">Discuss Your Project →</a>
-  </div>
+<div class="nav-wrap">
+<a href="/" class="nav-brand">
+<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<span class="nav-brand-text"><span>China Supplement Industry Advisor</span></span>
+</a>
+<ul class="nav-links"><li><a href="/#value">How We Help</a></li><li class="nav-drop"><button class="nav-drop-btn" type="button" aria-expanded="false" aria-controls="expertiseMenu">Expertise<svg><use href="#i-chev"/></svg></button><div class="nav-drop-panel" id="expertiseMenu"><a href="/product-development/"><span class="nd-label">Product Development</span><span class="nd-desc">Formulation, dosage form, cost, samples</span></a><a href="/ingredient-sourcing/"><span class="nd-label">Ingredient Sourcing</span><span class="nd-desc">Specifications, extracts, pricing</span></a><a href="/supplement-manufacturing/"><span class="nd-label">Manufacturing</span><span class="nd-desc">Manufacturers, OEM/ODM, MOQ, production</span></a><a href="/china-supplement-supply-chain/"><span class="nd-label">Supply Chain</span><span class="nd-desc">Supplier management, cost, project control</span></a><a href="/supplement-industry-consulting/"><span class="nd-label">Industry Consulting</span><span class="nd-desc">Market entry, project judgement, long-term partner</span></a></div></li><li><a href="/#process">Our Process</a></li><li><a href="/#founder">About Jun</a></li><li><a href="/blog/">Insights</a></li></ul>
+<a href="/#start-project" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
+<button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+<svg><use href="#i-menu"/></svg>
+</button>
+</div>
+<div class="mobile-menu" id="mobileMenu">
+<a href="/#value">How We Help</a><span class="mm-group">Expertise</span><a href="/product-development/" class="mm-sub">Product Development</a><a href="/ingredient-sourcing/" class="mm-sub">Ingredient Sourcing</a><a href="/supplement-manufacturing/" class="mm-sub">Manufacturing</a><a href="/china-supplement-supply-chain/" class="mm-sub">Supply Chain</a><a href="/supplement-industry-consulting/" class="mm-sub">Industry Consulting</a><a href="/#process">Our Process</a><a href="/#founder">About Jun</a><a href="/blog/">Insights</a>
+<a href="/#start-project" style="color:var(--gold-ink);font-weight:700;">Discuss Your Project →</a>
+</div>
 </nav>
 
 <!-- ══════════ BREADCRUMB + HERO ══════════ -->
@@ -583,31 +572,24 @@
 
 <!-- ══════════ FOOTER ══════════ -->
 <footer class="site-footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-        <span>China supplement industry advisor &amp; supply partner. Product development, ingredient sourcing, manufacturing management and long-term China supply-chain support.</span>
-      </div>
-      <nav class="footer-nav" aria-label="Footer">
-        <a href="/#services">How We Help</a>
-        <a href="/#process">Our Process</a>
-        <a href="/#long-term">Long-Term Partnership</a>
-        <a href="/#projects">Projects</a>
-        <a href="/#founder">About Jun</a>
-        <a href="/product-formats.html">Product Formats</a>
-        <a href="/china-supplement-sourcing.html">Supplier Due Diligence</a>
-        <a href="/blog/">Insights</a>
-        <a href="#faq">FAQ</a>
-        <a href="/#start-project">Contact</a>
-      </nav>
-    </div>
-    <div class="footer-bottom">
-      <div>&copy; 2026 SuppBridge. All rights reserved.</div>
-      <div><a href="mailto:Jun@suppbridge.com">Jun@suppbridge.com</a></div>
-    </div>
-    <p class="footer-legal">SuppBridge is an independent product, sourcing and supply-chain advisory partner. We are not affiliated with any marketplace or manufacturing group, and we do not provide guarantees of supplier conduct, ingredient authenticity or product quality. Verification and due-diligence findings are project-specific and provided in writing.</p>
-  </div>
+<div class="container">
+<div class="footer-inner">
+<div class="footer-brand">
+<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<span>China supplement industry advisor &amp; supply partner. Product development, ingredient sourcing, manufacturing management and long-term China supply-chain support.</span>
+</div>
+<div class="footer-cols">
+<div class="footer-col"><h4>Expertise</h4><nav aria-label="Expertise"><a href="/product-development/">Product Development</a><a href="/ingredient-sourcing/">Ingredient Sourcing</a><a href="/supplement-manufacturing/">Manufacturing</a><a href="/china-supplement-supply-chain/">Supply Chain</a><a href="/supplement-industry-consulting/">Industry Consulting</a></nav></div>
+<div class="footer-col"><h4>Company</h4><nav aria-label="Company"><a href="/#value">How We Help</a><a href="/#process">Our Process</a><a href="/#long-term">Long-Term Partnership</a><a href="/#experience">Project Experience</a><a href="/#founder">About Jun</a><a href="/blog/">Insights</a><a href="/#faq">FAQ</a></nav></div>
+<div class="footer-col"><h4>More</h4><nav aria-label="More"><a href="/product-formats.html">Product Formats</a><a href="/china-supplement-sourcing.html">Supplier Due Diligence</a><a href="/regulatory/">Regulatory</a><a href="mailto:Jun@suppbridge.com">Email</a></nav></div>
+</div>
+</div>
+<div class="footer-bottom">
+<div>&copy; 2026 SuppBridge. All rights reserved.</div>
+<div><a href="mailto:Jun@suppbridge.com">Jun@suppbridge.com</a></div>
+</div>
+<p class="footer-legal">SuppBridge is an independent product, sourcing and supply-chain advisory partner. We are not affiliated with any marketplace or manufacturing group, and we do not provide guarantees of supplier conduct, ingredient authenticity or product quality. Verification and due-diligence findings are project-specific and provided in writing.</p>
+</div>
 </footer>
 
 <script>
