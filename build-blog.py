@@ -216,6 +216,9 @@ def page_head(title, description, canonical, extra_head=""):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="stylesheet" href="{CSS_URL}">
 <link rel="preload" href="{CSS_URL}" as="style">{extra_head}{analytics_head()}"""
 

@@ -83,7 +83,7 @@ def nav_block(current_root=False):
     html = f"""<nav class="nav" id="nav">
 <div class="nav-wrap">
 <a href="/" class="nav-brand">
-<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<img src="/images/logo.svg" alt="SuppBridge" width="158" height="34">
 <span class="nav-brand-text"><span>Product &amp; Supply Chain Advisor</span></span>
 </a>
 <ul class="nav-links">{desktop}</ul>
@@ -137,7 +137,7 @@ def footer_block(current_root=False):
 <div class="container">
 <div class="footer-inner">
 <div class="footer-brand">
-<img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
+<img src="/images/brand/logo-stacked-dark.svg" alt="SuppBridge" width="106" height="76">
 <span>Supplement product &amp; supply-chain advisor. Product development, ingredient sourcing, manufacturer selection and long-term China supply-chain management &mdash; with China as our core sourcing and manufacturing network, and other markets evaluated when a project requires it.</span>
 </div>
 <div class="footer-cols">

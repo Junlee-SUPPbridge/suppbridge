@@ -1236,8 +1236,8 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
     flex-wrap: wrap; gap: 2rem; padding-bottom: 2rem;
     border-bottom: 1px solid rgba(251,249,245,0.1);
 }
-.footer-brand { display: flex; align-items: center; gap: 12px; max-width: 360px; }
-.footer-brand img { height: 24px; width: auto; opacity: 0.85; }
+.footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; max-width: 360px; }
+.footer-brand img { height: 76px; width: auto; }
 .footer-brand span { font-size: 0.8125rem; line-height: 1.55; }
 .footer-nav { display: flex; flex-wrap: wrap; gap: 10px 22px; max-width: 620px; }
 .footer-nav a {
@@ -2059,6 +2059,11 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 @media (max-width: 520px) {
     .proj-types { grid-template-columns: 1fr; }
     .proj-types li:nth-child(2n) { border-left: none; padding-left: 0; }
+    /* The horizontal lockup is wide; at phone widths a slightly shorter mark
+       keeps the tagline on two tidy lines instead of crowding the hamburger. */
+    .nav-brand img { height: 30px; }
+    .nav-brand { gap: 0.6rem; }
+    .nav-brand .nav-brand-text span { max-width: 132px; }
 }
 
 /* ── Independent supplier selection: appended to the principles band ── */

@@ -12,11 +12,12 @@ formats catalogue, regulatory detail, thank-you) are edited directly — so
 without this step their nav/footer drift out of sync with the rest of the
 site the moment a pillar is renamed or a CTA changes.
 
-This script rewrites exactly three regions in those files:
+This script rewrites exactly four regions in those files:
 
     <nav class="nav" id="nav"> … </nav>
     <footer class="site-footer"> … </footer>
     <!-- analytics:begin --> … <!-- analytics:end -->  (before </head>)
+    favicon links (inserted once if missing)
 
 The analytics region is spliced in from content/analytics.py and is absent
 whenever no measurement ID is configured.
@@ -66,6 +67,22 @@ def sync_sprites(html):
     return html[:m.start()] + new + html[m.end():], True
 
 
+FAVICON_LINKS = (
+    '<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">\n'
+    '<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon.png">\n'
+    '<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">'
+)
+
+
+def sync_favicon(html):
+    """Idempotently ensure the shared favicon links exist in <head>."""
+    if 'rel="icon"' in html:
+        return html, False
+    if "</head>" not in html:
+        return html, False
+    return html.replace("</head>", FAVICON_LINKS + "\n</head>", 1), True
+
+
 def sync_page(rel, is_root, check_only):
     """`is_root` marks the page that owns the homepage anchors, so its nav
     links stay `#value` rather than `/#value`."""
@@ -105,6 +122,10 @@ def sync_page(rel, is_root, check_only):
     html, analytics_changed = sync_analytics_block(html)
     if analytics_changed:
         notes.append("analytics")
+
+    html, favicon_changed = sync_favicon(html)
+    if favicon_changed:
+        notes.append("favicon")
 
     changed = html != original
     if changed and not check_only:
