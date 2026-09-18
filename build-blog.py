@@ -32,6 +32,7 @@ import os
 import re
 import glob
 import json
+import subprocess
 import html as html_lib
 from datetime import datetime
 
@@ -391,6 +392,7 @@ def load_articles():
             'slug': slug,
             'title': fm.get('title', slug),
             'date': fm.get('date', '2026-01-01'),
+            'updated': fm.get('updated', ''),
             'tags': fm.get('tags', []),
             'description': fm.get('description', ''),
             'body_md': body,
@@ -447,7 +449,7 @@ def build_articles(articles):
   "headline": "{json_esc(art['title'])}",
   "description": "{json_esc(art['description'])}",
   "datePublished": "{art['date']}",
-  "dateModified": "{art['date']}",
+  "dateModified": "{art['updated'] or art['date']}",
   "url": "{canonical}",
   "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{canonical}" }},
   "image": "{art['og_image']}",
@@ -692,12 +694,64 @@ def build_pillars(articles):
         print(f"  + {p['slug']}/index.html ({len(items)} articles)")
 
 
-def build_sitemaps(articles):
-    today = datetime.now().strftime('%Y-%m-%d')
+# ══════════════════════════════════════════════════════════════════
+# Sitemap date provenance (V2.3 §18)
+# ══════════════════════════════════════════════════════════════════
 
-    def url(loc, freq, pri):
-        return (f"  <url>\n    <loc>{loc}</loc>\n    <changefreq>{freq}</changefreq>\n"
-                f"    <priority>{pri}</priority>\n    <lastmod>{today}</lastmod>\n  </url>\n")
+_GIT_DATE_CACHE = {}
+
+
+def git_last_commit_date(rel_path):
+    """Committer date (YYYY-MM-DD) of the last commit touching `rel_path`.
+
+    Returns None when git is unavailable, the path is not tracked, or the
+    repository simply has no history for it. Callers then omit <lastmod>
+    rather than inventing a date.
+    """
+    if rel_path in _GIT_DATE_CACHE:
+        return _GIT_DATE_CACHE[rel_path]
+    result = None
+    try:
+        proc = subprocess.run(
+            ['git', 'log', '-1', '--format=%cs', '--', rel_path],
+            cwd=BASE_DIR, capture_output=True, text=True, timeout=15,
+        )
+        stamp = (proc.stdout or '').strip()
+        if proc.returncode == 0 and re.fullmatch(r'\d{4}-\d{2}-\d{2}', stamp):
+            result = stamp
+    except (OSError, subprocess.SubprocessError):
+        result = None
+    _GIT_DATE_CACHE[rel_path] = result
+    return result
+
+
+def article_lastmod(art):
+    """Explicit article date first, git source date second, otherwise None."""
+    explicit = (art.get('updated') or art.get('date') or '').strip()
+    if re.fullmatch(r'\d{4}-\d{2}-\d{2}', explicit):
+        return explicit
+    return git_last_commit_date(os.path.join('blog', art['slug'] + '.md'))
+
+
+def build_sitemaps(articles):
+    """Sitemaps with honest <lastmod> values (V2.3 §18).
+
+    Order of preference, per URL:
+      1. an explicit date we actually hold — an article's front-matter
+         `updated`, else its `date`;
+      2. otherwise the git committer date of the source file that produces
+         the page;
+      3. otherwise **omit** <lastmod> entirely.
+    Never falls back to "today": stamping every URL with the build date
+    tells a crawler that the whole site changed on every deploy, which is
+    less informative than saying nothing at all.
+    """
+    def url(loc, freq, pri, lastmod=None):
+        out = (f"  <url>\n    <loc>{loc}</loc>\n    <changefreq>{freq}</changefreq>\n"
+               f"    <priority>{pri}</priority>\n")
+        if lastmod:
+            out += f"    <lastmod>{lastmod}</lastmod>\n"
+        return out + "  </url>\n"
 
     root = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
@@ -708,12 +762,16 @@ def build_sitemaps(articles):
             loc = f"{SITE_URL}/{rel[:-len('index.html')]}"
         else:
             loc = f"{SITE_URL}/{rel}"
-        root += url(loc, freq, pri)
+        root += url(loc, freq, pri, git_last_commit_date(rel))
     for k in PILLAR_ORDER:
-        root += url(f"{SITE_URL}{PILLARS[k]['url']}", "weekly", "0.9")
-    root += url(f"{SITE_URL}/blog/", "weekly", "0.8")
+        out_rel = PILLARS[k]['url'].strip('/') + '/index.html'
+        root += url(f"{SITE_URL}{PILLARS[k]['url']}", "weekly", "0.9",
+                    git_last_commit_date(out_rel))
+    root += url(f"{SITE_URL}/blog/", "weekly", "0.8",
+                git_last_commit_date(os.path.join('blog', 'index.html')))
     for a in articles:
-        root += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7")
+        root += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7",
+                    article_lastmod(a))
     root += '</urlset>'
     with open(os.path.join(BASE_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
         f.write(root)
@@ -721,9 +779,11 @@ def build_sitemaps(articles):
 
     blog = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-    blog += url(f"{SITE_URL}/blog/", "weekly", "0.8")
+    blog += url(f"{SITE_URL}/blog/", "weekly", "0.8",
+                git_last_commit_date(os.path.join('blog', 'index.html')))
     for a in articles:
-        blog += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7")
+        blog += url(f"{SITE_URL}/blog/{a['slug']}.html", "monthly", "0.7",
+                    article_lastmod(a))
     blog += '</urlset>'
     with open(os.path.join(BLOG_DIR, "sitemap.xml"), 'w', encoding='utf-8') as f:
         f.write(blog)
