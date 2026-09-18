@@ -140,6 +140,44 @@ HOMEPAGE_FORBIDDEN = [
     (r'\byour\s+global\s+(?:partner|network)\b', 'global-partner framing'),
 ]
 
+# ── Identity naming — one role, three registers ──────────────────────────
+# Before this pass the site carried four competing identities for the same
+# thing: "China Supplement Industry Advisor & Supply Partner" (V2.1),
+# "China Supplement Sourcing & Supply Chain Advisor" (P1), the nav label
+# "Product & Supply Chain Advisor", and the visible founder role
+# "China Supplement Industry Advisor". They are now ONE role in three
+# registers, each doing a different job (§ brand → nav, schema → entity,
+# SEO title → query surface):
+#
+#   Brand / nav label   Product & Supply Chain Advisor
+#   Schema jobTitle /   Supplement Product & Supply Chain Advisor
+#   visible role
+#   SEO <title>         China Supplement Product & Supply Chain Advisor | SuppBridge
+#
+# Rationale (product decision, not taste): "Sourcing" is a service we sell,
+# not who we are — leading with it narrows the identity to one deliverable
+# and invites one-off supplier-check enquiries, which is the audience the
+# funnel is designed to filter out. "Industry Advisor" and "Supply Partner"
+# are retired V2.1 variants.
+#
+# Checked against lowercased HTML. Scoped to PRIMARY_PAGES: an article may
+# quote an old label or discuss sourcing without redefining the brand.
+IDENTITY_FORBIDDEN = [
+    (r'sourcing\s*&(?:amp;)?\s*supply\s+chain\s+advisor',
+     '"Sourcing & Supply Chain Advisor" (retired: sourcing is a service, not the role)'),
+    (r'supplement\s+industry\s+advisor',
+     '"China Supplement Industry Advisor" (retired V2.1 identity variant)'),
+    (r'industry\s+advisor\s*&(?:amp;)?\s*supply\s+partner',
+     '"Industry Advisor & Supply Partner" (retired V2.1 identity)'),
+    (r'\bsourcing\s+advisor\b', '"Sourcing Advisor" (retired identity variant)'),
+]
+
+# The positive half of the same guard, homepage only: the approved SEO title
+# must be present verbatim. Without this, deleting the wrong word still
+# passes "no forbidden variant" while the title drifts by omission. Note the
+# entity: this is matched against raw HTML, so "&" is written "&amp;".
+IDENTITY_CANONICAL_TITLE = 'China Supplement Product &amp; Supply Chain Advisor | SuppBridge'
+
 
 def page_kind(rel):
     if rel == 'index.html':
@@ -343,12 +381,21 @@ def main():
             for pattern, label in HOMEPAGE_FORBIDDEN:
                 if re.search(pattern, low):
                     problems.append(f'{rel}: forbidden homepage wording ({label})')
+            # identity anchor — the approved SEO title, verbatim
+            if IDENTITY_CANONICAL_TITLE not in html:
+                problems.append(
+                    f'{rel}: canonical identity title missing -> "{IDENTITY_CANONICAL_TITLE}"')
 
         # ── forbidden in headings / title (positioning guardrails, primary pages only) ──
         if rel in PRIMARY_PAGES:
             for pattern, label in FORBIDDEN_IN_HEADING:
                 if re.search(pattern, low, re.S):
                     problems.append(f'{rel}: forbidden wording ({label})')
+
+            # ── identity naming — retired role variants must not return ──
+            for pattern, label in IDENTITY_FORBIDDEN:
+                if re.search(pattern, low):
+                    problems.append(f'{rel}: retired identity wording ({label})')
 
         # ── broken icons / lost icon system ──
         if 'class="fas ' in html or "class='fas " in html:
