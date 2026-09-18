@@ -60,6 +60,17 @@ nav_expect() {
 
 fail=0
 
+# Preflight. This script drives a server it does not start, and every
+# `agent-browser open` below is silenced. Without this guard a dead or
+# forgotten server makes each page evaluate against the previous (or a
+# blank) page and the run still ends in "PASS" — a green light on evidence
+# nobody collected. Fail loudly instead.
+if ! curl -sf -o /dev/null "${BASE}/"; then
+  echo "✗ No server responding at ${BASE}"
+  echo "  Start one first:  python3 -m http.server ${PORT} --bind 127.0.0.1"
+  exit 2
+fi
+
 for entry in "${PAGES[@]}"; do
   path="${entry%%:*}"
   name="${entry##*:}"
@@ -76,6 +87,12 @@ for entry in "${PAGES[@]}"; do
     sleep 0.35
     out="$(agent-browser eval "$DIAG" 2>/dev/null | tr -d '\n')"
     printf "  %5sx%-5s  %s\n" "$w" "$h" "$out"
+    # An empty result means the eval never ran against a real document.
+    # Left unchecked it satisfies every "must not contain" test below and
+    # silently counts as a pass.
+    if [ -z "$out" ]; then
+      echo "        !! EVAL RETURNED NOTHING - page did not load"; fail=1
+    fi
     case "$out" in
       *'"overflow":true'*) echo "        !! HORIZONTAL OVERFLOW"; fail=1 ;;
     esac
