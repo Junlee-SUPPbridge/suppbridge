@@ -78,6 +78,28 @@ SEARCHANALYTICS_URL = ("https://searchconsole.googleapis.com/webmasters/v3"
 # sync into a job that hangs until the timer's next fire.
 HTTP_TIMEOUT = 60
 
+# Unauthenticated endpoint used only to answer "can this process reach
+# Google at all, through this path". A token request would also work but
+# costs a round trip to oauth2 and tells you less about Search Console.
+EGRESS_PROBE_URL = ("https://searchconsole.googleapis.com/$discovery/rest"
+                    "?version=v1")
+
+# Short: probes run once per execution, but a dead proxy must not be allowed
+# to eat the whole HTTP_TIMEOUT before the next candidate gets a turn.
+PROBE_TIMEOUT = 15
+
+# Hard ceiling on a probe. requests' timeout does NOT cover DNS resolution,
+# and on a host whose DNS or direct route to Google is a black hole a
+# "direct" candidate can hang for minutes while the timeout never fires.
+# The probe therefore runs on a daemon thread and is abandoned if it has not
+# answered in this many seconds; a hung path is reported as a failed path.
+PROBE_HARD_TIMEOUT = PROBE_TIMEOUT + 5
+
+# Console /api/health re-probes on every hit. A hung direct candidate would
+# otherwise spawn one stuck thread per page refresh, so results are reused
+# for this long. A proxy swap is picked up within a minute.
+PROBE_CACHE_TTL = 60
+
 
 class GscApiError(RuntimeError):
     """A non-200 from Search Console, with the status kept intact."""
@@ -130,23 +152,126 @@ def build_service(cred_path):
     return AuthorizedSession(creds)
 
 
+# ── Egress ───────────────────────────────────────────────────────────────
+# This host reaches Google through a proxy that is not under our control
+# (a local mihomo today, possibly a VPN tunnel tomorrow). The proxy is
+# therefore treated as a *candidate list*, not a constant:
+#
+#   SEO_INTEL_PROXY_CANDIDATES=http://127.0.0.1:7891,socks5://10.0.0.9:1080
+#
+# Each is probed in order and the first that answers is used, so adding or
+# replacing a VPN is a one-line change in proxy.env -- no unit edit, no
+# code edit -- and a proxy that dies overnight no longer looks like a
+# credentials failure.
+
+def proxy_candidates():
+    """Ordered list of proxy URLs; None in the list means 'direct'."""
+    raw = os.environ.get("SEO_INTEL_PROXY_CANDIDATES", "")
+    parsed = []
+    for item in raw.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        parsed.append(None if item.lower() in {"direct", "none", "off"} else item)
+    if parsed:
+        return parsed
+    ambient = (os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+               or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy"))
+    if ambient and ambient.strip():
+        return [ambient.strip()]
+    return [None]
+
+
+def _request_probe(proxy, timeout, out):
+    """Body of the probe, run on a thread so it can be abandoned."""
+    import requests  # lazy: --help must work without it
+
+    proxies = {"https": proxy, "http": proxy} if proxy else None
+    try:
+        response = requests.get(EGRESS_PROBE_URL, proxies=proxies, timeout=timeout)
+        # 401/403 would still mean "we got there", but for an unauthenticated
+        # discovery document anything but 2xx/3xx means the path is wrong.
+        out["ok"] = response.status_code < 400
+        out["detail"] = f"HTTP {response.status_code}"
+    except Exception as exc:  # noqa: BLE001 - the failure text is the point
+        out["ok"] = False
+        out["detail"] = f"{type(exc).__name__}: {str(exc)[:160]}"
+
+
+def probe_egress(proxy, timeout=PROBE_TIMEOUT):
+    """Return (ok, detail) for one candidate path, always within ~timeout+5s.
+
+    The work runs on a daemon thread because requests' own timeout does not
+    cover DNS or a black-holed route: measured on this host, a 'direct'
+    candidate took 2m03s to fail while nominally having a 15s timeout. A
+    path that cannot be abandoned is worse than a path that fails fast.
+    """
+    import threading  # lazy, same reason as requests
+
+    out = {}
+    thread = threading.Thread(target=_request_probe, args=(proxy, timeout, out),
+                              daemon=True)
+    thread.start()
+    thread.join(PROBE_HARD_TIMEOUT)
+    if thread.is_alive():
+        return False, (f"no answer within {PROBE_HARD_TIMEOUT}s "
+                       f"(hung route: {proxy or 'direct'})")
+    return out.get("ok", False), out.get("detail", "probe produced no result")
+
+
+_PROBE_CACHE = {"at": 0.0, "value": None}
+
+
+def choose_proxy(use_cache=True):
+    """Pick the first candidate that can actually reach Search Console.
+
+    Returns (chosen_proxy_or_None, tried) where `tried` is a list of
+    {"proxy", "ok", "detail"} dicts, so a failure message can say which
+    paths were attempted instead of just 'timed out'.
+
+    `use_cache` exists for the console: /api/health probes on every page
+    load, and a hung candidate would otherwise leave a stuck thread behind
+    each time. Freshness is a minute, which is well inside "I just changed
+    the VPN and want to see it".
+    """
+    import time  # lazy
+
+    if use_cache and _PROBE_CACHE["value"] is not None:
+        if time.monotonic() - _PROBE_CACHE["at"] < PROBE_CACHE_TTL:
+            return _PROBE_CACHE["value"]
+
+    tried = []
+    chosen = None
+    for proxy in proxy_candidates():
+        ok, detail = probe_egress(proxy)
+        tried.append({"proxy": proxy or "direct", "ok": ok, "detail": detail})
+        if ok:
+            chosen = proxy
+            break
+
+    _PROBE_CACHE["at"] = time.monotonic()
+    _PROBE_CACHE["value"] = (chosen, tried)
+    return chosen, tried
+
+
+def format_tried(tried):
+    return "; ".join(f"{t['proxy']} -> {'ok' if t['ok'] else t['detail']}"
+                     for t in tried)
+
+
 def proxy_hint():
     """One line explaining how this process will reach Google.
 
     Printed on failure, because 'timed out' on a proxied host sends people
     looking at credentials when the real problem is egress.
     """
-    proxy = (os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-             or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy"))
-    if proxy:
-        return f"HTTPS_PROXY={proxy} (requests honours it)"
-    return ("no proxy configured; if this host needs one to reach Google, set "
-            "HTTPS_PROXY in the unit's Environment= and re-run")
+    return ("candidates: " + format_tried(choose_proxy()[1])
+            + " — set SEO_INTEL_PROXY_CANDIDATES (comma separated) in proxy.env")
 
 
 # ── Fetch ────────────────────────────────────────────────────────────────
 
-def fetch_rows(session, prop, start, end, row_limit):
+def fetch_rows(session, prop, start, end, row_limit, proxy=None):
     """Pull date/query/page rows, paging until the API stops returning data.
 
     Paging matters: a single request caps at row_limit, and silently
@@ -155,8 +280,12 @@ def fetch_rows(session, prop, start, end, row_limit):
     Calls the REST endpoint directly (see build_service for why discovery is
     not used). The siteUrl is percent-encoded: 'sc-domain:suppbridge.com'
     contains a colon that must not survive as a path separator.
+
+    `proxy` is passed per-request rather than left to the environment so the
+    candidate that was probed is the candidate that is used.
     """
     url = SEARCHANALYTICS_URL.format(site=quote(prop, safe=""))
+    proxies = {"https": proxy, "http": proxy} if proxy else None
     rows = []
     start_row = 0
     while True:
@@ -170,7 +299,7 @@ def fetch_rows(session, prop, start, end, row_limit):
             # reason to store numbers that will still move.
             "dataState": "final",
         }
-        response = session.post(url, json=body, timeout=HTTP_TIMEOUT)
+        response = session.post(url, json=body, timeout=HTTP_TIMEOUT, proxies=proxies)
         if response.status_code != 200:
             raise GscApiError(
                 f"HTTP {response.status_code} from Search Console: "
@@ -319,7 +448,20 @@ def main():
                         help="create the seo_intel tables and exit")
     parser.add_argument("--strict", action="store_true",
                         help="exit non-zero when blocked instead of skipping")
+    parser.add_argument("--egress-check", action="store_true",
+                        help="only test which proxy path reaches Search "
+                             "Console; touches no credentials and no database")
     args = parser.parse_args()
+
+    if args.egress_check:
+        proxy, tried = choose_proxy()
+        for item in tried:
+            mark = "OK  " if item["ok"] else "FAIL"
+            print(f"{mark} {item['proxy']:40s} {item['detail']}")
+        ok = any(t["ok"] for t in tried)
+        print()
+        print(f"Egress: {'PASS' if ok else 'FAIL'} (chosen: {proxy or 'direct'})")
+        return 0 if ok else 1
 
     if args.init_db:
         conn = store.connect(args.dsn or store.dsn_from_env())
@@ -347,6 +489,33 @@ def main():
         print("       Move it to /etc/suppbridge/seo-intel/ so a stray `git add` cannot leak it.")
         print()
 
+    # Egress is resolved before the database is touched: if no path reaches
+    # Google, the run is recorded as a failure with the reason, and nothing
+    # downstream has to guess whether it was credentials or the network.
+    proxy, tried = choose_proxy()
+    if not any(t["ok"] for t in tried):
+        message = "no egress path to Search Console: " + format_tried(tried)
+        print("GSC connection: FAILED")
+        print(message)
+        print("Fix: put a working proxy in SEO_INTEL_PROXY_CANDIDATES "
+              "(proxy.env) and re-run `gsc-fetcher.py --egress-check`.")
+        if not args.dry_run:
+            try:
+                conn = store.connect(args.dsn or store.dsn_from_env())
+                store.apply_schema(conn)
+                run_id = store.start_run(conn, "gsc")
+                store.finish_run(conn, run_id, store.STATUS_FAILED,
+                                 error_message=message[:2000])
+                conn.close()
+            except Exception as exc:  # noqa: BLE001
+                print(f"[WARN] Could not record the failed run: {exc}")
+        return 1
+
+    print(f"Egress: {proxy or 'direct'} ({tried[-1]['detail']})")
+    if len(tried) > 1:
+        print(f"        skipped: {format_tried(tried[:-1])}")
+    print()
+
     session = build_service(cred_path)
 
     conn = None
@@ -357,7 +526,7 @@ def main():
         run_id = store.start_run(conn, "gsc")
 
     try:
-        raw_rows = fetch_rows(session, prop, start, end, args.row_limit)
+        raw_rows = fetch_rows(session, prop, start, end, args.row_limit, proxy=proxy)
     except Exception as exc:  # noqa: BLE001 - the message is the product here
         message = f"{type(exc).__name__}: {exc}"
         print("GSC connection: FAILED")
