@@ -29,6 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 
 from content.taxonomy import VALID_SEARCH_INTENT, SITE_URL  # noqa: E402
+from content import analytics  # noqa: E402
 
 # Files we do not validate as pages
 SKIP_DIRS = {'.git', 'node_modules', '.workbuddy', 'scripts'}
@@ -177,6 +178,54 @@ IDENTITY_FORBIDDEN = [
 # passes "no forbidden variant" while the title drifts by omission. Note the
 # entity: this is matched against raw HTML, so "&" is written "&amp;".
 IDENTITY_CANONICAL_TITLE = 'China Supplement Product &amp; Supply Chain Advisor | SuppBridge'
+
+# ── Analytics (V2.3 P2.0) ────────────────────────────────────────────────
+# Analytics has two failure modes that matter more than the feature itself:
+#
+#   1. A tag shipped while analytics is unconfigured — it looks installed,
+#      collects nothing, and hides the fact that no property exists.
+#   2. Visitor PII inside a payload. The enquiry form carries name, email,
+#      company, project notes and a file upload; none of it may reach GA.
+#
+# Both are build failures here rather than review notes. The config lives in
+# content/site_config.py; content/analytics.py emits the block.
+ANALYTICS_MARKERS = ('googletagmanager.com', 'gtag(', 'datalayer')
+ANALYTICS_PLACEHOLDERS = (
+    (r'g-xxxxxxxxxx', 'GA4 placeholder measurement ID'),
+    (r'gtm-xxxxx', 'GTM placeholder container ID'),
+    (r'ua-xxxxx', 'Universal Analytics placeholder'),
+)
+GA4_ID_RE = re.compile(r'\bG-[A-Z0-9]{6,}\b')
+
+# The two conversion actions the funnel is built around. Each entry is
+# checked by label AND location, and both attributes must be present on the
+# page — presence checks only, so attribute order in the markup stays free.
+# Checking the label alone is too weak: the same label appears in the nav and
+# in the mobile menu, so deleting one still satisfies a label-only test.
+CTA_CONTRACT_PRIMARY = [
+    ('Discuss Your Project', 'nav', 'primary CTA (shared nav)'),
+    ('Discuss Your Project', 'mobile-menu', 'primary CTA (shared mobile menu)'),
+]
+CTA_CONTRACT_HOMEPAGE = [
+    ('Discuss Your Project', 'hero', 'primary CTA'),
+    ('Explore How We Help', 'hero', 'secondary CTA'),
+]
+
+
+def cta_contract_problems(rel, html, contract):
+    """Tracking labels must survive a copy edit.
+
+    Without them the click event still fires, but it reports whatever the
+    button happens to say — so the funnel metric silently changes meaning
+    the day someone rewrites the button text.
+    """
+    out = []
+    for label, location, role in contract:
+        if f'data-cta="{label}"' not in html:
+            out.append(f'{rel}: {role} "{label}" has no data-cta label')
+        elif f'data-cta-location="{location}"' not in html:
+            out.append(f'{rel}: {role} "{label}" has no data-cta-location="{location}"')
+    return out
 
 
 def page_kind(rel):
@@ -373,6 +422,41 @@ def main():
             if re.search(pattern, low):
                 problems.append(f'{rel}: forbidden wording ({label}) matched /{pattern}/')
 
+        # ── analytics: emitted state must equal configured state ──
+        block = analytics.BLOCK_RE.search(html)
+        if analytics.enabled():
+            # Configured on: every indexable page must carry the block, and
+            # it must be the block this configuration produces.
+            if not block:
+                problems.append(f'{rel}: analytics is configured but the page carries no analytics block')
+            elif analytics.GA4_MEASUREMENT_ID not in block.group(0):
+                problems.append(f'{rel}: analytics block does not contain the configured measurement ID')
+        else:
+            # Configured off: nothing may leak through. This is what catches
+            # a hard-coded snippet pasted into one page months ago.
+            for marker in ANALYTICS_MARKERS:
+                if marker in low:
+                    problems.append(f'{rel}: analytics is unconfigured but the page ships "{marker}"')
+            if block:
+                problems.append(f'{rel}: analytics block present while analytics is unconfigured')
+
+        if block:
+            for token in analytics.FORBIDDEN_PAYLOAD_TOKENS:
+                if token in block.group(0):
+                    problems.append(
+                        f'{rel}: personal-data token "{token}" inside the analytics block')
+
+        for pattern, label in ANALYTICS_PLACEHOLDERS:
+            if re.search(pattern, low):
+                problems.append(f'{rel}: {label} shipped to production')
+
+        if not analytics.enabled():
+            stray = GA4_ID_RE.search(html)
+            if stray:
+                problems.append(
+                    f'{rel}: hard-coded GA4 ID "{stray.group(0)}" '
+                    f'(configure it in content/site_config.py instead)')
+
         # ── V2.3 §1 — homepage must still carry the core positioning ──
         if rel == 'index.html':
             for needle in HOMEPAGE_REQUIRED:
@@ -385,6 +469,8 @@ def main():
             if IDENTITY_CANONICAL_TITLE not in html:
                 problems.append(
                     f'{rel}: canonical identity title missing -> "{IDENTITY_CANONICAL_TITLE}"')
+            # the two conversion actions, labelled and located for tracking
+            problems.extend(cta_contract_problems(rel, html, CTA_CONTRACT_HOMEPAGE))
 
         # ── forbidden in headings / title (positioning guardrails, primary pages only) ──
         if rel in PRIMARY_PAGES:
@@ -396,6 +482,12 @@ def main():
             for pattern, label in IDENTITY_FORBIDDEN:
                 if re.search(pattern, low):
                     problems.append(f'{rel}: retired identity wording ({label})')
+
+            # ── CTA tracking contract — every primary page carries the nav
+            # CTA from content/chrome.py, so the label must be present here
+            # too; a renamed button would silently start reporting its raw
+            # text instead of the agreed name ──
+            problems.extend(cta_contract_problems(rel, html, CTA_CONTRACT_PRIMARY))
 
         # ── broken icons / lost icon system ──
         if 'class="fas ' in html or "class='fas " in html:

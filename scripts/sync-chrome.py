@@ -12,10 +12,14 @@ formats catalogue, regulatory detail, thank-you) are edited directly — so
 without this step their nav/footer drift out of sync with the rest of the
 site the moment a pillar is renamed or a CTA changes.
 
-This script rewrites exactly two regions in those files:
+This script rewrites exactly three regions in those files:
 
     <nav class="nav" id="nav"> … </nav>
     <footer class="site-footer"> … </footer>
+    <!-- analytics:begin --> … <!-- analytics:end -->  (before </head>)
+
+The analytics region is spliced in from content/analytics.py and is absent
+whenever no measurement ID is configured.
 
 and ensures the shared icon symbols (#i-chev, #i-arrow, #i-menu) exist in
 each page's inline sprite. Everything else is left untouched.
@@ -32,6 +36,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 
 from content.chrome import nav_block as CHROME_NAV, footer_block as CHROME_FOOTER, SPRITE_SYMBOLS  # noqa: E402
+from content.analytics import splice as sync_analytics_block  # noqa: E402
 
 PAGES = [
     # (relative path, is the page that owns the homepage anchors)
@@ -93,6 +98,13 @@ def sync_page(rel, is_root, check_only):
     html, sprite_changed = sync_sprites(html)
     if sprite_changed:
         notes.append("sprite")
+
+    # The analytics block is configuration-driven (content/site_config.py),
+    # so the hand-authored pages have to be re-spliced whenever it changes —
+    # including when it is turned off, which removes the block entirely.
+    html, analytics_changed = sync_analytics_block(html)
+    if analytics_changed:
+        notes.append("analytics")
 
     changed = html != original
     if changed and not check_only:

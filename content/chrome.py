@@ -87,14 +87,14 @@ def nav_block(current_root=False):
 <span class="nav-brand-text"><span>Product &amp; Supply Chain Advisor</span></span>
 </a>
 <ul class="nav-links">{desktop}</ul>
-<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
+<a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop" data-cta="Discuss Your Project" data-cta-location="nav">Discuss Your Project</a>
 <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
 <svg><use href="#i-menu"/></svg>
 </button>
 </div>
 <div class="mobile-menu" id="mobileMenu">
 {mobile}
-<a href="{CONTACT}" style="color:var(--gold-ink);font-weight:700;">Discuss Your Project →</a>
+<a href="{CONTACT}" style="color:var(--gold-ink);font-weight:700;" data-cta="Discuss Your Project" data-cta-location="mobile-menu">Discuss Your Project →</a>
 </div>
 </nav>"""
     return _rootify(html) if current_root else html
