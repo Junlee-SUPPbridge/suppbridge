@@ -222,6 +222,26 @@ def probe_egress(proxy, timeout=PROBE_TIMEOUT):
 _PROBE_CACHE = {"at": 0.0, "value": None}
 
 
+def apply_proxy_env(proxy):
+    """Mirror the chosen proxy into the process environment.
+
+    google-auth refreshes OAuth tokens on an INTERNAL requests session that
+    we never see, and that session only reads the ambient environment. The
+    per-request `proxies=` we pass for the API call does not reach it. Measured
+    consequence (seo_runs 11/12): the probe picks a working proxy, the token
+    refresh still goes out over a direct connection, and hangs in 60s
+    connect timeouts for ~4 minutes before failing. Setting the environment
+    makes the refresh follow the same path as the data call.
+    """
+    if proxy:
+        os.environ["HTTPS_PROXY"] = proxy
+        os.environ["HTTP_PROXY"] = proxy
+        os.environ.setdefault("NO_PROXY", "localhost,127.0.0.1")
+    else:
+        for key in ("HTTPS_PROXY", "HTTP_PROXY", "https_proxy", "http_proxy"):
+            os.environ.pop(key, None)
+
+
 def choose_proxy(use_cache=True):
     """Pick the first candidate that can actually reach Search Console.
 
@@ -515,6 +535,7 @@ def main():
     if len(tried) > 1:
         print(f"        skipped: {format_tried(tried[:-1])}")
     print()
+    apply_proxy_env(proxy)
 
     session = build_service(cred_path)
 
