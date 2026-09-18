@@ -84,7 +84,7 @@ def nav_block(current_root=False):
 <div class="nav-wrap">
 <a href="/" class="nav-brand">
 <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-<span class="nav-brand-text"><span>China Supplement Industry Advisor</span></span>
+<span class="nav-brand-text"><span>Product &amp; Supply Chain Advisor</span></span>
 </a>
 <ul class="nav-links">{desktop}</ul>
 <a href="{CONTACT}" class="btn btn--primary btn--nav nav-cta-desktop">Discuss Your Project</a>
@@ -138,7 +138,7 @@ def footer_block(current_root=False):
 <div class="footer-inner">
 <div class="footer-brand">
 <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-<span>China supplement industry advisor &amp; supply partner. Product development, ingredient sourcing, manufacturing management and long-term China supply-chain support.</span>
+<span>Supplement product &amp; supply-chain advisor. Product development, ingredient sourcing, manufacturer selection and long-term supply-chain management &mdash; with deep China expertise and a global supplier network.</span>
 </div>
 <div class="footer-cols">
 <div class="footer-col"><h4>Expertise</h4><nav aria-label="Expertise">{expertise}</nav></div>

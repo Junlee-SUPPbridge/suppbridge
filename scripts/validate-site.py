@@ -70,6 +70,18 @@ FORBIDDEN = [
     # ── V2.1 §4 — supplier review is not the product ──
     (r'before you send the deposit, send us the supplier', 'supplier review framed as the offer'),
     (r'request a supplier review\s*(→|-|>)', 'supplier review framed as the primary CTA'),
+
+    # ── V2.3 §1 / §2 / §6 — the global supplier network must stay verifiable.
+    # We name the markets we work in; we never quantify the network, never
+    # claim absolute independence, and never invent savings or guarantees.
+    (r'\b(?:fully|completely|totally)\s+independent\b', 'absolute independence claim'),
+    (r'\b(?:network|portfolio)\s+of\s+\d+', 'invented network scale'),
+    (r'\b\d{2,}\+?\s*(?:suppliers|vendors|contract\s+manufacturers)', 'invented supplier count'),
+    (r'\bacross\s+\d{2,}\s+countries\b', 'invented country count'),
+    (r'\bwe\s+(?:only\s+work\s+with|work\s+exclusively\s+with)\b', 'exclusive-network claim'),
+    (r'\bguarantee\s+(?:the\s+)?(?:lowest|best|cheapest)\s+(?:price|cost|quote)', 'absolute price guarantee'),
+    (r'\b\d+\s*%\s+(?:cost\s+|price\s+)?savings\b', 'invented savings figure'),
+    (r'\bsavings\s+of\s+\d+\s*%', 'invented savings figure'),
 ]
 
 # Whole-file checks that need structural context rather than a phrase match.
@@ -98,6 +110,21 @@ SCHEMA_REQUIRED = {
 # §23: "do not force FAQ schema onto every page." Any of these markers means
 # a human can actually read the questions on the page.
 FAQ_VISIBLE_MARKERS = ('class="faq-list"', 'class="faq-block"', 'class="faq-item"')
+
+# ── V2.3 §1 — homepage positioning regression guard ──────────────────────
+# The V2.3 decision was "方案 B": keep China authority AND add a global
+# supplier network, with supplier selection decided per project. These
+# strings are the load-bearing sentences. If an edit drops one, the
+# homepage has quietly drifted back to a China-only (V2.1) or a
+# generic-global framing — both of which the decision ruled out.
+HOMEPAGE_REQUIRED = [
+    'Global network. Local expertise.',
+    'The right supplier depends on the project.',
+    'China is a major advantage, not an automatic answer.',
+    'not tied to a single manufacturer, country or supplier',
+    'Client confidentiality comes first.',
+    'Supply Chain Advisor',
+]
 
 
 def page_kind(rel):
@@ -293,6 +320,12 @@ def main():
         for pattern, label in FORBIDDEN:
             if re.search(pattern, low):
                 problems.append(f'{rel}: forbidden wording ({label}) matched /{pattern}/')
+
+        # ── V2.3 §1 — homepage must still carry the core positioning ──
+        if rel == 'index.html':
+            for needle in HOMEPAGE_REQUIRED:
+                if needle not in html:
+                    problems.append(f'{rel}: positioning statement missing -> "{needle}"')
 
         # ── forbidden in headings / title (positioning guardrails, primary pages only) ──
         if rel in PRIMARY_PAGES:
