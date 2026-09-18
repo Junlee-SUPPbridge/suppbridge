@@ -138,7 +138,7 @@ def footer_block(current_root=False):
 <div class="footer-inner">
 <div class="footer-brand">
 <img src="/images/logo.png" alt="SuppBridge" width="121" height="56">
-<span>Supplement product &amp; supply-chain advisor. Product development, ingredient sourcing, manufacturer selection and long-term supply-chain management &mdash; with deep China expertise and a global supplier network.</span>
+<span>Supplement product &amp; supply-chain advisor. Product development, ingredient sourcing, manufacturer selection and long-term China supply-chain management &mdash; with China as our core sourcing and manufacturing network, and other markets evaluated when a project requires it.</span>
 </div>
 <div class="footer-cols">
 <div class="footer-col"><h4>Expertise</h4><nav aria-label="Expertise">{expertise}</nav></div>

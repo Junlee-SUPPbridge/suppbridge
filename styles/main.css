@@ -1944,55 +1944,26 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
 .faq-block .faq-body p:last-child { margin-bottom: 0; }
 
 /* ════════════════════════════════════════════════════════════
-   §25 V2.3 — GLOBAL POSITIONING COMPONENTS
-   The supplier network is a positioning statement, not a service
-   card: one editorial diagram with the project at the centre, then
-   the project-specific selection argument and the China counterpoint.
-   Same palette, same restraint — no new colours, no card grid.
+   §25 V2.3 P1.1 — CHINA-FIRST POSITIONING COMPONENTS
+   China is the core sourcing and manufacturing network; other markets
+   are evaluated only where a project requires it. That hierarchy is
+   carried by one compact note at the foot of the disciplines list —
+   no diagram, no standalone module, no card grid. Same palette.
    ════════════════════════════════════════════════════════════ */
 
-/* ── Global network: diagram left, argument right ── */
-.net {
-    display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 5vw, 4.25rem); align-items: center;
+/* ── Project-driven supplier selection, then the extended-capability
+      line one step quieter — Level 3 "what we do" → Level 4 "only
+      when the project requires it". ── */
+.cap-foot {
+    margin-top: clamp(2.25rem, 4vw, 3.25rem);
+    padding-top: clamp(1.5rem, 2.5vw, 2rem);
+    border-top: 1px solid var(--line);
+    max-width: 82ch;
 }
-.net-figure {
-    background: var(--white); border: 1px solid var(--line);
-    padding: clamp(0.75rem, 1.5vw, 1.25rem);
-}
-.net-figure svg { display: block; width: 100%; height: auto; }
-.net-caption {
-    margin: clamp(0.875rem, 1.6vw, 1.25rem) 0 0; padding-top: 0.875rem;
-    border-top: 1px solid var(--line-light);
-    font-size: 0.8125rem; color: var(--muted); line-height: 1.55;
-}
-.net-body > p { color: var(--slate); max-width: 54ch; }
-.net-body .net-statement {
-    font-size: clamp(1.375rem, 2.5vw, 1.9375rem); font-weight: 650;
-    line-height: 1.22; letter-spacing: -0.028em; color: var(--ink);
-    margin-bottom: 1.25rem; max-width: 30ch;
-}
-.net-body .net-close {
-    margin-top: 1.5rem; padding-top: 1.25rem;
-    border-top: 1px solid var(--gold-line);
-    font-size: 1.0625rem; font-weight: 650; line-height: 1.5;
-    color: var(--ink);
-}
-@media (max-width: 900px) { .net { grid-template-columns: 1fr; gap: 1.75rem; } }
-
-/* ── China positioning note: the counterpoint, not the pitch ── */
-.china-note {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-    padding: clamp(1.75rem, 3.2vw, 2.5rem);
-    background: var(--white); border: 1px solid var(--line);
-    border-left: 3px solid var(--gold);
-}
-.china-note .label-xs { display: block; margin-bottom: 0.875rem; }
-.china-note > p { color: var(--slate); max-width: 82ch; }
-.china-note .china-close {
-    margin: 1.25rem 0 0; font-size: 1.0625rem; font-weight: 650;
-    line-height: 1.5; letter-spacing: -0.015em; color: var(--ink);
-}
+.cap-foot p { margin: 0; font-size: 1rem; line-height: 1.72; color: var(--slate); }
+.cap-foot p + p { margin-top: 0.75rem; }
+.cap-foot strong { color: var(--ink); font-weight: 650; }
+.cap-foot .cap-foot-ext { font-size: 0.9375rem; color: var(--muted); }
 
 /* ── Where are you now: two-column editorial entry list ──
    Column-major so the numbers read 01–03 down the left, 04–06 down

@@ -12,7 +12,7 @@ set -uo pipefail
 
 PORT="${1:-8899}"
 BASE="http://127.0.0.1:${PORT}"
-VIEWPORTS=("375 812" "390 844" "414 896" "768 1024" "1024 768" "1440 900")
+VIEWPORTS=("375 812" "390 844" "414 896" "520 1000" "768 1024" "820 1180" "1024 768" "1440 900")
 PAGES=(
   "/:index"
   "/china-supplement-sourcing.html:sourcing"

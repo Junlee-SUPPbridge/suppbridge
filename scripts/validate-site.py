@@ -71,9 +71,9 @@ FORBIDDEN = [
     (r'before you send the deposit, send us the supplier', 'supplier review framed as the offer'),
     (r'request a supplier review\s*(→|-|>)', 'supplier review framed as the primary CTA'),
 
-    # ── V2.3 §1 / §2 / §6 — the global supplier network must stay verifiable.
-    # We name the markets we work in; we never quantify the network, never
-    # claim absolute independence, and never invent savings or guarantees.
+    # ── V2.3 §1 / §2 / §6 + P1.1 §3 — supplier claims must stay verifiable.
+    # We never quantify a network, never claim absolute independence,
+    # and never invent savings or guarantees.
     (r'\b(?:fully|completely|totally)\s+independent\b', 'absolute independence claim'),
     (r'\b(?:network|portfolio)\s+of\s+\d+', 'invented network scale'),
     (r'\b\d{2,}\+?\s*(?:suppliers|vendors|contract\s+manufacturers)', 'invented supplier count'),
@@ -111,19 +111,33 @@ SCHEMA_REQUIRED = {
 # a human can actually read the questions on the page.
 FAQ_VISIBLE_MARKERS = ('class="faq-list"', 'class="faq-block"', 'class="faq-item"')
 
-# ── V2.3 §1 — homepage positioning regression guard ──────────────────────
-# The V2.3 decision was "方案 B": keep China authority AND add a global
-# supplier network, with supplier selection decided per project. These
-# strings are the load-bearing sentences. If an edit drops one, the
-# homepage has quietly drifted back to a China-only (V2.1) or a
-# generic-global framing — both of which the decision ruled out.
+# ── V2.3 P1.1 §1 / §5 / §10 — homepage positioning regression guard ──────
+# P1.1 settled the hierarchy: China is the core sourcing and manufacturing
+# network (Level 1-2), the disciplines are what we do (Level 3), and other
+# markets are an extended capability evaluated only when a project needs
+# them (Level 4). These are the load-bearing sentences. Drop one and the
+# homepage has drifted — either back to a China-only framing that loses the
+# accountability line, or out to a global-network framing that buries the
+# China core.
 HOMEPAGE_REQUIRED = [
-    'Global network. Local expertise.',
+    'Supply Chain Advisor',
+    'One accountable partner.',
+    'China is our core sourcing and manufacturing network.',
     'The right supplier depends on the project.',
-    'China is a major advantage, not an automatic answer.',
     'not tied to a single manufacturer, country or supplier',
     'Client confidentiality comes first.',
-    'Supply Chain Advisor',
+]
+
+# The reverse guard, homepage-only. P1.1 deliberately deleted the standalone
+# Global Supplier Network module and reduced the global capability to one
+# auxiliary sentence. Naming the network as the positioning again — or
+# leading with it — is the regression this catches. Articles may legitimately
+# discuss sourcing in other markets, so this is NOT a site-wide rule.
+HOMEPAGE_FORBIDDEN = [
+    (r'global\s+supplier\s+network', 'global-network platform framing (P1.1 removed this module)'),
+    (r'global\s+network\.\s*local\s+expertise', 'global-first headline (P1.1 removed this module)'),
+    (r'\bglobal\s+sourcing\s+platform\b', 'global platform framing'),
+    (r'\byour\s+global\s+(?:partner|network)\b', 'global-partner framing'),
 ]
 
 
@@ -326,6 +340,9 @@ def main():
             for needle in HOMEPAGE_REQUIRED:
                 if needle not in html:
                     problems.append(f'{rel}: positioning statement missing -> "{needle}"')
+            for pattern, label in HOMEPAGE_FORBIDDEN:
+                if re.search(pattern, low):
+                    problems.append(f'{rel}: forbidden homepage wording ({label})')
 
         # ── forbidden in headings / title (positioning guardrails, primary pages only) ──
         if rel in PRIMARY_PAGES:
