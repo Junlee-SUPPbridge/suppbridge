@@ -50,7 +50,18 @@ from content.redirects import redirect_pairs, netlify_format
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BLOG_DIR = os.path.join(BASE_DIR, "blog")
 CSS_URL = "/styles/main.css"
-OG_IMAGE = f"{SITE_URL}/images/blog-og.png"
+
+# One share card per page, rendered by scripts/build-og.py. A single
+# site-wide og:image meant a shared link said nothing about the page, and
+# the old card still carried the retired green "Journal" artwork.
+OG_DIR = f"{SITE_URL}/images/og"
+
+
+def og_url(name):
+    return f"{OG_DIR}/{name}.png"
+
+
+OG_IMAGE = og_url("default")
 
 # Commercial fallback destination when an article has no pillar block
 DUE_DILIGENCE = "/china-supplement-sourcing.html"
@@ -195,7 +206,7 @@ def pretty_date(iso):
 # Shared chrome lives in content/chrome.py (single source of truth).
 
 
-def page_head(title, description, canonical, extra_head=""):
+def page_head(title, description, canonical, extra_head="", og_image=OG_IMAGE):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -207,18 +218,24 @@ def page_head(title, description, canonical, extra_head=""):
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{e(title)}">
 <meta property="og:site_name" content="SuppBridge">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{e(title)}">
 <meta name="twitter:description" content="{e(description)}">
-<meta name="twitter:image" content="{OG_IMAGE}">
+<meta name="twitter:image" content="{og_image}">
+<meta name="theme-color" content="#12100E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
 <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon.png">
+<link rel="icon" href="/images/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="manifest" href="/images/site.webmanifest">
 <link rel="stylesheet" href="{CSS_URL}">
 <link rel="preload" href="{CSS_URL}" as="style">{extra_head}{analytics_head()}"""
 
@@ -476,7 +493,7 @@ def build_articles(articles):
 }}
 </script>"""
 
-        html = f"""{page_head(f"{art['title']} — SuppBridge Insights", art['description'], canonical)}
+        html = f"""{page_head(f"{art['title']} — SuppBridge Insights", art['description'], canonical, og_image=og_url(art['slug']))}
 {article_schema}
 {breadcrumb_schema(trail)}
 </head>
@@ -563,7 +580,7 @@ def build_blog_index(articles):
 }}
 </script>"""
 
-    html = f"""{page_head("Insights — Building Supplements in China | SuppBridge", desc, canonical)}
+    html = f"""{page_head("Insights — Building Supplements in China | SuppBridge", desc, canonical, og_image=og_url("insights"))}
 {blog_schema}
 {breadcrumb_schema([("Home", "/"), ("Insights", None)])}
 </head>
@@ -646,7 +663,7 @@ def build_pillars(articles):
 }}
 </script>"""
 
-        html = f"""{page_head(f"{p['title']} | SuppBridge", p['lede'], canonical)}
+        html = f"""{page_head(f"{p['title']} | SuppBridge", p['lede'], canonical, og_image=og_url(p['url'].strip('/')))}
 {collection_schema}
 {breadcrumb_schema([("Home", SITE_URL + "/"), (p['nav_title'], canonical)])}
 {faq_schema}

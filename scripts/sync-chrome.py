@@ -17,7 +17,7 @@ This script rewrites exactly four regions in those files:
     <nav class="nav" id="nav"> … </nav>
     <footer class="site-footer"> … </footer>
     <!-- analytics:begin --> … <!-- analytics:end -->  (before </head>)
-    favicon links (inserted once if missing)
+    favicon set + web manifest + theme colour (inserted once if missing)
 
 The analytics region is spliced in from content/analytics.py and is absent
 whenever no measurement ID is configured.
@@ -67,20 +67,29 @@ def sync_sprites(html):
     return html[:m.start()] + new + html[m.end():], True
 
 
-FAVICON_LINKS = (
-    '<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">\n'
-    '<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon.png">\n'
-    '<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">'
+# Head assets every page shares. Each is checked on its own rather than in
+# one blob, so a page that already carried the favicon still picks up the
+# later additions (the legacy .ico, the web manifest, the OS theme colour)
+# instead of being skipped wholesale for "already having an icon".
+HEAD_ASSETS = (
+    '<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">',
+    '<link rel="icon" type="image/png" sizes="48x48" href="/images/favicon.png">',
+    '<link rel="icon" href="/images/favicon.ico" sizes="any">',
+    '<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">',
+    '<link rel="manifest" href="/images/site.webmanifest">',
+    '<meta name="theme-color" content="#12100E">',
 )
 
 
-def sync_favicon(html):
-    """Idempotently ensure the shared favicon links exist in <head>."""
-    if 'rel="icon"' in html:
-        return html, False
+def sync_head_assets(html):
+    """Idempotently ensure the shared head assets exist, one entry at a time."""
     if "</head>" not in html:
         return html, False
-    return html.replace("</head>", FAVICON_LINKS + "\n</head>", 1), True
+    missing = [a for a in HEAD_ASSETS if a not in html]
+    if not missing:
+        return html, False
+    block = "\n".join("  " + a for a in missing) + "\n"
+    return html.replace("</head>", block + "</head>", 1), True
 
 
 def sync_page(rel, is_root, check_only):
@@ -123,9 +132,9 @@ def sync_page(rel, is_root, check_only):
     if analytics_changed:
         notes.append("analytics")
 
-    html, favicon_changed = sync_favicon(html)
+    html, favicon_changed = sync_head_assets(html)
     if favicon_changed:
-        notes.append("favicon")
+        notes.append("head-assets")
 
     changed = html != original
     if changed and not check_only:

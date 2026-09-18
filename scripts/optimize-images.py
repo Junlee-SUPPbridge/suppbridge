@@ -37,8 +37,8 @@ JOBS = [
     ("images/formats/sustained-release-pellets.png", 480, 480, 82),
     # Founder portrait renders at max ~420px wide in the split layout.
     ("images/founder.jpg",                          900, None, 80),
-    # Open Graph / Twitter card must be 1200x630.
-    ("images/blog-og.png",                         1200, 630, 88),
+    # Open Graph cards are not listed here: scripts/build-og.py renders them
+    # at exactly 1200x630, and social scrapers do not read WebP siblings.
 ]
 
 
@@ -73,11 +73,7 @@ def main():
                 elif im.width > w:
                     im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
 
-            # WebP sibling. For OG we also overwrite the PNG in place (social
-            # scrapers do not reliably read WebP).
-            if h == 630 and rel.endswith("blog-og.png"):
-                im.save(src, "PNG", optimize=True)
-
+            # WebP sibling, kept alongside the PNG/JPG for <picture> use.
             out = os.path.splitext(src)[0] + ".webp"
             im.save(out, "WEBP", quality=q, method=6)
 
